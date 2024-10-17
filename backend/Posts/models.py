@@ -1,21 +1,29 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+#Note: The "user" is just a placeholder name as it hasn't been made yet
 
 # Create your models here.
-#Class for creating post
+
+# Class for creating post
 class Post(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    # Link a post to its author. Also allowing a post to be removed through deletion
-    title = models.CharField(max_length=300)
+    
+     # Link a post to its author. Also allowing a post to be removed through deletion
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     # The post title 
-    message = models.TextField()
+    title = models.CharField(max_length=300)
     # Text message under post
-    timestamp = models.DateTimeField(auto_now_add=True)
+    message = models.TextField()
     # Allow to view when post has been made
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    # The name of the Hub the post belongs to
     hub = models.CharField(max_length=300)
-    # The name of the Hub or Subhub the post belongs to
+    
+    # The amount of upvotes(likes) and downvotes(dislikes)
     upvotes = models.IntegerField(default=0)
-    # The amount of upvotes(likes)
     downvotes = models.IntegerField(default=0)
-    # The amount of downvotes(dislikes)
+
+    # Used for the string repersentation
+    # This will make the post selectable from a menu list 
+    def __str__(self):
+        return self.title

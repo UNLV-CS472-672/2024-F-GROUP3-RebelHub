@@ -6,42 +6,24 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-# For handling HTTP requests in Django
+# For handling HTTP requests in Django and to send back any data in the HTTP response from our API view
 from django.http import HttpResponse
-# Used to send back any data in the HTTP response from our API view
-# Create your views here.
+
+# Create your views here
+
+# Able to view a list of all post, should only handles GET requests
 class PostList(generics.ListAPIView):
+    # Returns a list of all posts through the fetch process   
     queryset = Post.objects.all()
+    # Using the PostSerializer to format the output as JSON for frontend consumption
     serializer_class = PostSerializer
     
+ # Able to create and view the post, should only handles POST requests.  
 class CreatePost(generics.CreateAPIView):
     queryset = Post.objects.all()
+    # Uses the PostSerializer to validate the incoming request data and create a post
     serializer_class = PostSerializer
-
-'''
-# CreatePost handles any POST
-class CreatePost(APIView):
-    # Check to authenticated 
-    permission_classes = [IsAuthenticated]  
-
-    # POST method to create a new post
-    def post(self, request):
-        # The serializer with the incoming  data request
-        serializer = PostSerializer(data=request.data)
-        
-        # Check if data is valid
-        if serializer.is_valid():  
-            # Save the post from the user and return a status that the post was created
-            serializer.save(author=request.user)  
-            return Response(serializer.data, status=status.HTTP_201_CREATED)  
-        # If data is invalid then return ab error status
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
-
-    # The GET method to get the post
-    def get(self, request):
-        # Get posts from the database
-        posts = Post.objects.all()  
-        # Then serialize the list of posts and return the serialized data
-        serializer = PostSerializer(posts, many=True)  
-        return Response(serializer.data)  
-'''
+    
+    # A definition to associate the post with the logged-in user. Note: The "user" is just a placeholder name as it hasn't been made yet
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)  
