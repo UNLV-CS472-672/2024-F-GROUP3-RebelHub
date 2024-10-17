@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'testhubs',
     'Posts',
-    'Comments',
 ]
 
 CORS_ALLOWED_ORIGINS = [
