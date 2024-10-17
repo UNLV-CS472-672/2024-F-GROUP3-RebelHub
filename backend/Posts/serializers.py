@@ -6,7 +6,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         # These fields will be serialized for the frontend validation
-        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub']  
+        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likePost', 'dislikePost'] 
         # Author will be read-only becaause it's set automatically
         read_only_fields = ['author']  
     

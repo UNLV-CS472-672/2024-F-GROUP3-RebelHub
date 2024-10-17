@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 # Class for creating post
 class Post(models.Model):
     
-     # Link a post to its author. Also allowing a post to be removed through deletion
+    # Link a post to its author. Also allowing a post to be removed through deletion
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     # The post title 
     title = models.CharField(max_length=300)
@@ -20,10 +20,10 @@ class Post(models.Model):
     hub = models.CharField(max_length=300)
     
     # The amount of upvotes(likes) and downvotes(dislikes)
-    upvotes = models.IntegerField(default=0)
-    downvotes = models.IntegerField(default=0)
+    likePost = models.IntegerField(default=0)
+    dislikePost = models.IntegerField(default=0)
 
     # Used for the string repersentation
-    # This will make the post selectable from a menu list 
+    # This will make the post selectable from like a menu or dropdown list 
     def __str__(self):
         return self.title

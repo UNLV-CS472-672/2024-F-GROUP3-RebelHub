@@ -20,27 +20,28 @@ class PostTestCase(TestCase):
         self.post1 = self.create_post(title="Post 1", message="Content for post 1", hub="Hub 1")
         self.post2 = self.create_post(title="Post 2", message="Content for post 2", hub="Hub 2")
         
+    # Cleanup method to reset test database after each test
+    def tearDown(self):
+        Post.objects.all().delete()
         
     # Function to create a post. This will act as a helper method, such as used right above in the setUp function.
     def create_post(self, title, message, hub):
         return Post.objects.create(author=self.user, title=title, message=message, hub=hub)
 
-    # FUnction to test if all post can be listed in the API
+    # Function to test if all posts can be listed in the API
     def test_post_list(self):
-
         # The response calls the /posts/ endpoint
         response = self.client.get(reverse('post-list'))  
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        # Using 2 posts, and seeing if both post are listed
+        # Using 2 posts, and seeing if both posts are listed
         self.assertEqual(len(response.data), 2) 
         self.assertEqual(response.data[0]['title'], 'Post 1')
         self.assertEqual(response.data[1]['title'], 'Post 2')
 
-    # Check if API can create new post
+    # Check if API can create a new post
     def test_create_post(self):
-
-        # This is the post data that has the title, message, and hub catagory
+        # This is the post data that has the title, message, and hub category
         data = {
             'title': 'New Post',
             'message': 'This is the content of the new post.',
@@ -60,9 +61,12 @@ class PostTestCase(TestCase):
         self.assertEqual(new_post.title, 'New Post')
         self.assertEqual(new_post.message, 'This is the content of the new post.')
         self.assertEqual(new_post.hub, 'General')
+        
+        # Check the default values for likePost and dislikePost
+        self.assertEqual(new_post.likePost, 0)
+        self.assertEqual(new_post.dislikePost, 0)
     
-    # Function Test the string representation (__str__) of a post, to check if readable 
+    # Function to test the string representation (__str__) of a post, to check if readable 
     def test_post_str(self):
         post = Post.objects.create(author=self.user, title="Post Title", message="Post content", hub="General")
         self.assertEqual(str(post), "Post Title")
-
