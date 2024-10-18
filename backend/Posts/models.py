@@ -4,19 +4,14 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-# Class for creating post
+# Class for creating post, includes author, title, message, and hub
 class Post(models.Model):
     
     # Link a post to its author. Also allowing a post to be removed through deletion
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
-    # The post title 
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts') 
     title = models.CharField(max_length=300)
-    # Text message under post
     message = models.TextField()
-    # Allow to view when post has been made
     timestamp = models.DateTimeField(auto_now_add=True)
-    
-    # The name of the Hub the post belongs to
     hub = models.CharField(max_length=300)
     
     # The amount of upvotes(likes) and downvotes(dislikes)
