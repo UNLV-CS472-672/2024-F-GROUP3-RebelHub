@@ -15,10 +15,9 @@ class Post(models.Model):
     hub = models.CharField(max_length=300)
     
     # The amount of upvotes(likes) and downvotes(dislikes)
-    likePost = models.IntegerField(default=0)
-    dislikePost = models.IntegerField(default=0)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
 
-    # Used for the string repersentation
-    # This will make the post selectable from like a menu or dropdown list 
+    # Used for the string repersentation and will make the post selectable from like a menu or dropdown list 
     def __str__(self):
         return self.title

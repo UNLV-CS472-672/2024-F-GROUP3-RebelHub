@@ -22,30 +22,40 @@ class PostList(generics.ListAPIView):
         serializer.save(author=self.request.user)  
 
 # Get the post by its ID or return a 404 error if not found
-class LikePostView(generics.GenericAPIView):
+class LikePost(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
+        post.likes += 1 
+        post.save()
         
-        # Update the like count and save it
-        post.likes += 1
-        post.save()  
-        
-        # Return a success response with the updated post details
-        return Response({ 'likes': post.likes, 'dislikes': post.dislikes},
-                        status=status.HTTP_200_OK)
+        return Response({ 'likes': post.likes, 'dislikes': post.dislikes}, status=status.HTTP_200_OK)
 
 # Get the post by its ID or return a 404 error if not found
-class DislikePostView(generics.GenericAPIView):
+class DislikePost(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
-
     def post(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
+        post.dislikes += 1  
+        post.save()
         
-        # Update dislike count and save it
-        post.dislieks += 1
-        post.save()  
-        
-        return Response(
-            {'likes': post.likes, 'dislikes': post.dislikes},
-            status=status.HTTP_200_OK)
+        return Response({ 'likes': post.likes, 'dislikes': post.dislikes}, status=status.HTTP_200_OK)
+    
+# GET a single post by its ID
+class PostDetail(generics.RetrieveAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        post_id = self.kwargs['post_id']
+        return get_object_or_404(Post, id=post_id)
+    
+# Delete the post by its ID
+class PostDelete(generics.DestroyAPIView):
+    queryset = Post.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        post_id = self.kwargs['post_id']
+        return get_object_or_404(Post, id=post_id)

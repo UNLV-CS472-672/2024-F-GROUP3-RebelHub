@@ -6,11 +6,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes'] 
-        
-        
-        # Author will be read-only because it's set automatically
-        
-        read_only_fields = ['author', 'likes', 'dislikes']  
+        read_only_fields = ['author', 'likes', 'dislikes']
     
     """
     This method is used when a new Post object is being created. 
