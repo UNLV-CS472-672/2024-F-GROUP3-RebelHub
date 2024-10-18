@@ -5,13 +5,12 @@ from .models import Post
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likePost', 'dislikePost'] 
+        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes'] 
         
-        """
-        Author will be read-only because it's set automatically
-        Note: The foreign key will be changed based on the Hub api
-        """
-        read_only_fields = ['author']  
+        
+        # Author will be read-only because it's set automatically
+        
+        read_only_fields = ['author', 'likes', 'dislikes']  
     
     """
     This method is used when a new Post object is being created. 

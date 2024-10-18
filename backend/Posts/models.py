@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-#Note: The "user" is just a placeholder name as it hasn't been made yet
+# Note: The "user" is just a placeholder name as it hasn't been made yet. The foreign key will be changed based on the Hub api
 
 # Create your models here.
 
