@@ -36,11 +36,7 @@ class PostTestCase(TestCase):
 
     # Check if API can create new post
     def test_create_post(self):
-        data = {
-            'title': 'CS Classes',
-            'message': 'What CS classes should I take?',
-            'hub': 'CS'
-        }
+        data = { 'title': 'CS Classes', 'message': 'What CS classes should I take?','hub': 'CS' }
         response = self.client.post(reverse('post-create'), data, format='json')
         
         print(response.data)  
@@ -66,14 +62,14 @@ class PostTestCase(TestCase):
         self.assertEqual(response.data['title'], self.post1.title)
 
     # Test deleting a post
-    def test_delete_post(self):
+    def test_deleting_post(self):
         url = reverse('post-delete', kwargs={'post_id': self.post1.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Post.objects.filter(id=self.post1.pk).exists())
         
         # Test liking a post
-    def test_like_post(self):
+    def test_liking_post(self):
         url = reverse('like-post', kwargs={'post_id': self.post1.pk})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK, "Failed to like this post")
@@ -81,7 +77,7 @@ class PostTestCase(TestCase):
         self.assertEqual(self.post1.likes, 1)
 
     # Test disliking a post
-    def test_dislike_post(self):
+    def test_disliking_post(self):
         url = reverse('dislike-post', kwargs={'post_id': self.post1.pk})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK, "Failed to dislike this post")
@@ -89,13 +85,13 @@ class PostTestCase(TestCase):
         self.assertEqual(self.post1.dislikes, 1)
 
     # Test liking an invalid post (not found)
-    def test_like_invalid_post(self):
+    def test_liking_invalid_post(self):
         url = reverse('like-post', kwargs={'post_id': 999999})  
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND, "Liking an invalid post")
 
-    # Test deleting a post without any authentication
-    def test_delete_post_unauthenticated(self):
+    # Test deleting a post without proper authentication
+    def test_unauthenticate_post_deleting(self):
         self.client.logout()
         url = reverse('post-delete', kwargs={'post_id': self.post1.id})
         resp = self.client.delete(url)
