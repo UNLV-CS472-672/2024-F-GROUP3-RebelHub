@@ -68,7 +68,7 @@ class PostTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Post.objects.filter(id=self.post1.pk).exists())
         
-        # Test liking a post
+    # Test liking a post
     def test_liking_post(self):
         url = reverse('like-post', kwargs={'post_id': self.post1.pk})
         response = self.client.post(url)
@@ -99,7 +99,7 @@ class PostTestCase(TestCase):
         post_exists = Post.objects.filter(id=self.post1.id).exists()
         self.assertTrue(post_exists, "This post was deleted by an unauthenticated user")
 
-    # Test creating a post with missing fields
+    # Test creating a post with missing fields such as a title
     def test_create_post_missing_fields(self):
         data = {'message': 'This post needs a title', 'hub': 'General'}
         response = self.client.post(reverse('post-create'), data, format='json')
