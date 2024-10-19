@@ -11,15 +11,25 @@ from rest_framework.response import Response
 class CreatePost(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    
+    # A definition to associate the post with the logged-in user. Note: The "user" is just a placeholder name as it hasn't been made yet
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)  
+        
+# Delete the post by its ID
+class PostDelete(generics.DestroyAPIView):
+    queryset = Post.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        post_id = self.kwargs['post_id']
+        return get_object_or_404(Post, id=post_id)
 
 # Able to view a list of all post, should only handles GET requests to Fetch a list of all post 
 class PostList(generics.ListAPIView): 
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     
-    # A definition to associate the post with the logged-in user. Note: The "user" is just a placeholder name as it hasn't been made yet
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)  
 
 # Get the post by its ID or return a 404 error if not found
 class LikePost(generics.GenericAPIView):
@@ -51,11 +61,3 @@ class PostDetail(generics.RetrieveAPIView):
         post_id = self.kwargs['post_id']
         return get_object_or_404(Post, id=post_id)
     
-# Delete the post by its ID
-class PostDelete(generics.DestroyAPIView):
-    queryset = Post.objects.all()
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        post_id = self.kwargs['post_id']
-        return get_object_or_404(Post, id=post_id)
