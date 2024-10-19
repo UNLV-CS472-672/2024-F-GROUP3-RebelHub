@@ -8,28 +8,29 @@ class HubSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class HubCreateSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField(write_only=True, required=True)
-
     class Meta:
         model = Hub
-        fields = ['name', 'description', 'user_id']
+        fields = ['name', 'description']
 
     def create(self, validated_data):
-        user_id = validated_data.pop('user_id')
-        owner = User.objects.get(id=user_id)
-        hub = Hub.objects.create(owner=owner, **validated_data)
-        return hub
+        request = self.context.get('request')
+        user = request.user
+        newly_created_hub = Hub.objects.create(owner=user, **validated_data)
+        return newly_created_hub
 
 class HubUpdateSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField(write_only=True, required=True)
     class Meta:
         model = Hub
-        fields = ['name', 'description', 'user_id'] 
+        fields = ['name', 'description'] 
 
     def update(self, instance, validated_data):
-        user_id = validated_data.pop('user_id')
-        #if instance.owner.id != user_id: error
-        instance.name = validated_data.get('name', instance.name)
-        instance.description = validated_data.get('description', instance.description)
-        instance.save()
-        return instance 
+        request = self.context.get('request')
+        user = request.user
+        if instance.owner == user:
+            instance.name = validated_data.get('name', instance.name)
+            instance.description = validated_data.get('description', instance.description)
+            instance.save()
+            return instance
+        else:
+            raise serializers.ValidationError("Cannot Update Hub : You Are Not Owner Of Hub")
+
