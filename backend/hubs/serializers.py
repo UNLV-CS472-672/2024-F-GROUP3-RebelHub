@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from .models import Hub
 
 class HubSerializer(serializers.ModelSerializer):
@@ -20,7 +21,7 @@ class HubCreateSerializer(serializers.ModelSerializer):
         return hub
 
 class HubUpdateSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField(required=True)
+    user_id = serializers.IntegerField(write_only=True, required=True)
     class Meta:
         model = Hub
         fields = ['name', 'description', 'user_id'] 

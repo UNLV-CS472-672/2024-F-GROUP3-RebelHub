@@ -23,7 +23,7 @@ class Hub(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_hubs')
-    members = models.ManyToMany(User, related_name='joined_hubs', blank=True)
+    members = models.ManyToManyField(User, related_name='joined_hubs', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     

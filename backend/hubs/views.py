@@ -27,7 +27,8 @@ class HubCreate(generics.CreateAPIView):
     serializer_class = HubCreateSerializer
 
     def perform_create(self, serializer):
-        serializer.save()
+        hub = serializer.save()
+        return hub
 
 
 
@@ -42,8 +43,9 @@ class HubUpdate(generics.UpdateAPIView):
 
 # "api/hubs/<id>/delete/"
 class HubDelete(generics.DestroyAPIView):
+    queryset = Hub.objects.all()
     serializer_class = HubSerializer
     lookup_field = "id"
 
-    def get_queryset(self):
-        return Hub.objects.filter(owner=self.request.user)
+    #def get_queryset(self):
+    #    return Hub.objects.filter(owner=self.request.user)
