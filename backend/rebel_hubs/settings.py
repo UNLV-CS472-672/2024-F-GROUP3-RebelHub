@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'testhubs',
+    'Posts',
 ]
 
 CORS_ALLOWED_ORIGINS = [
