@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .models import Hub
-from .serializers import HubSerializer, HubUpdateSerializer, HubCreateSerializer, HubAddMemberSerializer
+from .serializers import HubSerializer, HubUpdateSerializer, HubCreateSerializer, HubAddMemberSerializer, HubRemoveMemberSerializer
 
 # "api/hubs/"
 # returns all the hubs.
@@ -54,7 +54,7 @@ class HubDelete(generics.DestroyAPIView):
 
     def perform_destroy(self, instance):
         if instance.owner != self.request.user:
-            raise PermsissionDenied("Cannot Delete Hub : No Permissons To Delete This Hub")
+            raise PermissionDenied("Cannot Delete Hub : No Permissons To Delete This Hub")
         else:
             instance.delete()
 
@@ -65,5 +65,14 @@ class HubDelete(generics.DestroyAPIView):
 class HubAddMember(generics.UpdateAPIView):
     queryset = Hub.objects.all()
     serializer_class = HubAddMemberSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+# "api/hubs/<id>/leave/"
+# user making request want to leave hub <id>
+# user must be authenticated and a hub member <NOT OWNER>
+class HubRemoveMember(generics.UpdateAPIView):
+    queryset = Hub.objects.all()
+    serializer_class = HubRemoveMemberSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "id"

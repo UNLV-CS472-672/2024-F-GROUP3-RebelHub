@@ -60,3 +60,23 @@ class HubAddMemberSerializer(serializers.ModelSerializer):
             return instance
         else:
             raise serializers.ValidationError("Cannot Join Hub : You Are Already a Member")
+
+
+#Serializer for a user to leave a hub.
+# no fields needed in request. the endpoint already has hubid.
+class HubRemoveMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hub
+        fields = []
+
+    def update(self, instance, validated_data):
+        request = self.context.get('request')
+        user = request.user
+        if user in instance.members.all() and user != instance.owner:
+            instance.members.remove(user)
+            instance.save()
+            return instance
+        elif user in instance.members.all() and user == instance.owner:
+            raise serializers.ValidationError("Cannot Leave Hub : Hub Owners Must Delete Hub To Leave")
+        else:
+            raise serializers.ValidationError("Cannot Leave Hub : Not A Hub Member")
