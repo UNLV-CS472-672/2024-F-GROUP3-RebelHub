@@ -20,5 +20,10 @@ from User_Api.views import CreateUserView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('testhubs.urls')),
+
+    
+
+    path('api/', include('Posts.urls')),
+    # path('api/', include('Comments.urls')), will be added in the next PR
     path('',include('User_Api.urls')),
 ]
