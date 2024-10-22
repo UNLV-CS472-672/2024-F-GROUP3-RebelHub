@@ -6,4 +6,4 @@ node_modules/
 out/
 
 # Django related
-db.sqlite3
+backend/db.sqlite3
