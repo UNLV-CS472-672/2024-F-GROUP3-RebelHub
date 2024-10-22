@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 class Event(models.Model):
@@ -11,3 +12,7 @@ class Event(models.Model):
     color = models.CharField(max_length=20, blank=True, default="#eb4f34")
     def __str__(self):
         return self.title
+    def clean(self):
+        super().clean()
+        if self.start_time and self.end_time and self.start_time >= self.end_time:
+            raise ValidationError("End time must come after start time")
