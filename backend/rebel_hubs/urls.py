@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('testhubs.urls')),
     path('api/', include('Posts.urls')),
     # path('api/', include('Comments.urls')), will be added in the next PR
+    path('', include('calendar_app.urls')),
 ]
