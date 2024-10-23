@@ -12,3 +12,13 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
 
 
+class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    def get_object(self):
+        # Get access to current user
+        user = self.request.user
+        return user
+
+
