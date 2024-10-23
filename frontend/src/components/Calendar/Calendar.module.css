@@ -1,0 +1,109 @@
+/* Calendar Container */
+.calendar {
+    width: 1500px; 
+    border: 5px solid #880808; 
+    border-radius: 5px; 
+    overflow: hidden; 
+}
+
+/* Header Section */
+.header {
+    padding: 10px; 
+    display: flex; 
+    align-items: center; 
+}
+
+.today-button {
+    margin-right: auto; 
+    user-select: none;
+}
+
+/* Buttons container for Previous, Title, and Next */
+.header-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    flex: 1; 
+}
+
+/* Button styles */
+.header button {
+    padding: 5px 10px; 
+    border: none; 
+    border-radius: 5px; 
+    background-color: #880808; 
+    color: white; 
+    cursor: pointer; 
+    transition: background-color 0.1s;
+}
+
+.header button:hover {
+    background-color: #f76359; 
+}
+
+.previous-button {
+    margin-right: 5px; 
+    user-select: none; 
+}
+
+.title {
+    text-align: center; 
+    margin: 0 10px; 
+    width: 250px
+}
+
+.next-button {
+    margin-left: 5px;
+    user-select: none;
+}
+
+/* Weekdays Section */
+.weekdays {
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr); 
+}
+
+.weekday {
+    background-color: #880808; 
+    color: white;
+    padding: 2px; 
+    text-align: center; 
+    font-weight: bold; 
+}
+
+/* Days Section */
+.days {
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr); 
+}
+
+.day {
+    padding: 2px; 
+    border: 1px solid #880808; 
+    overflow: hidden;
+    min-height: 220px; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.day-number {
+    user-select: none;
+    text-align: right;
+    padding-bottom: 5px; 
+}
+
+.event {
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 1px 50;
+    cursor: pointer; 
+}
+
+.event span {
+    font-size: 13px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
