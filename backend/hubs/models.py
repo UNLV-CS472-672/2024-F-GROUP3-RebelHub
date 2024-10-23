@@ -9,11 +9,13 @@ from django.contrib.auth.models import User
         4) owner - the creator of the hub. right now it's set to delete a hub when the owner acc is deleted
                    but i plan on making it fall back on a default user account. like a rebel hub admin or something
                    the related name is owned hubs which describes the users relationship with this field.
-        5) members - Many to Many relationship between the hubs and all it's users. starts blank. 
+        5) mods - moderators of a hub. moderators can be added and removed from a hub by the owner. 
+        6) members - Many to Many relationship between the hubs and all it's users. starts blank. 
                      related name is joined hubs which describes the users relationship with this field.
-        6) created_at - timestamp for when a hub is created. we can use this to order quereys and also to display
+        7) created_at - timestamp for when a hub is created. we can use this to order quereys and also to display
                         more details about a hub on the frontend. automatically gets set to current time when hub
                         is created.
+        8) private_hub - hub is private if true. hub is public if false.
     Method overrides:
         save - we override the save function in which first we call the super method that does the normal save.
                then, if the owner is not a member in the hub we add them.
