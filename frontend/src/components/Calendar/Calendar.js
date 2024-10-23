@@ -165,9 +165,9 @@ const Calendar = () => {
                       style={{
                         top: `${index * 26}px`, // Used to display the events on a day
                         borderColor: event.color,
-                        onClick={() => { // When an event is clicked on, the modal for the event is opened
-                          openModal(event);
-                        }}
+                      }}
+                      onClick={() => { // When an event is clicked on, the modal for the event is opened
+                        openModal(event);
                       }}  
                     >
                       <span style={{color:event.color}}>{event.title}</span>
