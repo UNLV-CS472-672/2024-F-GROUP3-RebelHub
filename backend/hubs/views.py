@@ -3,21 +3,49 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .models import Hub
-from .serializers import HubSerializer, HubUpdateSerializer, HubCreateSerializer, HubAddMemberSerializer, HubRemoveMemberSerializer
+from .serializers import HubSerializer, HubUpdateSerializer, HubCreateSerializer, HubAddMemberSerializer, HubRemoveMemberSerializer, HubAddModSerializer, HubRemoveModSerializer
 
 # "api/hubs/"
-# returns all the hubs.
+# returns all the hubs that are public.
 class HubList(generics.ListAPIView):
-    queryset = Hub.objects.all()
+    queryset = Hub.objects.filter(private_hub=False)
     serializer_class = HubSerializer
-    permissions_classes = [AllowAny]
+    permission_classes = [AllowAny]
+
+# "api/hubs/joined/"
+# returns all the hubs that a user has joined.
+class HubJoined(generics.ListAPIView):
+    serializer_class = HubSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        user = self.request.user
+        return Hub.objects.filter(members=user)
+
+
+# "api/hubs/modding/"
+# returns all the hubs that a user is moderating
+class HubModerating(generics.ListAPIView):
+    serializer_class = HubSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        user = self.request.user
+        return Hub.objects.filter(mods=user)
+
+# "api/hubs/owned/"
+# returns all the hubs that a user owns.
+class HubOwned(generics.ListAPIView):
+    serializer_class = HubSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        user = self.request.user
+        return Hub.objects.filter(owner=user)
 
 # "api/hubs/<id>/"
 # returns one hub corresponding to ID in request.
 class HubByID(generics.RetrieveAPIView):
     queryset = Hub.objects.all()
     serializer_class = HubSerializer
-    permissions_classes = [AllowAny]
+    permission_classes = [AllowAny]
     lookup_field = "id"
 
 # "api/hubs/create/"
@@ -38,6 +66,26 @@ class HubCreate(generics.CreateAPIView):
 class HubUpdate(generics.UpdateAPIView):
     queryset = Hub.objects.all()
     serializer_class = HubUpdateSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+# "api/hubs/<id>/mods/add"
+class HubAddModerator(generics.UpdateAPIView):
+    queryset = Hub.objects.all()
+    serializer_class = HubAddModSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+# "api/hubs/<id>/mods/remove"
+class HubRemoveModerator(generics.UpdateAPIView):
+    queryset = Hub.objects.all()
+    serializer_class = HubRemoveModSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "id"
 
