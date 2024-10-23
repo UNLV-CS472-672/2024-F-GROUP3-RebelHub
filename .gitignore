@@ -4,3 +4,5 @@ __pycache__/
 .next/
 node_modules/
 out/
+
+venv/
