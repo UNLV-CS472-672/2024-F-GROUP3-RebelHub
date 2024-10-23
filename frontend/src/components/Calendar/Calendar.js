@@ -2,11 +2,28 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import styles from "./Calendar.module.css";
+import EventModal from "./EventModal.js";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date()); // Holds the current date in order for today button to work
   const [events, setEvents] = useState([]); // Holds events that are pulled by API
-  
+  const [isModalOpen, setIsModalOpen] = useState(false); // Checks if modal is opened in order to avoid any issues
+  const [currentEvent, setCurrentEvent] = useState(null); // Holds the event for the current opened modal
+
+  // Function to handle states when a modal is opened
+  const openModal = (event) => {
+    setCurrentEvent(event);
+    setIsModalOpen(true);
+    console.log("Open modal: %s", event.title);
+  };
+
+  // Function to handle states when a modal is closed
+  const closeModal = () => {
+    console.log("Closing modal: %s", currentEvent?.title);
+    setIsModalOpen(false);
+    setCurrentEvent(null);
+  };
+
   // Fetches events from API
   useEffect(() => {
     console.log("Fetching...");
@@ -148,6 +165,9 @@ const Calendar = () => {
                       style={{
                         top: `${index * 26}px`, // Used to display the events on a day
                         borderColor: event.color,
+                        onClick={() => { // When an event is clicked on, the modal for the event is opened
+                          openModal(event);
+                        }}
                       }}  
                     >
                       <span style={{color:event.color}}>{event.title}</span>
@@ -160,6 +180,14 @@ const Calendar = () => {
         </div>
       </div>
 
+      {/* Modal for an event is displayed when an event is clicked on */}
+      {/* Modal uses another component with the EventModal.js file */}
+      <EventModal
+        details={currentEvent}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      />
+      
     </div>
   );
 };

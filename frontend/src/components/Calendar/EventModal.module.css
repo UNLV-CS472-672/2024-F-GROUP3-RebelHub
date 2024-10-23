@@ -1,0 +1,62 @@
+/* CSS for EventModal.js */
+
+.overlay {
+    position: fixed; /* Fixed position to cover the viewport */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    z-index: 100; 
+  }
+  
+  .modal {
+    position: absolute; /* Absolute positioning to center */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centering the modal */
+    background-color: white; /* Background color for the modal */
+    padding: 20px; /* Padding for the modal content */
+    border-radius: 8px; /* Rounded corners */
+    z-index: 1001; /* Higher z-index than overlay */
+    color: black;
+    min-width: 500px;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px; /* Position from the top */
+    right: 10px; /* Position from the right */
+    background: none; 
+    border: none; 
+    font-size: 20px; 
+    color: black;
+    cursor: pointer; 
+    z-index: 100; 
+    user-select: none;
+  }
+/*
+.title{
+    
+}
+
+.date{
+
+}
+
+.location{
+
+}
+
+.start-time{
+
+}
+
+.end-time{
+
+}
+
+.description{
+
+}
+*/
