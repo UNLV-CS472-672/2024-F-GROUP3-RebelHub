@@ -34,7 +34,7 @@ class HubUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         request = self.context.get('request')
         user = request.user
-        if instance.owner == user or user in instance.mods:
+        if instance.owner == user or user in instance.mods.all():
             instance.name = validated_data.get('name', instance.name)
             instance.description = validated_data.get('description', instance.description)
             instance.save()
