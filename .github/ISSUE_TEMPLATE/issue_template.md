@@ -13,7 +13,7 @@ Describe the issue and share important details such as the desired solution, err
 **Link**
 Include a link to the correlated PR number, or any resources for greater context.
 
-**Screenshots/Example (Optional))**
+**Screenshots/Example (Optional)**
 If this is applicable, add screenshots to help explain the problem.
 
 **Additional context**
