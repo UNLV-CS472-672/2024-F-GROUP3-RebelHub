@@ -5,16 +5,24 @@ from .serializers import PostSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+import users
+
 # Create your views here
 
 # Able to create and view the post, should only handles POST requests to create a post
 class CreatePost(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    
+
+    def get_queryset(self):
+        user=self.request.user
+        return Post.objects.filter(author=user)
     # A definition to associate the post with the logged-in user. Note: The "user" is just a placeholder name as it hasn't been made yet
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)  
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print (serializer.errors)
         
 # Delete the post by its ID
 class PostDelete(generics.DestroyAPIView):
