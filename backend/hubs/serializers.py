@@ -83,9 +83,9 @@ class HubRemoveMemberSerializer(serializers.ModelSerializer):
 
 
 #Serializer for a hub owner to add moderator
-# there is a user_id (id of user you want to make mod) specified in the request. endpoint already has hubid
+# there is a a user_id (id of user you want to make mod) specified in the request body. endpoint has hubid 
 class HubAddModSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField()
+    user_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Hub
         fields = ['user_id']
@@ -96,19 +96,19 @@ class HubAddModSerializer(serializers.ModelSerializer):
         hub = self.instance
         user_id = data.get('user_id')
 
-        if user != hub.owner:
-            raise serializers.ValidationError("Cannot Add Mod : Not A Hub Owner")
-
         try:
             user_to_add = User.objects.get(id=user_id)
         except User.DoesNotExist:
-            raise serializers.ValidationError("Cannot Add Mod : User Doesn't Exist")
+            raise serializers.ValidationError("Cannot Add Mod : User Does Not Exist")
+
+        if user != hub.owner:
+            raise serializers.ValidationError("Cannot Add Mod : You Are Not Hub Owner")
+
+        if user_to_add in hub.mods.all():
+            raise serializers.ValidationError("Cannot Add Mod : User Is Already A Moderator")
 
         if user_to_add not in hub.members.all():
-            raise serializers.ValidationError("Cannot Add Mod : User Not A Hub Member")
-        
-        if user_to_add in hub.mods.all():
-            raise serializers.ValidationError("Cannot Add Mod : User Is Already A Hub Moderator")
+            raise serializers.ValidationError("Cannot Add Mod : User Is Not A Hub Member")
 
         data['new_mod'] = user_to_add
         return data
@@ -123,7 +123,7 @@ class HubAddModSerializer(serializers.ModelSerializer):
 #Serializer for a hub owner to remove a moderator
 # there is a user_id (id of user you want to kick) specified in the request. endpoint already has hubid
 class HubRemoveModSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField()
+    user_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Hub
         fields = ['user_id']
@@ -134,17 +134,15 @@ class HubRemoveModSerializer(serializers.ModelSerializer):
         hub = self.instance
         user_id = data.get('user_id')
 
-        if user != hub.owner:
-            raise serializers.ValidationError("Cannot Kick Mod : Not A Hub Owner")
-
         try:
             user_to_kick = User.objects.get(id=user_id)
         except User.DoesNotExist:
             raise serializers.ValidationError("Cannot Kick Mod : User Doesn't Exist")
 
-        if user_to_kick not in hub.members.all():
-            raise serializers.ValidationError("Cannot Kick Mod : User Not A Hub Member")
-        
+
+        if user != hub.owner:
+            raise serializers.ValidationError("Cannot Kick Mod : You Are Not Hub Owner")
+
         if user_to_kick not in hub.mods.all():
             raise serializers.ValidationError("Cannot Kick Mod : User Is Not A Hub Moderator")
 

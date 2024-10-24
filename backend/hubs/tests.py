@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 from .models import Hub
-from .views import HubByID, HubList, HubCreate, HubDelete, HubUpdate, HubAddMember, HubRemoveMember
+from .views import HubByID, HubList, HubJoined, HubOwned, HubModerating, HubCreate, HubDelete, HubUpdate, HubAddMember, HubRemoveMember, HubAddModerator, HubRemoveModerator
 
 # Create your tests here.
 
@@ -51,6 +51,40 @@ class HubAPITests(APITestCase):
         self.assertEqual(data[1]["name"], "TEST HUB 2")
         self.assertEqual(data[0]["description"], "A HUB MADE IN TESTING")
         self.assertEqual(data[1]["description"], "A SECOND HUB MADE IN TESTING")
+
+    def test_get_hubjoined(self):
+        """
+        Make sure a user can get the hubs they have joined.
+        """
+        user = User.objects.create_user(username="Test HUB User", password="testpass")
+        hub = Hub.objects.create(name="TEST HUB", description="A HUB MADE IN TESTING", owner=user)
+        hub2 = Hub.objects.create(name="TEST HUB 2", description="A SECOND HUB MADE IN TESTING", owner=user)
+
+        user2 = User.objects.create_user(username="Test HUB User 2", password="testpass")
+        user3 = User.objects.create_user(username="Test HUB User 3", password="testpass")
+
+        view = HubAddMember.as_view() 
+        request = self.factory.put(f"/hubs/{hub.id}/join/")
+        force_authenticate(request, user=user2)
+        response = view(request, id=hub.id)
+
+        view = HubJoined.as_view()
+        request = self.factory.get("/hubs/joined")
+        force_authenticate(request, user=user2)
+        response = view(request)
+        data = response.data
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK) #200 user made request sucessfully
+        self.assertEqual(len(data), 1) # make sure user is only seeing the one hub that they have joined
+
+        request = self.factory.get("/hubs/joined")
+        force_authenticate(request, user=user3)
+        response = view(request)
+        data = response.data
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK) #200 user made request sucessfully
+        self.assertEqual(len(data), 0)
+
 
     def test_create_hub(self):
         """
@@ -278,3 +312,83 @@ class HubAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST) #400 owner cannot leave hub. 
         self.assertEqual(hub.members.count(), 1) #make sure hub count stays at 1
+
+    def test_add_moderator(self):
+        """
+        Make sure a hub owner can add a moderator.
+        """
+        dummy_hub = {"name" : "TEST HUB", "description" : "A HUB MADE IN TESTING"}
+        user = User.objects.create_user(username="Test HUB User", password="testpass")
+        view = HubCreate.as_view()
+        request = self.factory.post("/hubs/create", dummy_hub, format="json")
+        force_authenticate(request, user=user)
+        response = view(request)
+
+        data = response.data
+        hub = Hub.objects.get(name=data["name"])
+        HUBSID = hub.id
+
+        user2 = User.objects.create_user(username="Test HUB User 2", password="testpass")
+        view = HubAddMember.as_view() 
+        request = self.factory.put(f"/hubs/{hub.id}/join")
+        force_authenticate(request, user=user2)
+        response = view(request, id=hub.id)
+
+        self.assertEqual(hub.members.count(), 2) #make sure user joined the hub
+
+
+
+        view = HubAddModerator.as_view()
+        request_data = {"user_id": user2.id}
+        request = self.factory.put(f"/hubs/{hub.id}/mods/add", request_data, format="json")
+        force_authenticate(request, user=user)
+        response = view(request, id=hub.id)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK) #200 owner added a mod
+        self.assertIn(user2, hub.mods.all()) #make sure new mod is in hubs mods
+
+    def test_remove_moderator(self):
+        """
+        Make sure a hub owner can remove a moderator.
+        """
+        dummy_hub = {"name" : "TEST HUB", "description" : "A HUB MADE IN TESTING"}
+        user = User.objects.create_user(username="Test HUB User", password="testpass")
+        view = HubCreate.as_view()
+        request = self.factory.post("/hubs/create", dummy_hub, format="json")
+        force_authenticate(request, user=user)
+        response = view(request)
+
+        data = response.data
+        hub = Hub.objects.get(name=data["name"])
+        HUBSID = hub.id
+
+        user2 = User.objects.create_user(username="Test HUB User 2", password="testpass")
+        view = HubAddMember.as_view() 
+        request = self.factory.put(f"/hubs/{hub.id}/join")
+        force_authenticate(request, user=user2)
+        response = view(request, id=hub.id)
+
+        self.assertEqual(hub.members.count(), 2) #make sure user joined the hub
+
+
+
+        view = HubAddModerator.as_view()
+        request_data = {"user_id": user2.id}
+        request = self.factory.put(f"/hubs/{hub.id}/mods/add", request_data, format="json")
+        force_authenticate(request, user=user)
+        response = view(request, id=hub.id)
+
+        
+        self.assertIn(user2, hub.mods.all()) #make sure user2 is added to mods
+
+        self.assertEqual(hub.mods.count(), 1)
+
+        view = HubRemoveModerator.as_view()
+        request_data = {"user_id": user2.id}
+        request = self.factory.put(f"/hubs/{hub.id}/mods/remove", request_data, format="json")
+        force_authenticate(request, user=user)
+        response = view(request, id=hub.id)
+
+
+        self.assertEqual(hub.mods.count(), 0)
+
