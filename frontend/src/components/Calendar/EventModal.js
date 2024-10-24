@@ -24,9 +24,9 @@ const EventModal = ({ details, isOpen, onClose }) => {
   const formatDate = (date) => {
     const dateObject = new Date(date);
     const prepend = (number) => {return number >= 10 ? number : "0" + number;}
-    const MDY = months[dateObject.getMonth()] + " " + dateObject.getDate() + ", " + dateObject.getFullYear();
     const AMorPM = dateObject.getHours() >= 12 ? "pm" : "am";
-    const HM = dateObject.getHours() % 12 + ":" + prepend(dateObject.getMinutes()) + AMorPM;
+    const MDY = months[dateObject.getMonth()] + " " + dateObject.getDate() + ", " + dateObject.getFullYear();
+    const HM = (dateObject.getHours() % 12 == 0 ? 12 : dateObject.getHours() % 12) + ":" + prepend(dateObject.getMinutes()) + AMorPM;
     return MDY + " " + HM;
   }
 
