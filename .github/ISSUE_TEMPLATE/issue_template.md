@@ -1,8 +1,8 @@
 ---
 name: Issue_Template
 about: Create a useable template format for guidance
-title: ''
-labels: ''
+title: '[ISSUES]'
+labels: 'Issue'
 assignees: ''
 
 ---
