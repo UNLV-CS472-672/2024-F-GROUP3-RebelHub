@@ -14,7 +14,7 @@ class HubSerializer(serializers.ModelSerializer):
 class HubCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hub
-        fields = ['name', 'description']
+        fields = ['name', 'description', 'private_hub']
 
     def create(self, validated_data):
         request = self.context.get('request')

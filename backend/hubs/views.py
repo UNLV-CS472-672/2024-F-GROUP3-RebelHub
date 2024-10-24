@@ -43,10 +43,20 @@ class HubOwned(generics.ListAPIView):
 # "api/hubs/<id>/"
 # returns one hub corresponding to ID in request.
 class HubByID(generics.RetrieveAPIView):
-    queryset = Hub.objects.all()
     serializer_class = HubSerializer
     permission_classes = [AllowAny]
     lookup_field = "id"
+
+    def get_queryset(self):
+       user = self.request.user
+       print(user)
+       if user.is_authenticated:
+           print("user is authenticated")
+           return Hub.objects.all()
+       else:
+           print("user is not authenticated")
+           return Hub.objects.filter(private_hub=False)
+
 
 # "api/hubs/create/"
 # a hub name

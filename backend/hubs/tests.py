@@ -29,6 +29,35 @@ class HubAPITests(APITestCase):
         self.assertEqual(data["name"], "TEST HUB") #make sure names match up
         self.assertEqual(data["description"], "A HUB MADE IN TESTING") #make sure descriptions match up
 
+    def test_get_hub_private(self):
+        """
+        Make sure only authenticated users can retrieve a private hub by id.
+        """
+        user = User.objects.create_user(username="Test HUB User", password="testpass")
+        hub = Hub.objects.create(name="TEST HUB", description="A PRIVATE HUB MADE IN TESTING", private_hub=True, owner=user)
+
+        dummy_user = User.objects.create_user(username="Test HUB User 2", password="testpass")
+
+        view = HubByID.as_view()
+        request = self.factory.get(f"/hubs/{hub.id}/")
+        response = view(request, id=hub.id)
+        data = response.data
+
+        self.assertEqual(len(data), 0) #i expected 0 but really the count is one its just NOT a hub i will fix this
+
+
+        view = HubByID.as_view()
+        request = self.factory.get(f"/hubs/{hub.id}/")
+        force_authenticate(request, user=dummy_user)
+        response = view(request, id=hub.id)
+        data = response.data
+
+        self.assertEqual(len(data), 1)
+
+
+
+
+
     def test_get_hublist(self):
         """
         Make sure we can make a call to retrieve all hub's data
@@ -36,6 +65,7 @@ class HubAPITests(APITestCase):
         user = User.objects.create_user(username="Test HUB User", password="testpass")
         hub = Hub.objects.create(name="TEST HUB", description="A HUB MADE IN TESTING", owner=user)
         hub2 = Hub.objects.create(name="TEST HUB 2", description="A SECOND HUB MADE IN TESTING", owner=user)
+        hub3 = Hub.objects.create(name="TEST HUB 3", description="A PRIVATE HUB MADE IN TESTING", private_hub=True, owner=user)
 
         view = HubList.as_view()
         request = self.factory.get(f"/hubs/")
@@ -44,7 +74,7 @@ class HubAPITests(APITestCase):
 
 
         self.assertEqual(response.status_code, status.HTTP_200_OK) #200 we can get all the hubs
-        self.assertEqual(len(data), 2) #make sure we are seeing out two hubs
+        self.assertEqual(len(data), 2) #make sure we are seeing out two hubs. private hub should not be seen here
 
         #make sure data matches up with whats expected
         self.assertEqual(data[0]["name"], "TEST HUB")
@@ -101,6 +131,23 @@ class HubAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED) #201 successfully created a hub
         self.assertEqual(Hub.objects.count(), 1) #make sure hub got created and exists in db
+
+    def test_create_private_hub(self):
+        """
+        Make sure an authenticated user can createa a PRIVATE hub
+        """
+        dummy_hub = {"name" : "TEST HUB", "description" : "A HUB MADE IN TESTING", "private_hub" : True}
+        user = User.objects.create_user(username="Test HUB User", password="testpass")
+        view = HubCreate.as_view()
+        request = self.factory.post("/hubs/create", dummy_hub, format="json")
+        force_authenticate(request, user=user)
+        response = view(request)
+        
+        
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED) #201 successfully created a hub
+        self.assertEqual(Hub.objects.count(), 1) #make sure hub got created and exists in db
+
 
     def test_create_hub_noauth(self):
         """
