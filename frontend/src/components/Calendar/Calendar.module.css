@@ -88,7 +88,7 @@
     padding: 2px; 
     border: 1px solid #CF0A2C; 
     overflow: hidden;
-    min-height: clamp(100px, 20vh, 40vh); 
+    min-height: clamp(5vh, 20vh, 40vh); 
     display: flex; 
     flex-direction: column; 
 }

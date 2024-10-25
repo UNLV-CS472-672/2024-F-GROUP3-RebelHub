@@ -40,13 +40,12 @@ const EventModal = ({ details, isOpen, onClose }) => {
       className={styles.modal}
       ariaHideApp={false}
     >
-      
       <div className={styles["header"]}>
-      <button onClick={onClose} className={styles["close-button"]}>
-          ✖
+        <button onClick={onClose} className={styles["close-button"]}>
+            ✖
         </button>
         <h1 className={styles.title}>{details.title}</h1>
-        <hr className={styles["grey-line"]}></hr>
+        <hr className={styles["grey-line"]}/>
         <div className={styles.times}>
           <p>{"Start Time: " + formatDate(details.start_time)}</p>
           <p>{details.end_time && "End Time: " + formatDate(details.end_time)}</p>
@@ -54,8 +53,12 @@ const EventModal = ({ details, isOpen, onClose }) => {
         {details.location && (  
           <p className={styles.location}>{"Location: " + details.location}</p>
         )}
-        <hr className={styles["scarlet-line"]}></hr>
-        <hr className={styles["black-line"]}></hr>
+        {details.description && (
+          <>
+            <hr className={styles["scarlet-line"]}/>
+            <hr className={styles["black-line"]}/>
+          </>
+        )}
       </div>
       {details.description && (
         <p className={styles.description}>{details.description}</p>

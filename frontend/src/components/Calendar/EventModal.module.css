@@ -1,6 +1,5 @@
 /* CSS for EventModal.js */
 
-
 .overlay {
     position: fixed; /* Fixed position to cover the entire screen */
     top: 0;
@@ -21,6 +20,7 @@
     padding-left: 1.75vw; 
     padding-right: 1.75vw; 
     padding-bottom: 1.75vh; 
+    padding-top: 0;
     border-radius: 1vw; /* Rounded corners */
     min-width: 200px;
     min-height: 100px;
@@ -37,17 +37,17 @@
     left: 0;
     right: 0;
     z-index: 9999;
-    padding-top: 2vh;
+    padding-top: clamp(0.5vh, 1.4vh, 2vh);
   }
 
   /* Close button is located top right of the modal */
   .close-button {
     position: absolute;
     top: 0; /* Position from the top */
-    right: -1.2vh; /* Position from the right */
+    right: clamp(-1.4vw, -1.5vw, -1.5vw); /* Position from the right */
     background: none; 
     border: none; 
-    font-size: clamp(14px, 1.6vw, 1.6vw); 
+    font-size: clamp(0.875rem, 1.6vw, 1.6vw); 
     color: black;
     cursor: pointer; 
     user-select: none;
@@ -55,23 +55,24 @@
   }
 
   .title{
-    font-size: clamp(18px, 2.2vw, 2.2vw);
+    font-size: clamp(1.125rem, 2.2vw, 2.2vw);
+    overflow-x: auto;
   }
 
   .location{
-    font-size: clamp(9px, 1.1vw, 1.1vw);
+    font-size: clamp(.563rem, 1.1vw, 1.1vw);
   }
 
   .times{
     display: flex;
     justify-content: space-between;
-    font-size: clamp(9px, 1.1vw, 1.1vw);
+    font-size: clamp(.563rem, 1.0vw, 1.1vw);
   }
 
 
   .description{
     padding-top: 1vh;
-    font-size: clamp(10px, 1.2vw, 1.2vw);
+    font-size: clamp(0.625rem, 1.2vw, 1.2vw);
   }
 
   /* Horizontal lines */
