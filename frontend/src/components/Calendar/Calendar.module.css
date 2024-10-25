@@ -35,7 +35,7 @@
     border: none; 
     border-radius: 10%; 
     background-color: #CF0A2C; 
-    color: white; 
+    color: snow; 
     cursor: pointer; 
     transition: background-color 0.1s;
 }
@@ -55,7 +55,8 @@
     margin-bottom: .25%;
     margin-left: 10%; 
     margin-right: 2%;
-    width: 250px
+    width: 250px;
+    color: black;
 }
 
 .next-button {
