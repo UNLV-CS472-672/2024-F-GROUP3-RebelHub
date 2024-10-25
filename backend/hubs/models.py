@@ -12,6 +12,8 @@ from django.contrib.auth.models import User
         5) mods - moderators of a hub. moderators can be added and removed from a hub by the owner. 
         6) members - Many to Many relationship between the hubs and all it's users. starts blank. 
                      related name is joined hubs which describes the users relationship with this field.
+        7) pending_members - Many to Many relationship between the hubs and all users who have requested join.
+                             this field should only only be populated if a hub is private
         7) created_at - timestamp for when a hub is created. we can use this to order quereys and also to display
                         more details about a hub on the frontend. automatically gets set to current time when hub
                         is created.
@@ -27,6 +29,7 @@ class Hub(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_hubs')
     mods = models.ManyToManyField(User, related_name='moderating_hubs', blank=True)
     members = models.ManyToManyField(User, related_name='joined_hubs', blank=True)
+    pending_members = models.ManyToManyField(User, related_name='requested_hubs', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     private_hub = models.BooleanField(default=False)
 
