@@ -24,7 +24,6 @@ class HubAPITests(APITestCase):
         request = self.factory.get(f"/hubs/{hub.id}/")
         response = view(request, id=hub.id)
         data = response.data
-        print(data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK) #200 we can get a hub
         self.assertEqual(data["name"], "TEST HUB") #make sure names match up
@@ -68,11 +67,10 @@ class HubAPITests(APITestCase):
         request = self.factory.get(f"/hubs/")
         response = view(request)
         data = response.data
-        print(data[0])
 
 
         self.assertEqual(response.status_code, status.HTTP_200_OK) #200 we can get all the hubs
-        self.assertEqual(len(data), 2) #make sure we are seeing out two hubs. private hub should not be seen here
+        self.assertEqual(len(data), 2) #make sure we are seeing two hubs.
 
         #make sure data matches up with whats expected
         self.assertEqual(data[0]["name"], "TEST HUB")
@@ -101,7 +99,6 @@ class HubAPITests(APITestCase):
         force_authenticate(request, user=user2)
         response = view(request)
         data = response.data
-        print(data[0])
 
         self.assertEqual(response.status_code, status.HTTP_200_OK) #200 user made request sucessfully
         self.assertEqual(len(data), 1) # make sure user is only seeing the one hub that they have joined
@@ -151,7 +148,7 @@ class HubAPITests(APITestCase):
         data = response.data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK) #200 user made request sucessfully
-        self.assertEqual(len(data), 0) # make sure user is only seeing the one hub that they have created
+        self.assertEqual(len(data), 0) # user3 owns no hubs so we get empty list
 
     def test_get_hubmodding(self):
         """
