@@ -4,7 +4,7 @@ from .models import Post
 # To serialise the post which validates data from the front end
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Post
+        #model = Post
         fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes'] 
         read_only_fields = ['author', 'likes', 'dislikes']
     
