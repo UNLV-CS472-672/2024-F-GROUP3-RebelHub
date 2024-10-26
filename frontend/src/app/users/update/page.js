@@ -13,7 +13,7 @@ function Update() {
     const handleUpdate = async () => {
 
         try {
-            const response = api.patch(`api/users/currentUser/`, {username:newUsername})
+            const response = await api.patch(`api/users/currentUser/`, {username:newUsername})
             console.log("Username changed Successfully")
         } catch (error) {
             console.error("Error updating username")
