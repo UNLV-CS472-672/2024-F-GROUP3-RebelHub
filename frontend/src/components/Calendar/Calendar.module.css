@@ -1,21 +1,24 @@
 /* Calendar Container */
 .calendar {
-    width: 1500px; 
-    border: 5px solid #880808; 
-    border-radius: 5px; 
+    width: calc(100vw - 15px); /* Makes calendar cover the entire width of browser window size aside from scroll bar on right */
+    border: clamp(3px, .55rem, .55rem) solid #CF0A2C; 
+    border-radius: 1.5%; 
     overflow: hidden; 
+    
 }
 
 /* Header Section */
 .header {
-    padding: 10px; 
+    padding: 0.4%; 
     display: flex; 
     align-items: center; 
 }
 
 .today-button {
-    margin-right: auto; 
+    margin-right: 8%; 
+    margin-left: .5%;
     user-select: none;
+
 }
 
 /* Buttons container for Previous, Title, and Next */
@@ -28,11 +31,11 @@
 
 /* Button styles */
 .header button {
-    padding: 5px 10px; 
+    padding: clamp(3px, .85vw, .85vw) clamp(6px, 1.7vw, 1.7vw); 
     border: none; 
-    border-radius: 5px; 
-    background-color: #880808; 
-    color: white; 
+    border-radius: 10%; 
+    background-color: #CF0A2C; 
+    color: snow; 
     cursor: pointer; 
     transition: background-color 0.1s;
 }
@@ -42,18 +45,22 @@
 }
 
 .previous-button {
-    margin-right: 5px; 
+    margin-right: .8%; 
+    margin-left: 5%;
     user-select: none; 
 }
 
-.title {
-    text-align: center; 
-    margin: 0 10px; 
-    width: 250px
+.title {   
+    margin-top: .25%;
+    margin-bottom: .25%;
+    margin-left: 10%; 
+    margin-right: 2%;
+    width: 250px;
+    color: black;
 }
 
 .next-button {
-    margin-left: 5px;
+    margin-left: .8%;
     user-select: none;
 }
 
@@ -64,11 +71,12 @@
 }
 
 .weekday {
-    background-color: #880808; 
+    background-color: #CF0A2C; 
     color: white;
-    padding: 2px; 
+    padding: 1%; 
     text-align: center; 
     font-weight: bold; 
+    font-size: clamp(12px, 1.35vw, 1.35vw);
 }
 
 /* Days Section */
@@ -79,9 +87,9 @@
 
 .day {
     padding: 2px; 
-    border: 1px solid #880808; 
+    border: 1px solid #CF0A2C; 
     overflow: hidden;
-    min-height: 220px; 
+    min-height: clamp(5vh, 20vh, 40vh); 
     display: flex; 
     flex-direction: column; 
 }
@@ -89,7 +97,7 @@
 .day-number {
     user-select: none;
     text-align: right;
-    padding-bottom: 5px; 
+    padding-bottom: clamp(3px, .8vh, .8vh); 
 }
 
 .event {
@@ -101,9 +109,10 @@
 }
 
 .event span {
-    font-size: 13px;
+    font-size: clamp(13px, 1vw, 1vw);
     display: block;
     overflow: hidden;
+    white-space: nowrap ;
     text-overflow: ellipsis;
 }
 
