@@ -7,3 +7,7 @@ out/
 
 # Django related
 backend/db.sqlite3
+backend/pytest.ini
+
+# Python venv
+env/*
