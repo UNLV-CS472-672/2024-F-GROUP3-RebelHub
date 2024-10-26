@@ -14,6 +14,11 @@ import { useState, useEffect } from "react";
 function ProtectedRoute( {children} ) {
     const [isAuthorized, setIsAuthorized] = useState(null);
 
+ useEffect(() => {
+        if ( children.type.name == "register") {
+            localStorage.clear();  // Clear local storage
+        }
+    }, [children]);
 
     useEffect(() => {
         auth().catch(() => setIsAuthorized(false))

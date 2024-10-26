@@ -1,9 +1,10 @@
 "use client"
- import ProtectedRoute from "@/components/Accounts/ProtectedRoutes";
-import api from "../../utils/api";
+
+
 import {  useState,useEffect } from "react";
 import { useRouter } from 'next/navigation';
-import {REFRESH_TOKEN} from "@/utils/constants";
+import api from "@/utils/api";
+import ProtectedRoute from "@/components/Accounts/ProtectedRoutes";
 
 function Update() {
     const [newUsername, setNewUserName] = useState("")
