@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 # Able to create and view the post, should only handles POST requests to create a post
 class CreatePost(generics.CreateAPIView):
-    #queryset = Post.objects.all()
+    queryset = Post.objects.all()
     serializer_class = PostSerializer
     
     # A definition to associate the post with the logged-in user. Note: The "user" is just a placeholder name as it hasn't been made yet
