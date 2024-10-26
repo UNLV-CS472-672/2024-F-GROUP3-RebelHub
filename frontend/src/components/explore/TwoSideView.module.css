@@ -1,0 +1,24 @@
+.viewContainer{
+	background-color: white;
+	display: flex;
+	padding: 1%;
+	height: 100vh;
+}
+
+.leftView, .rightView{
+	flex: 1;
+	/*height: 400px;*/
+	overflow-y: auto;
+	
+}
+.leftView{
+	background-color: blue;
+}
+
+.rightView{
+	background-color: red;
+}
+
+.leftContent{
+	border: 2px solid black;
+}
