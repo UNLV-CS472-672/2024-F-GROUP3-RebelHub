@@ -6,3 +6,9 @@ pillow==10.4.0
 pytest==8.3.3
 pytest-cov==5.0.0
 pytest-django==4.8.0
+asgiref
+djangorestframework-simplejwt
+PyJWT
+pytz
+sqlparse
+psycopg2-binary
