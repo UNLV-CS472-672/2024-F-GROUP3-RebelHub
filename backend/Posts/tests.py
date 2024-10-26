@@ -39,7 +39,6 @@ class PostTestCase(TestCase):
         data = { 'title': 'CS Classes', 'message': 'What CS classes should I take?','hub': 'CS' }
         response = self.client.post(reverse('post-create'), data, format='json')
         
-        print(response.data)  
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)  
         self.assertEqual(Post.objects.count(), 3)  
 
@@ -95,7 +94,7 @@ class PostTestCase(TestCase):
         self.client.logout()
         url = reverse('post-delete', kwargs={'post_id': self.post1.id})
         resp = self.client.delete(url)
-        self.assertEqual(resp.status_code, status.HTTP_403_FORBIDDEN, "Unauthenticated user is deleting post")
+        self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED, "Unauthenticated user is deleting post")
         post_exists = Post.objects.filter(id=self.post1.id).exists()
         self.assertTrue(post_exists, "This post was deleted by an unauthenticated user")
 

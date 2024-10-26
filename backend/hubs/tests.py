@@ -284,7 +284,7 @@ class HubAPITests(APITestCase):
         
         
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN) #403 forbidden since user is not authorized
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED) #401 since user is not authorized
         self.assertEqual(Hub.objects.count(), 0) #make sure hub never got created
 
     def test_delete_hub(self):
