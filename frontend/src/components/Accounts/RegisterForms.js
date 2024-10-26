@@ -25,7 +25,7 @@ function Form({route}) {
         try {
             console.log(route)
             const request = await api.post(route, { email,username, password})
-            router.push('/login')
+            router.push('/users/login')
             router.refresh()
 
         } catch (error) {
