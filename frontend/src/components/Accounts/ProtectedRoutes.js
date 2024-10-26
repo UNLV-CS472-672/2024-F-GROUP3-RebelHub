@@ -67,7 +67,7 @@ function ProtectedRoute( {children} ) {
     }
 
     if (!isAuthorized) {
-        redirect('/login');  // Redirect to login if unauthorized
+        redirect('users/login/');  // Redirect to login if unauthorized
         return null;  // Prevent rendering the children
     }
     return children;
