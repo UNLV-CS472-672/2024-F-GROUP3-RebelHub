@@ -24,4 +24,5 @@ urlpatterns = [
     # path('api/', include('Comments.urls')), will be added in the next PR
     path('', include('calendar_app.urls')),
     path('api/', include('users.urls')),
+    path('api/', include('hubs.urls')),
 ]

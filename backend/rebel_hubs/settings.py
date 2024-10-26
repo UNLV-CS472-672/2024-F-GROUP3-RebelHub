@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'testhubs',
     'Posts',
     'calendar_app',
-    'users'
+    'users',
+    'hubs',
 ]
 
 CORS_ALLOWED_ORIGINS = [
