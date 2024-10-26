@@ -1,6 +1,17 @@
+*Please fill the checklist so the group can get a quick understanding of your PR*
+### Category
+- [ ] **Feature**
+- [ ] **Bug Fix**
+- [ ] **Testing Oriented**
+- [ ] **Documentation**
+- [ ] **Other**
+### Domain
+- [ ] **Frontend**
+- [ ] **Backend**
+- [ ] **Both**
+
 ### Description
 Include a summary of what this pull request is intended to achieve and key points you will end up addressing.
-A highlighted text of whether this pull request focuses on the frontend, backend, or both would be nice.
 
 ### Related Issue(s)
 Make sure to reference an issues or pull requests that are related to your pull request in order to provide some context.
