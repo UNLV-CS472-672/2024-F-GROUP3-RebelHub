@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - master
-      - testpatch
-      - wrkflows
   pull_request:
     branches:
       - master
-      - testpatch
-      - wrkflows
 
 jobs:
   build:
