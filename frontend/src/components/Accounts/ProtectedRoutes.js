@@ -1,5 +1,3 @@
-"use client";
-
 import {redirect} from "next/navigation"
 import { jwtDecode } from "jwt-decode";
 import api from "@/utils/api";
