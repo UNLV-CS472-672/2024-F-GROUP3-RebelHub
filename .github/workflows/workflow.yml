@@ -4,8 +4,13 @@ on:
   push:
     branches:
       - master
-    pull_request:
+      - testpatch
+      - wrkflows
+  pull_request:
+    branches:
       - master
+      - testpatch
+      - wrkflows
 
 jobs:
   build:
@@ -24,3 +29,6 @@ jobs:
           cd backend
           python manage.py test
       - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm install
