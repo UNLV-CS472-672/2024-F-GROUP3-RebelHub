@@ -29,13 +29,6 @@ export default function PostsPage() {
         getPosts();
     }, []);
 
-    // Sometimes, the post tries to render before the api call is finished, so this
-    // prevents the page from trying to load values from a null value.
-    
-    if (posts == null) {
-        return <></>;
-    }
-
     return (
     <div className={styles.postsPageContainer}>
         <div className={styles.header}>

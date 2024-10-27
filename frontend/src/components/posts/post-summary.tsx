@@ -23,6 +23,10 @@ interface ComponentProps {
 */
 
 const PostSummary: React.FC<ComponentProps> = ({ post }) => {
+    if (post == null) {
+        return <>No post.</>;
+    }
+
     return (
         <div className={styles.postContainer}>
             <div className={styles.postElementColumn}>
