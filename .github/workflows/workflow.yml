@@ -28,6 +28,10 @@ jobs:
         run: |
           cd backend
           python manage.py test
+      - name: Seting up node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
       - name: Install Frontend Dependencies
         run: |
           cd frontend
