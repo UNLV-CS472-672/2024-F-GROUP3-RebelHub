@@ -33,8 +33,7 @@ export default function CreatePostPage() {
 
             methods.reset();
 
-            // Ideally, the response will give the post id, so we can redirect the poster to the post
-            router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME);
+            router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME + response.data.id);
 
         } catch (error) {
             alert(error);
