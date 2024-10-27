@@ -45,12 +45,16 @@
     padding: 1px;
 }
 
-.postLikeCounter {
+.postLikeContainer {
     color: white;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
-.postDislikeCounter {
-    color: white
+.postDislikeContainer {
+    color: white;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 /*
