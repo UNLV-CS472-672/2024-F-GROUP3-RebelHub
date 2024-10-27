@@ -1,10 +1,14 @@
+"use client";
+
 import ProtectedRoute from "@/components/Accounts/ProtectedRoutes";
 import DetailedPostPage from "@/components/posts/pages/detailed-post";
 
-export default async function DetailedPost({ params, }: { params: Promise<{ id: string }> }) 
+import { useParams } from "next/navigation";
+
+export default function DetailedPost() 
 {
     // Use parameters in the URL to get the id of the specific post
-    const id = (await params).id;
+    const id = useParams().id;
 
     return (
         <ProtectedRoute>

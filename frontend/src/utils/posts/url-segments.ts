@@ -3,6 +3,7 @@ export const URL_SEGMENTS = {
     FRONTEND: "http://localhost:3000/",
 
     POSTS_HOME: "posts/",
+    
     POSTS_API_BASE: "api/posts/",
     POSTS_CREATE: "create/",
     POSTS_DELETE: "/delete/",
