@@ -1,50 +1,47 @@
-*Please fill the checklist so the group can get a quick understanding of your PR*
+*Please complete the checklist so the group can quickly understand your PR.*
+
 ### Category
 - [ ] **Feature**
 - [ ] **Bug Fix**
-- [ ] **Testing Oriented**
+- [ ] **Testing**
 - [ ] **Documentation**
 - [ ] **Other**
+
 ### Domain
 - [ ] **Frontend**
 - [ ] **Backend**
 - [ ] **Both**
 
 ### Description
-Include a summary of what this pull request is intended to achieve and key points you will end up addressing.
+Provide a summary of what this PR achieves, including key points and goals addressed by your changes.
 
 ### Related Issue(s)
-Make sure to reference an issues or pull requests that are related to your pull request in order to provide some context.
+Reference any relevant issues or PRs to provide context for this PR.
 
 ### New Additions
-List any new file additions made to the project with a brief explanation of why your additons were necessary.
-This should match up with your "files changed" tab
+List any new files added to the project, with a brief explanation of why each addition was necessary. Ensure this aligns with the "Files changed" tab.
 
 ### Modifications
-List any files that were modified as part of your pull request and provide a quick explanation as to why the changes were necessary.
-This should match up with your "files changed" tab
+List any files modified in this PR with a quick explanation of the purpose behind each change. Ensure this aligns with the "Files changed" tab.
 
 ### New Dependencies
-Specifically list any new python packages that you needed to install or use, and any npm packages that were installed.
-This will give reviewers a better chance of spotting changes that need to be made to either `requirements.txt` or `package.json`
+Specify any new dependencies (e.g., Python or npm packages) required for these changes. This helps reviewers identify necessary updates to `requirements.txt` or `package.json`.
 
 ### Visuals
-Include any screenshots or diagrams to help us better understand your additions/changes. visuals can be spread out throughout the PR.
+Include any screenshots or diagrams that clarify your additions or changes. Feel free to add visuals throughout the PR where needed.
 
-### Architecture of your changes 
-Here you can go more in depth and explain the underlying architecture of the system that you are introducing. If you are
-making changes to a previous system that just explain any differences. We should be able to understand your though process behind the
-code that you have written. 
+### Architecture of Your Changes
+Provide an in-depth explanation of the architecture behind your changes. If you’re modifying an existing system, describe the differences. Your thought process should be clear and explain the code’s intended structure and functionality.
 
-### Use of your changes
-Here you can explain how you expect the different systems of our app to interact with your new additions. You can also explain how us 
-as developers should be using your code. 
+### Usage and Integration
+Explain how your changes interact with other systems in the app and how they should be used by developers.
 
 ### Testing
-Testing seems to be a very important part of this class. The prof wants us to be writing unit tests and I even think he expects us to
-apply TTD. We should at the very least describe what kind of testing we did to ensure that these new additions work properly. Also list out any
-edge cases you encountered or are suspicious of. Ideally we want to be writing unit tests and be able to provide the coverage here. If you
-have implemented unit test make sure to provide the commands necessary for others to run your tests.
+Describe the tests performed to ensure your changes function as expected. This section should include:
+- **Testing Approach**: Mention whether you applied unit, integration, or end-to-end tests.
+- **Edge Cases**: List any potential edge cases you addressed or suspect may arise.
+- **Test Commands**: If you implemented unit tests, provide commands others can use to run them.
+Aim to provide details on test coverage where applicable.
 
 ### Mentions
-Tag any group members that you wish to review your pr, helped with your pr, or need to take note of your pr.
+Tag any group members you want to review this PR, contributed to it, or need to be notified about it.
