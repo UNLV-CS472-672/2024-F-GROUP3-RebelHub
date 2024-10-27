@@ -20,10 +20,6 @@ interface ComponentProps {
 */
 
 const PostList: React.FC<ComponentProps> = ({ posts }) => {
-    if (posts.length == 0) {
-        return <>No posts found.</>;
-    }
-
     return (
         <div>
             {
