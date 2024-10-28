@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from hubs.models import Hub
 # Note: The "user" is just a placeholder name as it hasn't been made yet. The foreign key will be changed based on the Hub api
 
 # Create your models here.
@@ -12,11 +13,11 @@ class Post(models.Model):
     title = models.CharField(max_length=300)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    hub = models.CharField(max_length=300)
+    hub = models.ForeignKey(Hub, on_delete=models.CASCADE, related_name='posts')
     
     # The amount of upvotes(likes) and downvotes(dislikes)
-    likes = models.IntegerField(default=0)
-    dislikes = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
+    dislikes = models.ManyToManyField(User, related_name='disliked_posts', blank=True)
 
     # Used for the string repersentation and will make the post selectable from like a menu or dropdown list 
     def __str__(self):
