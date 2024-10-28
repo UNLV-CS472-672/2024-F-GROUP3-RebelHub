@@ -12,9 +12,10 @@ interface ComponentProps {
     dislikes: number;
     likeUrlFunction: (objectId: number) => string;
     dislikeUrlFunction: (objectId: number) => string;
+    containerClassName: string;
 }
 
-const LikeDislikeButtons: React.FC<ComponentProps> = ({ objectId, likes, dislikes, likeUrlFunction, dislikeUrlFunction }) => {
+const LikeDislikeButtons: React.FC<ComponentProps> = ({ objectId, likes, dislikes, likeUrlFunction, dislikeUrlFunction, containerClassName }) => {
     const [displayedLikes, setLikes] = useState(likes);
     const [displayedDislikes, setDislikes] = useState(dislikes);
 
@@ -88,7 +89,7 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ objectId, likes, dislike
     }
     
     return (
-        <>
+        <div className={containerClassName}>
             <div className={styles.postLikeContainer}>
                 <div>
                     {displayedLikes}
@@ -104,7 +105,6 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ objectId, likes, dislike
                     </button>
                 </div>
             </div>
-            <br></br>
             <div className={styles.postDislikeContainer}>
                 <div>
                     {displayedDislikes}
@@ -120,7 +120,7 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ objectId, likes, dislike
                     </button>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

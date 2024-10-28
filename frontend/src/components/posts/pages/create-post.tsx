@@ -36,7 +36,7 @@ export default function CreatePostPage() {
             router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME + response.data.id);
 
         } catch (error) {
-            alert(error);
+            alert("There was an issue submitting your post: " + error);
             return null;
         }
     })

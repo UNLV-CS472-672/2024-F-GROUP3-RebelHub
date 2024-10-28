@@ -7,6 +7,7 @@ import styles from "../posts.module.css";
 import { useEffect, useState } from "react";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
+import PostSummaryDetailed from "../post-summary-detailed";
 
 export default function DetailedPostPage({ id, }: { id: number|string }) {
     const [post, setPost] = useState(null);
@@ -38,27 +39,7 @@ export default function DetailedPostPage({ id, }: { id: number|string }) {
         getPost();
     }, []);
 
-    // Sometimes, the post tries to render before the api call is finished, so this
-    // prevents the page from trying to load values from a null value.
-    
-    if (post == null) {
-        return <></>;
-    }
-
     return (
-        <div className={styles.detailedPostContainer}>
-            <div>
-                <PostSummary post={post}/>
-            </div>
-            <div>
-                <p>Posted on {post.timestamp.toString().slice(0, 10)} by {post.author}</p>
-            </div>
-            <div>
-                {post.message}
-            </div>
-            <div>
-                <h1>Comments Placeholder</h1>
-            </div>
-        </div>
+        <PostSummaryDetailed post={post} />
     );
 }

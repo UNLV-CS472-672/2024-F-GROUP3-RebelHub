@@ -45,6 +45,10 @@
     padding: 1px;
 }
 
+/*
+    Like/Dislike
+*/
+
 .postLikeContainer {
     color: white;
     display: grid;
@@ -55,6 +59,18 @@
     color: white;
     display: grid;
     grid-template-columns: 1fr 1fr;
+}
+
+.summaryVoteContainer {
+    display: grid;
+    grid-template-rows: auto;
+    gap: 10px;
+}
+
+.detailedVoteContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 
 /*
@@ -90,6 +106,26 @@
     grid-row: auto;
     padding: 10px;
     gap: 10px;
+    text-align: center;
+    align-items: center;
+}
+
+.detailedPostFooterContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    text-align: center;
+    align-items: center;
+}
+
+.detailedPostElement {
+    background-color: rgb(90, 0, 0);
+    border: 2px;
+    border-radius: 12px;
+    padding: 10px;
+    gap: 10px;
+    display: grid;
+    grid-template-columns: auto;
 }
 
 .postElementColumn {
