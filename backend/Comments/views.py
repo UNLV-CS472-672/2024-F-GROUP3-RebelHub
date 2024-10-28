@@ -1,11 +1,7 @@
-from django.shortcuts import render
 from rest_framework import generics
 from .models import Comment
 from .serializers import CommentSerializer
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.views import APIView
+
 
 # Create your views here.
 class CommentList(generics.ListAPIView):
@@ -15,6 +11,21 @@ class CommentList(generics.ListAPIView):
 class CommentCreate(generics.CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    
+class CommentListView(generics.ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        order_by = self.request.query_params.get('order_by', 'timestamp')  # Default to timestamp
+
+        if order_by == 'likes':
+            return queryset.order_by('-likes', '-timestamp')  # Most liked first, tie-breaker is newest
+        elif order_by == 'least_likes':
+            return queryset.order_by('likes', 'timestamp')  # Least liked first, tie-breaker is oldest
+        else:
+            return queryset.order_by('-timestamp')  # Newest comments first (default)
 
 '''
 # CommentView handles the comment requests for the post
