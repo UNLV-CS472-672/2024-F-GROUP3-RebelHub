@@ -4,8 +4,7 @@ from .models import Comment
 from .serializers import CommentSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-
-
+from rest_framework.response import Response
 # Create your views here.
 
 # Create a comment for the specific post
@@ -41,15 +40,36 @@ class CommentList(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        order = self.request.query_params.get('order', 'timestamp')  
+        order_by  = self.request.query_params.get('order_by', 'timestamp')  
 
         # If wanting to order by likes
         if order == 'likes':
-            return queryset.order('-likes', '-timestamp')  
+            return queryset.order_by ('-likes', '-timestamp')  
         elif order == 'least_likes':
-            return queryset.order('likes', 'timestamp') 
+            return queryset.order_by ('likes', 'timestamp') 
         else:
-            return queryset.order('-timestamp') 
+            return queryset.order_by ('-timestamp') 
+        
+# Note: Have  to test if the increment works correctly for likes and dislikes        
+# Be able to like or dislike a comment based on the ID
+class LikeComment(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+        comment = get_object_or_404(Comment, id = id)
+        comment.likes += 1
+        comment.save()
+        return Response({'likes': comment.likes, 'dislikes': comment.dislikes}, status=status.HTTP_200_OK)
+
+class DislikeComment(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+        comment = get_object_or_404(Comment, id = id)
+        comment.dislikes += 1
+        comment.save()
+        return Response({'likes': comment.likes, 'dislikes': comment.dislikes}, status=status.HTTP_200_OK)# Like a comment
+
 
 '''
 # CommentView handles the comment requests for the post
