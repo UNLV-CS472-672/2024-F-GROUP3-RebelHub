@@ -17,8 +17,8 @@ class PostTestCase(TestCase):
         self.client.force_authenticate(user=self.user)  
 
         # Use helper method to create initial posts
-        #self.post1 = self.create_post(title="Loving UNLV", message="I love UNLV", hub="Hub 1")
-        #self.post2 = self.create_post(title="Loving CS", message="I love CS 135", hub="Hub 2")
+        #self.post1 = Post.objects.create(title="Loving UNLV", message="I love UNLV", hub="Hub 1")
+        #self.post2 = Post.objects.create(title="Loving CS", message="I love CS 135", hub="Hub 2")
 
         self.dummy_post = {'title': "DUMMY POST", 'message': "THIS IS A DUMMY POST"} #MUST ADD "hub_id" KEY
         self.dummy_post2 = {'title': "DUMMY POST 2", 'message': "THIS IS A SECOND DUMMY POST"} # MUST ADD 'hub_id' key
@@ -427,49 +427,28 @@ class PostTestCase(TestCase):
         self.assertEqual(made_post.likes.count(), 1)
 
 
-"""    
-    # Function to create a post. This will act as a helper method
-    def create_post(self, title, message, hub):
-        return Post.objects.create(author=self.user, title=title, message=message, hub=hub)
-
-    # Function to test if all posts can be listed in the API
-    def test_post_list(self):
-        # The response calls the /posts/ endpoint
-        response = self.client.get(reverse('post-list'))  
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        # Using 2 posts, and seeing if both posts are listed
-        self.assertEqual(len(response.data), 2) 
-        self.assertEqual(response.data[0]['title'], 'Loving UNLV')
-        self.assertEqual(response.data[1]['title'], 'Loving CS')
-
-    # Check if API can create new post
-    def test_create_post(self):
-        data = { 'title': 'CS Classes', 'message': 'What CS classes should I take?','hub': 'CS' }
-        response = self.client.post(reverse('post-create'), data, format='json')
-        
-        print(response.data)  
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)  
-        self.assertEqual(Post.objects.count(), 3)  
-
-        # Other assertions for the created post
-        new_post = Post.objects.latest('id')
-        self.assertEqual(new_post.title, 'CS Classes')
-        self.assertEqual(new_post.message, 'What CS classes should I take?')
-        self.assertEqual(new_post.hub, 'CS')
-
     # Test for string representation of the post
     def test_post_string_representation(self):
-        post = Post(title="CS Professors", message="What Professor should I take for CS 135?", hub="CS", author=self.user)
+        user = self.user
+        hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
+        post = Post(title="CS Professors", message="What Professor should I take for CS 135?", hub=hub, author=self.user)
         self.assertEqual(str(post), post.title)
-    
-    # Test getting a single post by ID
-    def test_get_single_post(self):
-        url = reverse('post-detail', kwargs={'post_id': self.post1.pk})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['title'], self.post1.title)
 
+    # Test deleting a post without proper authentication
+    def test_unauthenticate_post_deleting(self):
+        user = self.user
+        hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
+        post = Post.objects.create(title="CS Professors", message="What Professor should I take for CS 135?", hub=hub, author=user)
+        request = self.factory.delete(f"posts/{post.id}/delete/")
+        view = PostDelete.as_view()
+        resp = view(request, id=post.id)
+
+        self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED, "Unauthenticated user is deleting post")
+        post_exists = Post.objects.filter(id=post.id).exists()
+        self.assertTrue(post_exists, "This post was not deleted : unauthenticated user")
+
+ 
+""" 
     # Test deleting a post
     def test_deleting_post(self):
         url = reverse('post-delete', kwargs={'post_id': self.post1.pk})
@@ -499,16 +478,7 @@ class PostTestCase(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND, "Liking an invalid post")
 
-    # Test deleting a post without proper authentication
-    def test_unauthenticate_post_deleting(self):
-        self.client.logout()
-        url = reverse('post-delete', kwargs={'post_id': self.post1.id})
-        resp = self.client.delete(url)
-        self.assertEqual(resp.status_code, status.HTTP_403_FORBIDDEN, "Unauthenticated user is deleting post")
-        post_exists = Post.objects.filter(id=self.post1.id).exists()
-        self.assertTrue(post_exists, "This post was deleted by an unauthenticated user")
-
-    # Test creating a post with missing fields such as a title
+   # Test creating a post with missing fields such as a title
     def test_create_post_missing_fields(self):
         data = {'message': 'This post needs a title', 'hub': 'General'}
         response = self.client.post(reverse('post-create'), data, format='json')
