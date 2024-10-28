@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - master
+      - wrkflows
   pull_request:
     branches:
       - master
+      - wrkflows
 
 jobs:
   build:
@@ -29,10 +31,15 @@ jobs:
       # HERE WE CAN ADD IN STEPS FOR LINTING/SECURITY/AND FORMATTING
 
       # we run all the backend tests
-      - name: Run Django Backend Tests
+      - name: Run Backend Tests With Pytest
         run: |
-          cd backend
-          python manage.py test
+          pytest
+
+      - name: Upload Coverge as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov
 
       # set up node so we can test the front end
       - name: Seting up node
