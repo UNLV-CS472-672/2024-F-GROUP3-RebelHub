@@ -11,21 +11,23 @@ class CommentList(generics.ListAPIView):
 class CommentCreate(generics.CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    
+
+# Using to timestamp to order the comments 
 class CommentListView(generics.ListAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        order_by = self.request.query_params.get('order_by', 'timestamp')  # Default to timestamp
+        order = self.request.query_params.get('order', 'timestamp')  
 
-        if order_by == 'likes':
-            return queryset.order_by('-likes', '-timestamp')  # Most liked first, tie-breaker is newest
-        elif order_by == 'least_likes':
-            return queryset.order_by('likes', 'timestamp')  # Least liked first, tie-breaker is oldest
+        # If wanting to order by likes
+        if order == 'likes':
+            return queryset.order('-likes', '-timestamp')  
+        elif order == 'least_likes':
+            return queryset.order('likes', 'timestamp') 
         else:
-            return queryset.order_by('-timestamp')  # Newest comments first (default)
+            return queryset.order('-timestamp') 
 
 '''
 # CommentView handles the comment requests for the post
