@@ -1,4 +1,3 @@
-// pages/profile.js
 // import { useState } from 'react';
 import Sidebar from '../components/sidebar';
 import Image from 'next/image';
