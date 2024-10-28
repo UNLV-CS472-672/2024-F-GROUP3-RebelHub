@@ -14,6 +14,8 @@ class PostSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         user = self.context.get('request').user
         representation['is_author'] = user == instance.author
+        representation['is_liked'] = user in instance.likes.all()
+        representation['is_disliked'] = user in instance.dislikes.all()
         return representation
     """
     This method is used when a new Post object is being created. 
