@@ -11,7 +11,9 @@
 .header {
     padding: 0.4%; 
     display: flex; 
+    justify-content: space-between;
     align-items: center; 
+
 }
 
 .today-button {
@@ -23,7 +25,7 @@
 
 /* Buttons container for Previous, Title, and Next */
 .header-buttons {
-    display: flex;
+    display: fixed;
     align-items: center;
     justify-content: center; 
     flex: 1; 
@@ -38,6 +40,7 @@
     color: snow; 
     cursor: pointer; 
     transition: background-color 0.1s;
+ 
 }
 
 .header button:hover {
@@ -50,14 +53,7 @@
     user-select: none; 
 }
 
-.title {   
-    margin-top: .25%;
-    margin-bottom: .25%;
-    margin-left: 10%; 
-    margin-right: 2%;
-    width: 250px;
-    color: black;
-}
+
 
 .next-button {
     margin-left: .8%;
@@ -98,6 +94,7 @@
     user-select: none;
     text-align: right;
     padding-bottom: clamp(3px, .8vh, .8vh); 
+    color: black;
 }
 
 .event {
@@ -116,3 +113,46 @@
     text-overflow: ellipsis;
 }
 
+/* Month Dropdown */
+
+.title {   
+    display: flex;
+    padding: 0.4%; 
+    align-items: center;
+    color: black;
+    cursor: pointer;
+    user-select: none;
+   
+}
+
+.title-month {
+    padding-right: 1vw; /* Space between month and year */
+    position: relative; /* Ensure dropdown positions based on this element */
+    text-decoration: underline;
+}
+
+.dropdown {
+    position: relative; /* Keep relative positioning for dropdown */
+}
+
+.dropdown-list {
+    list-style: none; 
+    position: absolute;
+    top: 100%; /* Position directly below the month */
+    left: 28.5%; /* Start at the center of the parent */
+    transform: translate(-50%, 0); /* Center the dropdown list under the month */
+    background-color: white; 
+    min-width: max-content; /* Adjust width to fit content */
+    border: 1px solid #CF0A2C; 
+    z-index: 100; 
+}
+
+.dropdown-item {
+    color: black;
+    padding: clamp(.1vw, .5vw, .5vw);
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f76359;
+}

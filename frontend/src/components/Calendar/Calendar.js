@@ -3,12 +3,17 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import styles from "./Calendar.module.css";
 import EventModal from "./EventModal.js";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/utils/constants";
+import EventForm from "./EventForm.js";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date()); // Holds the current date in order for today button to work
   const [events, setEvents] = useState([]); // Holds events that are pulled by API
   const [isModalOpen, setIsModalOpen] = useState(false); // Checks if modal is opened in order to avoid any issues
   const [currentEvent, setCurrentEvent] = useState(null); // Holds the event for the current opened modal
+  const [isMonthOpen, setMonthOpen] = useState(false); // Checks if the month dropdown is opened in order to avoid any issues
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false); // Checks if the update form is opened in order to avoid any issues
+  const [currentUpdate, setCurrentUpdate] = useState(null); // Holds the event for the current update form
 
   // Function to handle states when a modal is opened
   const openModal = (event) => {
@@ -24,12 +29,35 @@ const Calendar = () => {
     setCurrentEvent(null);
   };
 
+  const openUpdate = () => {
+    setCurrentUpdate(currentEvent);
+    setIsUpdateOpen(true);
+    console.log("Opening update form for event:", currentEvent.title);
+  }
+
+  const closeUpdate = () => {
+    console.log("Closing update form for event:", currentUpdate.title);
+    setCurrentUpdate(null);
+    setIsUpdateOpen(false);
+  }
+
+  const updateEvent = (updatedEvent) => {
+    setEvents((previousEvents) => previousEvents.map((event) => event.id === updatedEvent.id ? updatedEvent : event));
+  };
+
   // Fetches events from API
   useEffect(() => {
     console.log("Fetching...");
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    
+    const url = axios.create({
+      baseURL: "http://localhost:8000/api",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/events/");
+        const response = await url.get("/events/");
         setEvents(response.data);
         console.log("Successful fetch");
       } catch (error) {
@@ -88,7 +116,7 @@ const Calendar = () => {
     // Places the first days of the next month to fill out any remaining space in a week
     for (let i = grid.length, j = 1; i < gridSize; i++, j++)
       grid.push(new Date(year, month + 1, j));
-
+    
     return grid;
   };
 
@@ -124,10 +152,35 @@ const Calendar = () => {
             >
               →
             </button>
-            <h2 className={styles.title}>
-              {months[currentDate.getMonth()]} {currentDate.getFullYear()}
-            </h2>
+            
           </div>
+
+          <div className={styles.dropdown}>
+            <h2 className={styles.title}>
+              <span className={styles["title-month"]} onClick={() => setMonthOpen(!isMonthOpen)}>
+                {months[currentDate.getMonth()]} 
+              </span>
+              <span>
+                {currentDate.getFullYear()}
+              </span>
+            </h2>
+            {/* Dropdown menu to change month */}
+            {isMonthOpen && (
+              <ul className={styles["dropdown-list"]}>
+                {months.map((month, index) => (
+                  <li className={styles["dropdown-item"]}
+                  onClick={() => { 
+                    setCurrentDate(new Date(currentDate.getFullYear(), index, currentDate.getDate()));
+                    setMonthOpen(false);
+                  }}  
+                  >
+                    {month}
+                  </li> 
+                ))}
+              </ul>
+            )}
+          </div>
+
         </div>
     
         {/* Body includes the weekdays and the calendar grid of days and their events */}
@@ -143,7 +196,7 @@ const Calendar = () => {
           <div className={styles.days}>
             {/* Maps each day of the month onto the grid along with their events */}
             {currentGrid.map((day, index) => {
-
+              
               // Filter events to get events for each day by checking date, month, and year
               const eventsForDay = events.filter((event) => {
                 const eventDate = new Date(event.start_time);
@@ -158,7 +211,7 @@ const Calendar = () => {
                 <div className={styles.day} key={index}>
                   <span className={styles["day-number"]}>{day.getDate()}</span>
                   {/* Used to map events onto a day cell on the calendar grid */}
-                  {eventsForDay.map((event, index) => (
+                  {eventsForDay.map((event) => (
                     <div
                       key={event.id}
                       className={styles.event}
@@ -186,8 +239,12 @@ const Calendar = () => {
         details={currentEvent}
         isOpen={isModalOpen}
         onClose={closeModal}
+        onEdit={openUpdate}
       />
       
+      {isUpdateOpen && <EventForm event={currentUpdate} isOpen={isUpdateOpen} onClose={closeUpdate} onUpdate={updateEvent} route={`/api/events`}/>}
+
+
     </div>
   );
 };

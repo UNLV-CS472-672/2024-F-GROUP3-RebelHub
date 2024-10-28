@@ -1,9 +1,14 @@
 import styles from "./EventModal.module.css";
 import Modal from "react-modal";
 
-const EventModal = ({ details, isOpen, onClose }) => {
+const EventModal = ({ details, isOpen, onClose, onEdit }) => {
   // Returns null if the modal is blank or it is already open
   if (!isOpen || !details) return null;
+
+  const updateButtonClick = () => {
+    onEdit();
+    onClose();
+  }
 
   const months = [
     "January",
@@ -29,8 +34,6 @@ const EventModal = ({ details, isOpen, onClose }) => {
     const HM = (dateObject.getHours() % 12 == 0 ? 12 : dateObject.getHours() % 12) + ":" + prepend(dateObject.getMinutes()) + AMorPM;
     return MDY + " " + HM;
   }
-
-  
 
   return (
     <Modal
@@ -63,7 +66,13 @@ const EventModal = ({ details, isOpen, onClose }) => {
       {details.description && (
         <p className={styles.description}>{details.description}</p>
       )}
+      <div className={styles["crud-buttons"]}> 
+        <button onClick={updateButtonClick} className={styles["update-button"]}>Update</button>
+        <button className={styles["delete-button"]}>Delete</button>
+      </div>
+      
     </Modal>
+
   );
 };
 
