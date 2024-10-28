@@ -10,6 +10,11 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes'] 
         read_only_fields = ['author', 'likes', 'dislikes']
     
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        user = self.context.get('request').user
+        representation['is_author'] = user == instance.author
+        return representation
     """
     This method is used when a new Post object is being created. 
     When the API request comes in and makes the user the post author.

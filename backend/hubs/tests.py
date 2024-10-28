@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 from .models import Hub
-from .views import HubByID, HubList, HubJoined, HubOwned, HubModerating, HubCreate, HubDelete, HubUpdate, HubAddMember, HubAddPendingMember, HubAddMemberFromPending, HubRemoveMember, HubRemoveMemberFromPending, HubRemovePendingMember, HubAddModerator, HubRemoveModerator, HubKickMember
+from Posts.models import Post
+from .views import HubByID, HubList, HubJoined, HubOwned, HubModerating, HubCreate, HubDelete, HubUpdate, HubAddMember, HubAddPendingMember, HubAddMemberFromPending, HubRemoveMember, HubRemoveMemberFromPending, HubRemovePendingMember, HubAddModerator, HubRemoveModerator, HubKickMember, HubPosts
 
 # Create your tests here.
 
@@ -68,7 +69,6 @@ class HubAPITests(APITestCase):
         response = view(request)
         data = response.data
 
-
         self.assertEqual(response.status_code, status.HTTP_200_OK) #200 we can get all the hubs
         self.assertEqual(len(data), 2) #make sure we are seeing two hubs.
 
@@ -77,6 +77,24 @@ class HubAPITests(APITestCase):
         self.assertEqual(data[1]["name"], "TEST HUB 2")
         self.assertEqual(data[0]["description"], "A HUB MADE IN TESTING")
         self.assertEqual(data[1]["description"], "A SECOND HUB MADE IN TESTING")
+
+    def test_get_hubs_posts(self):
+        """
+        Make sure we can get all the posts from a hub.
+        """
+        user = User.objects.create_user(username="Test HUB User", password="testpass")
+        hub = Hub.objects.create(name="TEST HUB", description="A HUB MADE IN TESTING", owner=user)
+        user2 = User.objects.create_user(username="Test HUB User 2", password="testpass")
+        owners_post = Post.objects.create(title="Test Post by owner", message="hello this is a test post from owner.", author=user, hub=hub)
+        member_post = Post.objects.create(title="Test Post by a hub member", message="hello this is a test post from a member.", author=user2, hub=hub)
+
+        view = HubPosts.as_view()
+        request = self.factory.get(f"/hubs/{hub.id}/posts")
+        force_authenticate(request, user=user2)
+        response = view(request, id=hub.id)
+        data = response.data
+        print(data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK) #200 we can get all the hubs posts
 
     def test_get_hubjoined(self):
         """

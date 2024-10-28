@@ -20,6 +20,8 @@ class PostTestCase(TestCase):
         #self.post1 = self.create_post(title="Loving UNLV", message="I love UNLV", hub="Hub 1")
         #self.post2 = self.create_post(title="Loving CS", message="I love CS 135", hub="Hub 2")
 
+        self.dummy_post = {'title': "DUMMY POST", 'message': "THIS IS A DUMMY POST"} #MUST ADD "hub_id" KEY
+        self.dummy_post2 = {'title': "DUMMY POST 2", 'message': "THIS IS A SECOND DUMMY POST"} # MUST ADD 'hub_id' key
         self.factory = APIRequestFactory()
         
 
@@ -29,7 +31,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
         view = CreatePost.as_view()
@@ -38,7 +41,8 @@ class PostTestCase(TestCase):
 
         user2 = User.objects.create_user(username='test user 2', password='testpass')
         hub2 = Hub.objects.create(name="TEST HUB 2", description="TEST HUB DESC", owner=user2)
-        dummy_post = {'title': "Fucking hell2", 'message': "I LIKE TO KISS AND FUCK BITCHES AT THE SAME TIME", 'hub_id': hub2.id}
+        dummy_post = self.dummy_post2
+        dummy_post["hub_id"] = hub2.id
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user2)
         view = CreatePost.as_view()
@@ -62,7 +66,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
         view = CreatePost.as_view()
@@ -85,7 +90,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", private_hub=True, owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
         view = CreatePost.as_view()
@@ -107,7 +113,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
         view = CreatePost.as_view()
@@ -125,7 +132,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES"}
+        dummy_post = self.dummy_post
+        #never added hub id to dummy post
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
         view = CreatePost.as_view()
@@ -141,7 +149,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
 
         user2 = User.objects.create_user(username='test user 2', password='testpass')
 
@@ -159,7 +168,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
 
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
@@ -183,7 +193,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
 
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
@@ -212,7 +223,8 @@ class PostTestCase(TestCase):
         user2 = User.objects.create_user(username='test user 2', password='testpass')
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
         hub.members.add(user2)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
 
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user2)
@@ -236,7 +248,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
         view = CreatePost.as_view()
@@ -272,7 +285,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
         view = CreatePost.as_view()
@@ -310,7 +324,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
         view = CreatePost.as_view()
@@ -346,7 +361,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
         view = CreatePost.as_view()
@@ -382,7 +398,8 @@ class PostTestCase(TestCase):
         """
         user = self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-        dummy_post = {'title': "Fucking hell", 'message': "I LIKE TO KISS AND FUCK BITCHES", 'hub_id': hub.id}
+        dummy_post = self.dummy_post
+        dummy_post["hub_id"] = hub.id
         request = self.factory.post("posts/create/", dummy_post, format="json")
         force_authenticate(request, user=user)
         view = CreatePost.as_view()

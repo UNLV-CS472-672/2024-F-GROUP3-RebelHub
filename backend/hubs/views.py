@@ -4,6 +4,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import PermissionDenied, NotFound
 from .models import Hub
 from .serializers import *
+from Posts.models import Post
+from Posts.serializers import PostSerializer
 
 # "api/hubs/"
 # returns all the hubs with limited fields.
@@ -11,6 +13,23 @@ class HubList(generics.ListAPIView):
     queryset = Hub.objects.all()
     serializer_class = HubTLSerializer
     permission_classes = [AllowAny]
+
+# "api/hubs/<id>/posts"
+# returns all the posts in a hub.
+class HubPosts(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [AllowAny]
+    lookup_field = "id"
+    def get_queryset(self):
+        hub_id = self.kwargs['id']
+        try:
+            this_hub = Hub.objects.get(id=hub_id)
+        except Hub.DoesNotExist:
+            raise NotFound("Cannot List Posts : Hub not found")
+        user = self.request.user
+        if not user.is_authenticated and this_hub.private_hub:
+            raise PermissionDenied("Cannot List Posts : Hub is private")
+        return Post.objects.filter(hub=this_hub)
 
 # "api/hubs/joined/"
 # returns all the hubs that a user has joined.
