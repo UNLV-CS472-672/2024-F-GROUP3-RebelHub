@@ -1,19 +1,41 @@
 from rest_framework import generics
+from rest_framework import status
 from .models import Comment
 from .serializers import CommentSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
-class CommentList(generics.ListAPIView):
-     queryset = Comment.objects.all()
-     serializer_class = CommentSerializer
 
+# Create a comment for the specific post
 class CommentCreate(generics.CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+# Retrieve single comment based on ID
+class CommentDetail(generics.RetrieveAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    lookup_field = 'id'
+
+# Update an existing comment
+class CommentUpdate(generics.UpdateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+# Delete a comment
+class CommentDelete(generics.DestroyAPIView):
+    queryset = Comment.objects.all()
+    permission_classes = [IsAuthenticated]
+    
 # Using to timestamp to order the comments 
-class CommentListView(generics.ListAPIView):
+class CommentList(generics.ListAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
