@@ -80,7 +80,7 @@ class LikePostSerializer(serializers.ModelSerializer):
         else:
             instance.likes.remove(user)
         instance.save()
-        return PostSerializer(instance, context=self.context).data
+        return instance
 
 class DislikePostSerializer(serializers.ModelSerializer):
     class Meta:
