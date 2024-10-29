@@ -60,6 +60,15 @@ class PostTestCase(TestCase):
 
         self.assertEqual(len(data), 1)
 
+        request = self.factory.get("posts/")
+        force_authenticate(request, user=user2)
+        view = PostList.as_view()
+        response = view(request)
+        data = response.data
+        self.assertEqual(data[0]["is_author"], True)
+        self.assertEqual(data[0]["is_liked"], False)
+        self.assertEqual(data[0]["is_disliked"], False)
+
     def test_get_single_post(self):
         """
         Make sure auth users can see a detailed post by id.
@@ -81,7 +90,6 @@ class PostTestCase(TestCase):
         view = PostDetail.as_view()
         response = view(request, id=made_post.id)
         data = response.data
-
         self.assertEqual(data["title"], dummy_post["title"])
 
     def test_get_single_post_private(self):
@@ -269,6 +277,16 @@ class PostTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK) #200 user could like/unlike
         self.assertEqual(made_post.likes.count(), 1)
+
+        request = self.factory.get(f"posts/{made_post.id}/")
+        force_authenticate(request, user=user)
+        view = PostDetail.as_view()
+        response = view(request, id=made_post.id)
+        data = response.data
+
+        self.assertEqual(data["is_liked"], True)
+        self.assertEqual(data["is_author"], True)
+
         
         request = self.factory.put(f"posts/{made_post.id}/like/")
         force_authenticate(request, user=user)
@@ -277,6 +295,15 @@ class PostTestCase(TestCase):
         data = response.data
         self.assertEqual(response.status_code, status.HTTP_200_OK) #200 user could like/unlike
         self.assertEqual(made_post.likes.count(), 0) # back to zero if they like again
+
+        request = self.factory.get(f"posts/{made_post.id}/")
+        force_authenticate(request, user=user)
+        view = PostDetail.as_view()
+        response = view(request, id=made_post.id)
+        data = response.data
+
+        self.assertEqual(data["is_liked"], False)
+        self.assertEqual(data["is_author"], True)
      
 
     def test_dislike_post(self):

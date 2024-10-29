@@ -228,8 +228,6 @@ class HubAPITests(APITestCase):
         request = self.factory.post("/hubs/create/", dummy_hub, format="json")
         force_authenticate(request, user=user)
         response = view(request)
-        
-        
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED) #201 successfully created a hub
         self.assertEqual(Hub.objects.count(), 1) #make sure hub got created and exists in db

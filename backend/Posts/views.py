@@ -51,7 +51,7 @@ class DislikePost(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = DislikePostSerializer
     lookup_field = "id"
-    
+
 # GET a single post by its ID
 class PostDetail(generics.RetrieveAPIView):
     serializer_class = PostSerializer

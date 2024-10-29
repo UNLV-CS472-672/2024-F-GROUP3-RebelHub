@@ -27,7 +27,7 @@ class HubPosts(generics.ListAPIView):
         except Hub.DoesNotExist:
             raise NotFound("Cannot List Posts : Hub not found")
         user = self.request.user
-        if not user.is_authenticated and this_hub.private_hub:
+        if this_hub.private_hub and user not in this_hub.members.all():
             raise PermissionDenied("Cannot List Posts : Hub is private")
         return Post.objects.filter(hub=this_hub)
 
