@@ -9,6 +9,10 @@ export const URL_SEGMENTS = {
     POSTS_DELETE: "/delete/",
     POSTS_LIKE: "/like/",
     POSTS_DISLIKE: "/dislike/",
+
+    USERS_HOME: "users/",
+
+    USERS_LOGIN: "/login/",
 };
 
 // Functions to return a URL for an API call
@@ -49,4 +53,8 @@ export function gotoDetailedPostPage(postId: number|string) {
 
 export function gotoPostListPage() {
     return URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME;
+}
+
+export function gotoLoginPage() {
+    return URL_SEGMENTS.FRONTEND + URL_SEGMENTS.USERS_HOME + URL_SEGMENTS.USERS_LOGIN;
 }
