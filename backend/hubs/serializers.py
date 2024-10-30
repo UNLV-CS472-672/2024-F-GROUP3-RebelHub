@@ -9,6 +9,14 @@ class HubSerializer(serializers.ModelSerializer):
         model = Hub
         fields = '__all__'
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        user = self.context.get('request').user
+        representation['joined'] = user in instance.members.all()
+        representation['modding'] = user in instance.mods.all()
+        representation['owned'] = user == instance.owner
+        return representation
+
 #Serializer fo a hub model with only fields that would be needed for a TL view.
 class HubTLSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,6 +27,11 @@ class HubTLSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         member_count = len(representation.pop('members'))
         representation['members'] = member_count
+
+        user = self.context.get('request').user
+        representation['joined'] = user in instance.members.all()
+        representation['modding'] = user in instance.mods.all()
+        representation['owned'] = user == instance.owner
         if instance.private_hub:
             representation.pop('owner')
         return representation
