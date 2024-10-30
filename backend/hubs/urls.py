@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import HubList, HubJoined, HubModerating, HubOwned, HubByID, HubCreate, HubUpdate, HubDelete, HubAddMember, HubAddPendingMember, HubAddMemberFromPending, HubRemoveMember, HubRemovePendingMember, HubRemoveMemberFromPending, HubAddModerator, HubRemoveModerator, HubKickMember
+from .views import HubList, HubJoined, HubModerating, HubOwned, HubByID, HubCreate, HubUpdate, HubDelete, HubAddMember, HubAddPendingMember, HubAddMemberFromPending, HubRemoveMember, HubRemovePendingMember, HubRemoveMemberFromPending, HubAddModerator, HubRemoveModerator, HubKickMember, HubPosts
 
 urlpatterns = [
         path('hubs/', HubList.as_view(), name='hub-list'),
@@ -19,4 +19,5 @@ urlpatterns = [
         path('hubs/<int:id>/decline_join/', HubRemoveMemberFromPending.as_view(), name='hub-decline-join'),
         path('hubs/<int:id>/mods/add/', HubAddModerator.as_view(), name='hub-add-mod'),
         path('hubs/<int:id>/mods/remove/', HubRemoveModerator.as_view(), name='hub-remove-mod'),
+        path('hubs/<int:id>/posts/', HubPosts.as_view(), name='hub-posts'),
 ]
