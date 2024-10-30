@@ -1,63 +1,69 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from .models import Post
-from .serializers import PostSerializer
-from rest_framework.permissions import IsAuthenticated
+from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied, NotFound
 # Create your views here
 
 # Able to create and view the post, should only handles POST requests to create a post
 class CreatePost(generics.CreateAPIView):
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    serializer_class = PostCreateSerializer
     
-    # A definition to associate the post with the logged-in user. Note: The "user" is just a placeholder name as it hasn't been made yet
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)  
         
 # Delete the post by its ID
 class PostDelete(generics.DestroyAPIView):
     queryset = Post.objects.all()
     permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+    def perform_destroy(self, instance):
+        user = self.request.user
+        if user != instance.author:
+            if user != instance.hub.owner:
+                raise PermissionDenied("Could Not Delete Post : You are not post author or hub owner")
+        instance.delete()
 
-    def get_object(self):
-        post_id = self.kwargs['post_id']
-        return get_object_or_404(Post, id=post_id)
+
 
 # Able to view a list of all post, should only handles GET requests to Fetch a list of all post 
 class PostList(generics.ListAPIView): 
-    queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        user = self.request.user
+        return Post.objects.filter(hub__in=user.joined_hubs.all())
+
     
 
 # Get the post by its ID or return a 404 error if not found
-class LikePost(generics.GenericAPIView):
+class LikePost(generics.UpdateAPIView):
+    queryset = Post.objects.all()
     permission_classes = [IsAuthenticated]
-    def post(self, request, post_id):
-        post = get_object_or_404(Post, id=post_id)
-        post.likes += 1 
-        post.save()
-        
-        return Response({ 'likes': post.likes, 'dislikes': post.dislikes}, status=status.HTTP_200_OK)
+    serializer_class = LikePostSerializer
+    lookup_field = "id"
 
 # Get the post by its ID or return a 404 error if not found
-class DislikePost(generics.GenericAPIView):
+class DislikePost(generics.UpdateAPIView):
+    queryset = Post.objects.all()
     permission_classes = [IsAuthenticated]
-    def post(self, request, post_id):
-        post = get_object_or_404(Post, id=post_id)
-        post.dislikes += 1  
-        post.save()
-        
-        return Response({ 'likes': post.likes, 'dislikes': post.dislikes}, status=status.HTTP_200_OK)
-    
+    serializer_class = DislikePostSerializer
+    lookup_field = "id"
+
 # GET a single post by its ID
 class PostDetail(generics.RetrieveAPIView):
-    queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+    lookup_field = "id"
 
-    def get_object(self):
-        post_id = self.kwargs['post_id']
-        return get_object_or_404(Post, id=post_id)
-    
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            qs = Post.objects.all()
+        else:
+            qs = Post.objects.filter(hub__private_hub=False)
+        if qs is None:
+            raise NotFound("No Post with this ID was found")
+        return qs
