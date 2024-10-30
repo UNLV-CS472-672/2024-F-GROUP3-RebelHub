@@ -3,33 +3,14 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './RebelHubNavBar.module.css';
 
+import AccountButton from '@/components/navbar/AccountButton';
 
-const avatarIconPath = "/navbar/icons/avatar.png" // path for the avatar icon.
+
 const messageIconPath = "/navbar/icons/messageicon.png" // path for the message icon.
 const settingsIconPath = "/navbar/icons/settings.png" // path for the settings icon.
 const logoLightThemePath = "/navbar/logo/logo_light_alt.png" // path for the light theme logo.
 const logoDarkThemePath = "/navbar/logo/logo_dark_alt.png" // path for the dark theme logo.
 const logoRebelPath = "/navbar/logo/logo.png" // path for the rebel version logo.
-
-
-const AccountComponent = (props) => {
-	const [displayName, setDisplayName] = useState(props.username);
-	const [darkTheme] = useState(props.darkTheme);
-	const router = useRouter();
-
-	const accountButtonPressed = () => {
-		console.log("pressed acc")
-		//router.push("/"); <--- go to the user's profile page.
-	};
-
-	return(
-		<button className={styles.accountButton} onClick={accountButtonPressed}> 
-			<img src={avatarIconPath} className={styles.avatarIcon}/> 
-			<p className={`${styles.accountText} ${darkTheme ? styles.dark : styles.light}`}>{displayName}</p>
-		</button>
-	);
-}
-
 
 const RebelHubNavBar = () => {
 
@@ -62,12 +43,11 @@ const RebelHubNavBar = () => {
 			<button className={styles.settingsButton} onClick={settingsButtonPressed}>
 				<img src={settingsIconPath} className={styles.settingsIcon}/>
 			</button>
-			<AccountComponent username="some user" darkTheme={darkTheme}/>
+			<AccountButton username="some user" darkTheme={darkTheme}/>
 		</nav>
 		<div className={styles.extraSpace}> </div>
 		</>
 	);
 };
-
 
 export default RebelHubNavBar;
