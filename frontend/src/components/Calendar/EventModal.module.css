@@ -105,9 +105,11 @@
 }
 
 .update-button{
-  color: black;
+  padding: 5px;
+  background-color: #CF0A2C;
 }
 
 .delete-button{
-  color: black;
+  padding: 5px;
+  background-color: #CF0A2C;
 }

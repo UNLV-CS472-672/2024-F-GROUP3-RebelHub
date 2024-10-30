@@ -53,10 +53,13 @@
     user-select: none; 
 }
 
-
-
 .next-button {
     margin-left: .8%;
+    user-select: none;
+}
+
+.create-button {
+    margin-left: 1.6%;
     user-select: none;
 }
 
@@ -122,7 +125,7 @@
     color: black;
     cursor: pointer;
     user-select: none;
-   
+    width: 200px;
 }
 
 .title-month {

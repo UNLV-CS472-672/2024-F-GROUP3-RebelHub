@@ -4,16 +4,27 @@ import { useState, useEffect } from "react";
 import styles from "./Calendar.module.css";
 import EventModal from "./EventModal.js";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/utils/constants";
-import EventForm from "./EventForm.js";
+import UpdateForm from "./UpdateForm.js";
+import CreateForm from "./CreateForm.js";
+import api from "../../utils/api";
+import { useRouter } from 'next/navigation';
 
 const Calendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date()); // Holds the current date in order for today button to work
+  const [currentDate, setCurrentDate] = useState(new Date()); // Holds the current date of the calendar. Can be changed through various acitons.
   const [events, setEvents] = useState([]); // Holds events that are pulled by API
-  const [isModalOpen, setIsModalOpen] = useState(false); // Checks if modal is opened in order to avoid any issues
   const [currentEvent, setCurrentEvent] = useState(null); // Holds the event for the current opened modal
-  const [isMonthOpen, setMonthOpen] = useState(false); // Checks if the month dropdown is opened in order to avoid any issues
-  const [isUpdateOpen, setIsUpdateOpen] = useState(false); // Checks if the update form is opened in order to avoid any issues
   const [currentUpdate, setCurrentUpdate] = useState(null); // Holds the event for the current update form
+  const route = '/api/events';
+  const router=useRouter()
+  const [currentUser, setCurrentUser] = useState(); // Holds current user in order to change the visibility of buttons for Event Modal
+
+  /*
+  States that check if X is open in order to avoid any issues
+  */
+  const [isModalOpen, setIsModalOpen] = useState(false); // Event modal
+  const [isCreateOpen, setIsCreateOpen] = useState(false); // Create form 
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false); // Update form
+  const [isMonthOpen, setMonthOpen] = useState(false); // Month dropdown
 
   // Function to handle states when a modal is opened
   const openModal = (event) => {
@@ -29,27 +40,79 @@ const Calendar = () => {
     setCurrentEvent(null);
   };
 
-  const openUpdate = () => {
+  // Function to handle states when an update form is opened
+  const openUpdateForm = () => {
     setCurrentUpdate(currentEvent);
     setIsUpdateOpen(true);
     console.log("Opening update form for event:", currentEvent.title);
   }
 
-  const closeUpdate = () => {
+  // Function to handle states when an update form is closed
+  const closeUpdateForm = () => {
     console.log("Closing update form for event:", currentUpdate.title);
     setCurrentUpdate(null);
     setIsUpdateOpen(false);
   }
 
+  // Function to live update (no browser refresh required) the calendar when an event is updated 
   const updateEvent = (updatedEvent) => {
     setEvents((previousEvents) => previousEvents.map((event) => event.id === updatedEvent.id ? updatedEvent : event));
   };
 
+  // Function to handle states when a create form is opened
+  const openCreateForm = () => {
+    setIsCreateOpen(true);
+    console.log("Opening create form.");
+  }
+
+  // Function to handle states when a create form is closed
+  const closeCreateForm = () => {
+    setIsCreateOpen(false);
+    console.log("Closing create form");
+  } 
+
+  // Function to display a newly created event onto the calendar locally without refreshing the browser
+  const createEvent = (newEvent) => {
+    setEvents((prevEvents) => [...prevEvents, newEvent]); 
+    console.log("Created Event: ", newEvent.title);
+  }
+
+  // Function to delete the current event on a modal
+  const deleteEvent = async (deletedEvent) => {
+    try {
+      // Make DELETE request to delete the event
+      await api.delete(`${route}/${deletedEvent.id}/delete/`);
+      setEvents((previousEvents) => previousEvents.filter((event) => event.id !== deletedEvent.id));
+    } catch (error) {
+      console.log("Error deleting event: ", error.response);
+    } finally {
+      closeModal();
+    }
+  }
+
   // Fetches events from API
   useEffect(() => {
-    console.log("Fetching...");
+
+    // Need to fix this. Works if first time trying to access website, but doesn't work for subsequent uses.
     const token = localStorage.getItem(ACCESS_TOKEN);
-    
+    if(!token){
+      console.log("User is currently not logged in. Redirecting to login page.");
+      router.push('/users/login');
+      return;
+    }
+
+    const fetchUser = async () => {
+      try {
+          const response = await api.get("/api/users/currentUser/", {headers: {Authorization: `Bearer ${token}`}});
+          setCurrentUser(response);
+          console.log("Current user: ", response.data.username);
+      } catch (error) {
+          console.error("Error fetching current user: ", error);
+      } 
+    };
+    fetchUser();
+
+    console.log("Fetching...");
     const url = axios.create({
       baseURL: "http://localhost:8000/api",
       headers: { Authorization: `Bearer ${token}` },
@@ -65,6 +128,7 @@ const Calendar = () => {
       }
     };
     fetchEvents();
+
   }, []);
 
   const months = [
@@ -152,7 +216,7 @@ const Calendar = () => {
             >
               →
             </button>
-            
+            <button onClick={openCreateForm} className={styles["create-button"]}>Create</button>
           </div>
 
           <div className={styles.dropdown}>
@@ -169,6 +233,7 @@ const Calendar = () => {
               <ul className={styles["dropdown-list"]}>
                 {months.map((month, index) => (
                   <li className={styles["dropdown-item"]}
+                  key={index}
                   onClick={() => { 
                     setCurrentDate(new Date(currentDate.getFullYear(), index, currentDate.getDate()));
                     setMonthOpen(false);
@@ -208,7 +273,7 @@ const Calendar = () => {
               });
 
               return (
-                <div className={styles.day} key={index}>
+                <div className={styles.day} key={day.toISOString()}>
                   <span className={styles["day-number"]}>{day.getDate()}</span>
                   {/* Used to map events onto a day cell on the calendar grid */}
                   {eventsForDay.map((event) => (
@@ -236,14 +301,16 @@ const Calendar = () => {
       {/* Modal for an event is displayed when an event is clicked on */}
       {/* Modal uses another component with the EventModal.js file */}
       <EventModal
-        details={currentEvent}
+        event={currentEvent}
         isOpen={isModalOpen}
         onClose={closeModal}
-        onEdit={openUpdate}
+        onEdit={openUpdateForm}
+        onDelete={deleteEvent}
+        currentUser={currentUser}
       />
       
-      {isUpdateOpen && <EventForm event={currentUpdate} isOpen={isUpdateOpen} onClose={closeUpdate} onUpdate={updateEvent} route={`/api/events`}/>}
-
+      {isUpdateOpen && <UpdateForm event={currentUpdate} isOpen={isUpdateOpen} onClose={closeUpdateForm} onUpdate={updateEvent} route={route}/>}
+      {isCreateOpen && <CreateForm isCreateOpen={isCreateOpen} onClose={closeCreateForm} onCreate={createEvent} route={route}/>}
 
     </div>
   );

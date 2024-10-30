@@ -1,0 +1,74 @@
+/* UpdateForm.module.css */
+
+  .overlay {
+    position: fixed; /* Fixed position to cover the entire screen */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+  }
+
+  .modal {
+    position: absolute;
+    background-color: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    padding: 20px;
+    border-radius: 1vw;
+    max-width: 40vw;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .modal label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .modal input[type="text"],
+  .modal input[type="datetime-local"],
+  .update-button {
+    width: 100%;
+    padding: .625vw;
+    margin-top: .4vh;
+    margin-bottom: 1.2vh;
+    font-size: 16px;
+  }
+
+  .update-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    width: 100%;
+    padding: .625vw;
+    margin-top: .4vh;
+    margin-bottom: 1.2vh;
+    font-size: 16px;
+  }
+
+  .close-button:hover {
+    opacity: 0.9;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 0; /* Position from the top */
+    right: clamp(1.1vw, 1.1vw, 1.1vw); /* Position from the right */
+    background: none; 
+    border: none; 
+    font-size: clamp(1.875rem, 2vw, 2vw); 
+    color: black;
+    cursor: pointer; 
+    user-select: none;
+    z-index: 10000;
+  }
+  

@@ -1,9 +1,9 @@
 import styles from "./EventModal.module.css";
 import Modal from "react-modal";
 
-const EventModal = ({ details, isOpen, onClose, onEdit }) => {
+const EventModal = ({ event, isOpen, onClose, onEdit, onDelete, currentUser }) => {
   // Returns null if the modal is blank or it is already open
-  if (!isOpen || !details) return null;
+  if (!isOpen || !event) return null;
 
   const updateButtonClick = () => {
     onEdit();
@@ -47,32 +47,35 @@ const EventModal = ({ details, isOpen, onClose, onEdit }) => {
         <button onClick={onClose} className={styles["close-button"]}>
             ✖
         </button>
-        <h1 className={styles.title}>{details.title}</h1>
+        <h1 className={styles.title}>{event.title}</h1>
         <hr className={styles["grey-line"]}/>
         <div className={styles.times}>
-          <p>{"Start Time: " + formatDate(details.start_time)}</p>
-          <p>{details.end_time && "End Time: " + formatDate(details.end_time)}</p>
+          <p>{"Start Time: " + formatDate(event.start_time)}</p>
+          <p>{event.end_time && "End Time: " + formatDate(event.end_time)}</p>
         </div>
-        {details.location && (  
-          <p className={styles.location}>{"Location: " + details.location}</p>
+        {event.location && (  
+          <p className={styles.location}>{"Location: " + event.location}</p>
         )}
-        {details.description && (
+        {event.description && (
           <>
             <hr className={styles["scarlet-line"]}/>
             <hr className={styles["black-line"]}/>
           </>
         )}
+        {event.hub && <p>{"Hub: " + event.hub.name}</p>}
       </div>
-      {details.description && (
-        <p className={styles.description}>{details.description}</p>
+      {event.description && (
+        <p className={styles.description}>{event.description}</p>
       )}
-      <div className={styles["crud-buttons"]}> 
-        <button onClick={updateButtonClick} className={styles["update-button"]}>Update</button>
-        <button className={styles["delete-button"]}>Delete</button>
-      </div>
-      
+      {/* Only shows update and delete buttons if either the event is a personal event (created by current user)
+      or the event is part of a hub that the user is either the owner of or a moderator of*/}
+      {(event.isPersonal || !(!event.isPersonal && (event.hub.owner !== currentUser || !event.hub.mods.includes(currentUser)))) && 
+        <div className={styles["crud-buttons"]}> 
+            <button onClick={updateButtonClick} className={styles["update-button"]}>Update</button>
+            <button onClick={() => onDelete(event)} className={styles["delete-button"]}>Delete</button>
+        </div>
+      }
     </Modal>
-
   );
 };
 
