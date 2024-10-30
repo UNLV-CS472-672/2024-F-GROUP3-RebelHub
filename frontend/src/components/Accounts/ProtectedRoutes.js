@@ -1,9 +1,9 @@
+
+import {redirect} from "next/navigation"
 import { jwtDecode } from "jwt-decode";
 import api from "@/utils/api";
 import { REFRESH_TOKEN, ACCESS_TOKEN } from "@/utils/constants";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { gotoLoginPage } from "@/utils/posts/url-segments";
 
 
 //This handles authentication for users on certain pages that need to be
@@ -13,7 +13,6 @@ import { gotoLoginPage } from "@/utils/posts/url-segments";
 //wrapped in this function
 function ProtectedRoute( {children} ) {
     const [isAuthorized, setIsAuthorized] = useState(null);
-    const router = useRouter();
 
  useEffect(() => {
         if ( children.type.name == "register") {
@@ -68,7 +67,7 @@ function ProtectedRoute( {children} ) {
     }
 
     if (!isAuthorized) {
-        router.push(gotoLoginPage());  // Redirect to login if unauthorized
+        redirect('users/login');  // Redirect to login if unauthorized
         return null;  // Prevent rendering the children
     }
     return children;
