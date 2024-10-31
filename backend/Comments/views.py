@@ -40,7 +40,7 @@ class CommentDelete(generics.DestroyAPIView):
             raise PermissionDenied("Only able to delete comments that you have made.")
         return comment
     
-# Using to timestamp to order the comments 
+# Using to timestamp to order the comments or can order by most likes
 class CommentList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
@@ -48,7 +48,12 @@ class CommentList(generics.ListAPIView):
     # Going to list by the most likes
     def get_queryset(self):
         post_id = self.kwargs['post_id']
-        return Comment.objects.filter(post_id=post_id).order_by('-likes') 
+        order_by = self.request.query_params.get('order_by', 'timestamp')  
+
+        if order_by == 'likes':
+            return Comment.objects.filter(post_id=post_id).order_by('-likes')
+        else:
+            return Comment.objects.filter(post_id=post_id).order_by('-timestamp') 
 
         
 # Note: Have  to test if the increment works correctly for likes and dislikes        
