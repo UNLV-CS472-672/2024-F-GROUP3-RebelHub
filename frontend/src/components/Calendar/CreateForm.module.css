@@ -1,7 +1,7 @@
 /* CreateForm.module.css */
 
   .overlay {
-    position: fixed; /* Fixed position to cover the entire screen */
+    position: fixed; 
     top: 0;
     left: 0;
     right: 0;
@@ -9,8 +9,8 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 100;
   }
-  
-  .modal {
+
+  .form {
     position: absolute;
     background-color: white;
     top: 50%;
@@ -22,16 +22,17 @@
     max-height: 60vh;
     overflow-y: auto;
   }
-  
-  .modal label {
+
+  .form label {
     display: block;
     margin-bottom: 10px;
     font-weight: bold;
     color: #333;
   }
-  
-  .modal input[type="text"],
-  .modal input[type="datetime-local"],
+
+  .form input[type="text"],
+  .form input[type="datetime-local"],
+  .form textarea,
   .create-button {
     width: 100%;
     padding: .625vw;
@@ -39,7 +40,7 @@
     margin-bottom: 1.2vh;
     font-size: 16px;
   }
-  
+
   .create-button {
     background-color: #007bff;
     color: white;
@@ -54,15 +55,15 @@
     margin-bottom: 1.2vh;
     font-size: 16px;
   }
-  
+
   .close-button:hover {
     opacity: 0.9;
   }
-  
+
   .close-button {
     position: absolute;
-    top: 0; /* Position from the top */
-    right: clamp(1.1vw, 1.1vw, 1.1vw); /* Position from the right */
+    top: 0; 
+    right: clamp(1.1vw, 1.1vw, 1.1vw); 
     background: none; 
     border: none; 
     font-size: clamp(1.875rem, 2vw, 2vw); 
@@ -71,4 +72,27 @@
     user-select: none;
     z-index: 10000;
   }
-  
+
+  .dropdown-list {
+    list-style: none; 
+    position: relative;
+    background-color: #3b3b3b; 
+    border: 1px solid #CF0A2C; 
+    z-index: 100; 
+    width: 100%;
+    margin-top: -1.2vh;
+    font-size: 16px;
+    margin-bottom: 1.5vh;
+  }
+
+  .dropdown-item {
+    color: white;
+    padding: clamp(.1vw, .5vw, .5vw);
+    cursor: pointer;
+    border: .5px solid white;
+
+  }
+
+  .dropdown-item:hover {
+    background-color: #f76359;
+  }

@@ -1,7 +1,7 @@
 /* UpdateForm.module.css */
 
   .overlay {
-    position: fixed; /* Fixed position to cover the entire screen */
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -10,7 +10,7 @@
     z-index: 100;
   }
 
-  .modal {
+  .form {
     position: absolute;
     background-color: white;
     top: 50%;
@@ -23,15 +23,15 @@
     overflow-y: auto;
   }
 
-  .modal label {
+  .form label {
     display: block;
     margin-bottom: 10px;
     font-weight: bold;
     color: #333;
   }
 
-  .modal input[type="text"],
-  .modal input[type="datetime-local"],
+  .form input[type="text"],
+  .form input[type="datetime-local"],
   .update-button {
     width: 100%;
     padding: .625vw;
@@ -61,8 +61,8 @@
 
   .close-button {
     position: absolute;
-    top: 0; /* Position from the top */
-    right: clamp(1.1vw, 1.1vw, 1.1vw); /* Position from the right */
+    top: 0; 
+    right: clamp(1.1vw, 1.1vw, 1.1vw); 
     background: none; 
     border: none; 
     font-size: clamp(1.875rem, 2vw, 2vw); 

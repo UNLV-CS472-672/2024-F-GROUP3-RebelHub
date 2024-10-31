@@ -130,22 +130,22 @@
 
 .title-month {
     padding-right: 1vw; /* Space between month and year */
-    position: relative; /* Ensure dropdown positions based on this element */
+    position: relative; 
     text-decoration: underline;
 }
 
 .dropdown {
-    position: relative; /* Keep relative positioning for dropdown */
+    position: relative; 
 }
 
 .dropdown-list {
     list-style: none; 
     position: absolute;
-    top: 100%; /* Position directly below the month */
-    left: 28.5%; /* Start at the center of the parent */
-    transform: translate(-50%, 0); /* Center the dropdown list under the month */
+    top: 100%; 
+    left: 28.5%; 
+    transform: translate(-50%, 0); 
     background-color: white; 
-    min-width: max-content; /* Adjust width to fit content */
+    min-width: max-content; 
     border: 1px solid #CF0A2C; 
     z-index: 100; 
 }

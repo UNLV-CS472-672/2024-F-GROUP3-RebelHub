@@ -1,7 +1,7 @@
 /* CSS for EventModal.js */
 
 .overlay {
-  position: fixed; /* Fixed position to cover the entire screen */
+  position: fixed; 
   top: 0;
   left: 0;
   right: 0;
@@ -19,9 +19,7 @@
   color: black;
   padding-left: 1.75vw; 
   padding-right: 1.75vw; 
-  padding-bottom: 1.75vh; 
-  padding-top: 0;
-  border-radius: 1vw; /* Rounded corners */
+  border-radius: 1vw; 
   min-width: 200px;
   min-height: 100px;
   max-width: 40vw;
@@ -43,8 +41,8 @@
 /* Close button is located top right of the modal */
 .close-button {
   position: absolute;
-  top: 0; /* Position from the top */
-  right: clamp(-1.4vw, -1.5vw, -1.5vw); /* Position from the right */
+  top: 0; 
+  right: clamp(-1.4vw, -1.5vw, -1.5vw); 
   background: none; 
   border: none; 
   font-size: clamp(0.875rem, 1.6vw, 1.6vw); 
@@ -57,6 +55,7 @@
 .title{
   font-size: clamp(1.31rem, 2.2vw, 2.2vw);
   overflow-x: auto;
+  white-space: nowrap;
 }
 
 .location{
@@ -74,6 +73,10 @@
 .description{
   padding-top: 1vh;
   font-size: clamp(0.9rem, 1.2vw, 1.2vw);
+}
+
+.hub{
+  font-size: clamp(.75rem, 1.0vw, 1.1vw);
 }
 
 /* Horizontal lines */
@@ -98,18 +101,42 @@
   margin-bottom: 0.3vh;
 }
 
-.crud-buttons{
-  display:flex;
+/* Update and Delete buttons */
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white; 
+  z-index: 100000;
+}
+
+.bottom-scarlet-line {
+  border: none; 
+  height: 0.35vh;
+  background-color: #CF0A2C;
+  margin: 0; 
+}
+
+.bottom-black-line {
+  border: none; 
+  height: 0.35vh;
+  background-color: black;
+  margin: 0;
+  margin-top: 0.25vh;
+}
+
+.crud-buttons {
+  display: flex;
   justify-content: space-between;
-  margin-top: 1vh;
+  padding: clamp(0.5vh, 1.4vh, 2vh); 
 }
 
-.update-button{
-  padding: 5px;
+.update-button,
+.delete-button {
+  padding: clamp(4px, .35vw, .35vw); 
   background-color: #CF0A2C;
-}
-
-.delete-button{
-  padding: 5px;
-  background-color: #CF0A2C;
+  cursor: pointer;
+  font-size: clamp(0.4rem, .7vw, .7vw); 
 }

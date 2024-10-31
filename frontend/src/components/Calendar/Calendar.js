@@ -1,5 +1,4 @@
 "use client";
-import axios from "axios";
 import { useState, useEffect } from "react";
 import styles from "./Calendar.module.css";
 import EventModal from "./EventModal.js";
@@ -16,7 +15,7 @@ const Calendar = () => {
   const [currentUpdate, setCurrentUpdate] = useState(null); // Holds the event for the current update form
   const route = '/api/events';
   const router=useRouter()
-  const [currentUser, setCurrentUser] = useState(); // Holds current user in order to change the visibility of buttons for Event Modal
+  const [hubsModding, setHubsModding] = useState([]); // Holds the hubs that the current user is modding or is an owner of
 
   /*
   States that check if X is open in order to avoid any issues
@@ -83,14 +82,13 @@ const Calendar = () => {
       // Make DELETE request to delete the event
       await api.delete(`${route}/${deletedEvent.id}/delete/`);
       setEvents((previousEvents) => previousEvents.filter((event) => event.id !== deletedEvent.id));
+      closeModal();
     } catch (error) {
       console.log("Error deleting event: ", error.response);
-    } finally {
-      closeModal();
-    }
+    } 
   }
 
-  // Fetches events from API
+  // Fetches events and hubs from API
   useEffect(() => {
 
     // Need to fix this. Works if first time trying to access website, but doesn't work for subsequent uses.
@@ -101,31 +99,29 @@ const Calendar = () => {
       return;
     }
 
-    const fetchUser = async () => {
+    console.log("Fetching the hubs the current user is a owner of or is moderating...");
+    const fetchHubs = async () => {
       try {
-          const response = await api.get("/api/users/currentUser/", {headers: {Authorization: `Bearer ${token}`}});
-          setCurrentUser(response);
-          console.log("Current user: ", response.data.username);
+          const response = await api.get("/api/hubs/modding/", {headers: {Authorization: `Bearer ${token}`}});
+          console.log("Modded hubs: ", response.data);
+          const response2 = await api.get("/api/hubs/owned/", {headers: {Authorization: `Bearer ${token}`}});
+          console.log("Owned hubs: ", response2.data);
+          // Combine hubs that the user owns and the user is a moderator of. 
+          // Note: A user cannot be both an owner and a moderator of the same hub
+          setHubsModding([...response.data, ...response2.data]);
       } catch (error) {
-          console.error("Error fetching current user: ", error);
+          console.error("Error fetching modded hubs: ", error);
       } 
     };
-    fetchUser();
+    fetchHubs();
 
-    console.log("Fetching...");
-    const url = axios.create({
-      baseURL: "http://localhost:8000/api",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
+    console.log("Fetching events...");
     const fetchEvents = async () => {
       try {
-        const response = await url.get("/events/");
+        const response = await api.get("/api/events/", {headers: {Authorization: `Bearer ${token}`}});
         setEvents(response.data);
         console.log("Successful fetch");
-      } catch (error) {
-        console.log("Error fetching events: ", error);
-      }
+      } catch (error) { console.log("Error fetching events: ", error); }
     };
     fetchEvents();
 
@@ -306,11 +302,12 @@ const Calendar = () => {
         onClose={closeModal}
         onEdit={openUpdateForm}
         onDelete={deleteEvent}
-        currentUser={currentUser}
+        hubsModding={hubsModding}
       />
       
+      {/* Display update form and create form */}
       {isUpdateOpen && <UpdateForm event={currentUpdate} isOpen={isUpdateOpen} onClose={closeUpdateForm} onUpdate={updateEvent} route={route}/>}
-      {isCreateOpen && <CreateForm isCreateOpen={isCreateOpen} onClose={closeCreateForm} onCreate={createEvent} route={route}/>}
+      {isCreateOpen && <CreateForm isCreateOpen={isCreateOpen} onClose={closeCreateForm} onCreate={createEvent} hubs={hubsModding} route={route}/>}
 
     </div>
   );

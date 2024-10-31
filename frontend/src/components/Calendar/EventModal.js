@@ -1,14 +1,38 @@
 import styles from "./EventModal.module.css";
+import { useState, useEffect } from 'react';
+import api from "../../utils/api";
 import Modal from "react-modal";
 
-const EventModal = ({ event, isOpen, onClose, onEdit, onDelete, currentUser }) => {
+const EventModal = ({ event, isOpen, onClose, onEdit, onDelete, hubsModding}) => {
   // Returns null if the modal is blank or it is already open
   if (!isOpen || !event) return null;
-
+  
+  const [currentHub, setCurrentHub] = useState(event.hub ? event.hub : null);
+  
   const updateButtonClick = () => {
     onEdit();
-    onClose();
+    onClose(); // Closes current modal when event is updated
   }
+
+  // Fetches hub from API. Used when creating an event in the frontend and then reading it.
+  // This is necessary because when an event is created in the frontend, hub is stored as the id.
+  // And so hub is retrieved as an id, which means we need to get hub object from id. 
+  // But after refreshing the browser, the hub will then return as a hub object, so an if condition is needed.
+  useEffect(() => {
+    const fetchHub = async () => {
+      if (event.hub && Number.isInteger(event.hub)) {
+        console.log("Fetching hub from this id: ", event.hub);
+        try {
+          const response = await api.get(`/api/hubs/${event.hub}/`);
+          setCurrentHub(response.data);
+          console.log("Fetched the following hub from this key: ", event.hub, response.data);
+        } catch (error) {
+          console.log("Error fetching hub: ", error);
+        }
+      } 
+    };
+    fetchHub(); 
+  }, []); 
 
   const months = [
     "January",
@@ -49,30 +73,36 @@ const EventModal = ({ event, isOpen, onClose, onEdit, onDelete, currentUser }) =
         </button>
         <h1 className={styles.title}>{event.title}</h1>
         <hr className={styles["grey-line"]}/>
-        <div className={styles.times}>
-          <p>{"Start Time: " + formatDate(event.start_time)}</p>
-          <p>{event.end_time && "End Time: " + formatDate(event.end_time)}</p>
-        </div>
+          <p className={styles["start_time"]}>{"Start Time: " + formatDate(event.start_time)}</p>
+          <p className={styles["end_time"]}>{event.end_time && "End Time: " + formatDate(event.end_time)}</p>
+        
         {event.location && (  
           <p className={styles.location}>{"Location: " + event.location}</p>
         )}
+        {currentHub && <p className={styles.hub}>{"Hub: " + currentHub.name}</p>}
         {event.description && (
           <>
             <hr className={styles["scarlet-line"]}/>
             <hr className={styles["black-line"]}/>
           </>
         )}
-        {event.hub && <p>{"Hub: " + event.hub.name}</p>}
       </div>
       {event.description && (
         <p className={styles.description}>{event.description}</p>
       )}
       {/* Only shows update and delete buttons if either the event is a personal event (created by current user)
       or the event is part of a hub that the user is either the owner of or a moderator of*/}
-      {(event.isPersonal || !(!event.isPersonal && (event.hub.owner !== currentUser || !event.hub.mods.includes(currentUser)))) && 
-        <div className={styles["crud-buttons"]}> 
+      
+      {(event.isPersonal || !(!event.isPersonal && !hubsModding.some(hub => hub.id === currentHub.id && hub.name === currentHub.name))) && 
+        <div className={styles["footer"]}>
+          <hr className={styles["bottom-black-line"]} />
+          <hr className={styles["bottom-scarlet-line"]} />
+        
+    
+          <div className={styles["crud-buttons"]}>
             <button onClick={updateButtonClick} className={styles["update-button"]}>Update</button>
             <button onClick={() => onDelete(event)} className={styles["delete-button"]}>Delete</button>
+          </div>
         </div>
       }
     </Modal>

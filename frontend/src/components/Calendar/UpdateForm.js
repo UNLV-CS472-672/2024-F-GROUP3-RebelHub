@@ -1,5 +1,5 @@
 import styles from "./UpdateForm.module.css";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import api from "../../utils/api";
 
 const UpdateForm = ({ event, isOpen, onClose, onUpdate, route }) => {
@@ -37,18 +37,17 @@ const UpdateForm = ({ event, isOpen, onClose, onUpdate, route }) => {
       e.preventDefault();
       try {
         // Make PUT request to update the event
-        await api.put(`${route}/${event.id}/update/`, { title, description, location, start_time: convertToUTC(startTime), end_time: convertToUTC(endTime) || null, color: color || "#eb4f34" });
+        await api.put(`${route}/${event.id}/update/`, { title, description, location, start_time: convertToUTC(startTime), end_time: convertToUTC(endTime) || null, color: color});
         onUpdate({...event, title, description, location, start_time: startTime, end_time: endTime, color: color || "#eb4f34" });
+        onClose();
       } catch (error) {
         console.log("Error updating event: ", error.response.data);
-      } finally {
-        onClose();
       }
     }
 
     return (
       <div className={styles.overlay}>
-        <form className={styles.modal} onSubmit={onSubmit}>
+        <form className={styles.form} onSubmit={onSubmit}>
           <button className={styles["close-button"]} type="button" onClick={onClose}>
             &times;
           </button>
@@ -74,7 +73,7 @@ const UpdateForm = ({ event, isOpen, onClose, onUpdate, route }) => {
           </label>
           <label>
             Color:
-            <input type="text" name="color" value={color} onChange={(e) => setColor(e.target.value)} />
+            <input type="color" style={{cursor:"pointer", marginLeft:"1vw"}} name="color" value={color} onChange={(e) => setColor(e.target.value)} />
           </label>
           <button className={styles["update-button"]} type="submit">Update Event</button>
           
