@@ -1,7 +1,9 @@
-import { gotoCreatePostPage } from "@/utils/posts/url-segments";
+"use client";
+
 import Link from "next/link";
-import { FC } from "react";
 import styles from "../posts.module.css"
+import { gotoCreatePostPage } from "@/utils/posts/url-segments";
+import { FC } from "react";
 
 const CreatePostButton: FC = () => {
     return (

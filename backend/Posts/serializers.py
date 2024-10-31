@@ -27,7 +27,7 @@ class PostCreateSerializer(serializers.ModelSerializer):
     hub_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Post
-        fields = ['title', 'message', 'hub_id']
+        fields = ['id', 'title', 'message', 'hub_id']
 
     def validate(self, data):
         request = self.context.get('request')
