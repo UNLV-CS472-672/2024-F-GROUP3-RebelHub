@@ -15,6 +15,33 @@ class EventCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'location', 'start_time', 'end_time', 'color', 'hub', 'isPersonal']
         read_only_fields = ['id']
 
+    def validate(self, data):
+        request = self.context.get('request')
+        user = request.user
+         # Function to test if string is valid hex color. This will act as a helper method
+
+        if data.get('color').startswith('#'):
+            if len(data.get('color')) == 7:
+                for char in data.get('color')[1:]:
+                    if char not in "0123456789abcdefABCDEF":
+                        raise serializers.ValidationError("Invalid hex code. ")
+            else: raise serializers.ValidationError("color must be 7 characters long including the #.")
+        else: raise serializers.ValidationError("color must start with #.")
+                        
+        if data.get('start_time') and data.get('end_time'):
+            if data['start_time'] >= data['end_time']:
+                raise serializers.ValidationError("end_time must come after start_time")
+            
+        if not data.get('isPersonal'):
+            if (data.get('hub') is None): 
+                raise serializers.ValidationError("Non-personal events must have hubs.")
+            if (data.get('hub').owner != user and user not in data.get('hub').mods.all()):
+                raise serializers.ValidationError("You do not have permission to update this event.")
+            
+        if data.get('isPersonal') and not data.get('hub') is None:
+            raise serializers.ValidationError("Personal events cannot have a hub.")    
+        return data
+        
     def create(self, validated_data):
         newly_created_event = Event.objects.create(**validated_data)
         newly_created_event.full_clean()
@@ -28,14 +55,17 @@ class EventUpdateSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
     def validate(self, data):
-        request = self.context.get('request')
-        user = request.user
-        event = self.instance
+        if data.get('color').startswith('#'):
+            if len(data.get('color')) == 7:
+                for char in data.get('color')[1:]:
+                    if char not in "0123456789abcdefABCDEF":
+                        raise serializers.ValidationError("Invalid hex code. ")
+            else: raise serializers.ValidationError("color must be 7 characters long including the #.")
+        else: raise serializers.ValidationError("color must start with #.")
+
         if data.get('start_time') and data.get('end_time'):
             if data['start_time'] >= data['end_time']:
                 raise serializers.ValidationError("end_time must come after start_time")
-        if (event.isPersonal and event.author != user) or (not event.isPersonal and (event.hub.owner != user and user not in event.hub.mods.all())):
-            raise serializers.ValidationError("You do not have permission to update this event.")
         return data
 
     def update(self, instance, validated_data):
