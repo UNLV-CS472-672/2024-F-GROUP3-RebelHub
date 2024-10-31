@@ -8,9 +8,15 @@ class CommentSerializer(serializers.ModelSerializer):
     # Create Serilized data based on the Comment fields
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'author', 'message ', 'timestamp', 'likes', 'dislikes']
+        # comment_reply uses ForeignKey. So all the comment replies will have the same parent comment id. 
+        # "replies" will list all replies associated with a specific comment.
+        fields = ['id', 'post', 'author', 'message', 'timestamp', 'likes', 'dislikes', 'comment_reply', 'replies']
         read_only_fields = ['author', 'likes', 'dislikes']
         
+        # Retrieves all replies from chosen comment
+        def get_replies(self, instance):
+            replies = instance.replies.all()
+            return CommentSerializer(replies, many=True).data
 
         # When given a validated data, update and return the existing Comment instance.  
         def to_representation(self, instance):
@@ -52,7 +58,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         new_comment = Comment.objects.create(author=user, **validated_data)
         return new_comment
 
-# Serializer tfor liking a comment
+# Serializer for liking a comment
 class LikeCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment

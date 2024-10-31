@@ -15,6 +15,9 @@ class Comment(models.Model):
     likes = models.ManyToManyField(User, related_name="liked_comments", blank=True)
     dislikes = models.ManyToManyField(User, related_name="disliked_comments", blank=True)
     
+    # Used for replies to comments
+    comment_reply = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
+    
     # Shows which user commented on which post
     def __str__(self):
         return f'Comment from: {self.author.username} and on {self.post.title}'
