@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - master
+      - wrkflows
   pull_request:
     branches:
       - master
+      - wrkflows
 
 jobs:
   build:
@@ -27,6 +29,12 @@ jobs:
           pip install -r backend/requirements.txt
 
       # HERE WE CAN ADD IN STEPS FOR LINTING/SECURITY/AND FORMATTING
+     
+      # I added simple linting with flake8
+      # this only selects check that deal with syntax, imports, variables, referencing variables
+      # same command that was used in our lab.
+      - name: Lint with flake8
+        run: flake8 backend --count --select=E9,F63,F7,F82 --show-source --statistics
 
       # we run all the backend tests
       - name: Run Backend Tests With Pytest
