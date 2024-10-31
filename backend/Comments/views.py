@@ -1,115 +1,76 @@
 from rest_framework import generics
 from rest_framework import status
 from .models import Comment
-from .serializers import CommentSerializer
+from .serializers import CommentSerializer, CommentCreateSerializer, LikeCommentSerializer, DislikeCommentSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from Posts.models import Post
+from rest_framework.exceptions import PermissionDenied
 # Create your views here.
-
+   
 # Create a comment for the specific post
 class CommentCreate(generics.CreateAPIView):
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        post_id = self.kwargs['post_id']
+        post = get_object_or_404(Post, id=post_id)
+        serializer.save(author=self.request.user, post=post) 
 
 # Retrieve single comment based on ID
 class CommentDetail(generics.RetrieveAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    lookup_field = 'id'
-
-# Update an existing comment
-class CommentUpdate(generics.UpdateAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        comment_id = self.kwargs['comment_id']
+        return get_object_or_404(Comment, id=comment_id)
 
 # Delete a comment
 class CommentDelete(generics.DestroyAPIView):
     queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated]
     
+    def get_object(self):
+        comment = get_object_or_404(Comment, id=self.kwargs['comment_id'])
+        if comment.author != self.request.user and comment.post.author != self.request.user:
+            raise PermissionDenied("Only able to delete comments that you have made.")
+        return comment
+    
 # Using to timestamp to order the comments 
 class CommentList(generics.ListAPIView):
-    queryset = Comment.objects.all()
+    permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
 
+    # Going to list by the most likes
     def get_queryset(self):
-        queryset = super().get_queryset()
-        order_by  = self.request.query_params.get('order_by', 'timestamp')  
+        post_id = self.kwargs['post_id']
+        return Comment.objects.filter(post_id=post_id).order_by('-likes') 
 
-        # If wanting to order by likes
-        if order == 'likes':
-            return queryset.order_by ('-likes', '-timestamp')  
-        elif order == 'least_likes':
-            return queryset.order_by ('likes', 'timestamp') 
-        else:
-            return queryset.order_by ('-timestamp') 
         
 # Note: Have  to test if the increment works correctly for likes and dislikes        
 # Be able to like or dislike a comment based on the ID
 class LikeComment(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = LikeCommentSerializer
 
-    def post(self, request, id):
-        comment = get_object_or_404(Comment, id = id)
-        comment.likes += 1
-        comment.save()
-        return Response({'likes': comment.likes, 'dislikes': comment.dislikes}, status=status.HTTP_200_OK)
+    def post(self, request, comment_id):
+        comment = get_object_or_404(Comment, id=comment_id)
+        serializer = self.get_serializer(comment, data={}, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'likes': comment.likes.count(), 'dislikes': comment.dislikes.count()}, status=status.HTTP_200_OK)
 
 class DislikeComment(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = DislikeCommentSerializer
 
-    def post(self, request, id):
-        comment = get_object_or_404(Comment, id = id)
-        comment.dislikes += 1
-        comment.save()
-        return Response({'likes': comment.likes, 'dislikes': comment.dislikes}, status=status.HTTP_200_OK)# Like a comment
-
-
-'''
-# CommentView handles the comment requests for the post
-class CreateComment(APIView):
-    permission_classes = [IsAuthenticated]
-     # A POST method to create a new comment for the post by getting the ID
-    def post(self, request, post_id):
-        try:
-            post = Post.objects.get(pk=post_id)
-            
-            # Error message if post post doesn't exist
-        except Post.DoesNotExist:
-            return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
-        
-        # Use serializer with the request data
-        serializer = CommentSerializer(data=request.data)
-        
-        # Check if data is valid
-        if serializer.is_valid():  
-            # Save the comment from the user under the post if data is valid
-            serializer.save(author=request.user, post=post)  
-            return Response(serializer.data, status=status.HTTP_201_CREATED)  
-        # If the data is invalid, then return an error
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    # This GET method is to get all comments for the post
-    def get(self, request, post_id):
-        # First fetch the post by its ID
-        try:
-            post = Post.objects.get(pk=post_id)  
-            
-            # Error message if post doesn't exist
-        except Post.DoesNotExist:
-            return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND) 
-
-        # Then get all comments related to this post
-        comments = Comment.objects.filter(post=post)
-        
-        # Serialize the comment data and return to client
-        serializer = CommentSerializer(comments, many=True)
-        return Response(serializer.data)  
-    
-'''
+    def post(self, request, comment_id):
+        comment = get_object_or_404(Comment, id=comment_id)
+        serializer = self.get_serializer(comment, data={}, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'likes': comment.likes.count(), 'dislikes': comment.dislikes.count()}, status=status.HTTP_200_OK)
