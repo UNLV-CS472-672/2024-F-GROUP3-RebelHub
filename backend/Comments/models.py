@@ -12,8 +12,8 @@ class Comment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     
     # The amount of upvotes(likes) and downvotes(dislikes)on the comment
-    likes = models.IntegerField(default=0)
-    dislikes = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, related_name="liked_comments", blank=True)
+    dislikes = models.ManyToManyField(User, related_name="disliked_comments", blank=True)
     
     # Shows which user commented on which post
     def __str__(self):
