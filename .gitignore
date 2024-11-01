@@ -4,6 +4,7 @@ __pycache__/
 .next/
 node_modules/
 out/
+htmlcov/
 
 # Django related
 backend/db.sqlite3
