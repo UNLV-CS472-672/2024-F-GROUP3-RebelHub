@@ -1,0 +1,59 @@
+name: CI workflow for rebel hub
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    # uwuntu latest for simplicity
+    # python 3.12 container to match our proj
+    name: Build & Run Tests
+    runs-on: ubuntu-latest
+    container: python:3.12-slim
+    steps:
+      # fist we checkout the repo
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # we install the backend deps listed in requirements.txt
+      - name: Install Backend Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      # HERE WE CAN ADD IN STEPS FOR LINTING/SECURITY/AND FORMATTING
+     
+      # I added simple linting with flake8
+      # this only selects check that deal with syntax, imports, variables, referencing variables
+      # same command that was used in our lab.
+      - name: Lint with flake8
+        run: flake8 backend --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      # we run all the backend tests
+      - name: Run Backend Tests With Pytest
+        run: |
+          pytest
+
+      - name: Upload Coverge as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov
+
+      # set up node so we can test the front end
+      - name: Seting up node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      # we install the frontend deps listed in package.json
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm install
+      # here we can add on more like frontend unit tests
