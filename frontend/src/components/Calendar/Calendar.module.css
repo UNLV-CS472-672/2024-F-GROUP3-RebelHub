@@ -1,0 +1,118 @@
+/* Calendar Container */
+.calendar {
+    width: calc(100vw - 15px); /* Makes calendar cover the entire width of browser window size aside from scroll bar on right */
+    border: clamp(3px, .55rem, .55rem) solid #CF0A2C; 
+    border-radius: 1.5%; 
+    overflow: hidden; 
+    
+}
+
+/* Header Section */
+.header {
+    padding: 0.4%; 
+    display: flex; 
+    align-items: center; 
+}
+
+.today-button {
+    margin-right: 8%; 
+    margin-left: .5%;
+    user-select: none;
+
+}
+
+/* Buttons container for Previous, Title, and Next */
+.header-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    flex: 1; 
+}
+
+/* Button styles */
+.header button {
+    padding: clamp(3px, .85vw, .85vw) clamp(6px, 1.7vw, 1.7vw); 
+    border: none; 
+    border-radius: 10%; 
+    background-color: #CF0A2C; 
+    color: snow; 
+    cursor: pointer; 
+    transition: background-color 0.1s;
+}
+
+.header button:hover {
+    background-color: #f76359; 
+}
+
+.previous-button {
+    margin-right: .8%; 
+    margin-left: 5%;
+    user-select: none; 
+}
+
+.title {   
+    margin-top: .25%;
+    margin-bottom: .25%;
+    margin-left: 10%; 
+    margin-right: 2%;
+    width: 250px;
+    color: black;
+}
+
+.next-button {
+    margin-left: .8%;
+    user-select: none;
+}
+
+/* Weekdays Section */
+.weekdays {
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr); 
+}
+
+.weekday {
+    background-color: #CF0A2C; 
+    color: white;
+    padding: 1%; 
+    text-align: center; 
+    font-weight: bold; 
+    font-size: clamp(12px, 1.35vw, 1.35vw);
+}
+
+/* Days Section */
+.days {
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr); 
+}
+
+.day {
+    padding: 2px; 
+    border: 1px solid #CF0A2C; 
+    overflow: hidden;
+    min-height: clamp(5vh, 20vh, 40vh); 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.day-number {
+    user-select: none;
+    text-align: right;
+    padding-bottom: clamp(3px, .8vh, .8vh); 
+}
+
+.event {
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 1px 50;
+    cursor: pointer; 
+}
+
+.event span {
+    font-size: clamp(13px, 1vw, 1vw);
+    display: block;
+    overflow: hidden;
+    white-space: nowrap ;
+    text-overflow: ellipsis;
+}
+
