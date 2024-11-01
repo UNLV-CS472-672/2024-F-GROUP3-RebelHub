@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from Comments.models import Post 
+from Posts.models import Post
 
 # Create your models here.
 
@@ -12,18 +12,18 @@ class Comment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     
     # The amount of upvotes(likes) and downvotes(dislikes)on the comment
-    likes = models.ManyToManyField(User, related_name="liked_comments", blank=True)
-    dislikes = models.ManyToManyField(User, related_name="disliked_comments", blank=True)
+    likes = models.ManyToManyField(User, related_name='liked_comments', blank=True)
+    dislikes = models.ManyToManyField(User, related_name='disliked_comments', blank=True)
     
     # Used for replies to comments
     comment_reply = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
     
     # Shows which user commented on which post
     def __str__(self):
-        return f'Comment from: {self.author.username} and on {self.post.title}'
+        return f'Comment by: {self.author.username} on post: {self.post.title}'
     
-    # Used for the default ordering of the comments, based on amount of likes
+    # Used for the default ordering of the comments, based on recent comment
     class Meta:
-        ordering = ['-likes']
+        ordering = ['-timestamp']
         
         

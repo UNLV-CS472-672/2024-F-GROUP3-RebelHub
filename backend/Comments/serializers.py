@@ -1,22 +1,28 @@
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 from .models import Comment
+from rest_framework.exceptions import ValidationError
 from Posts.models import Post
 
 # To serilize the comment        
 class CommentSerializer(serializers.ModelSerializer):
+    replies = serializers.SerializerMethodField(read_only=True)
+
     # Create Serilized data based on the Comment fields
     class Meta:
         model = Comment
         # comment_reply uses ForeignKey. So all the comment replies will have the same parent comment id. 
         # "replies" will list all replies associated with a specific comment.
-        fields = ['id', 'post', 'author', 'message', 'timestamp', 'likes', 'dislikes', 'comment_reply', 'replies']
+        fields = ['id', 'author', 'post', 'content', 'timestamp', 'likes', 'dislikes', 'replies', 'comment_reply']
         read_only_fields = ['author', 'likes', 'dislikes']
         
         # Retrieves all replies from chosen comment
-        def get_replies(self, instance):
-            replies = instance.replies.all()
-            return CommentSerializer(replies, many=True).data
+        def get_replies(self, obj):
+            if obj.comment_reply is None:  
+                serializer = self.__class__(obj.replies.all(), many=True)
+                serializer.bind('', self)
+                return serializer.data
+            return None
 
         # When given a validated data, update and return the existing Comment instance.  
         def to_representation(self, instance):
@@ -38,25 +44,18 @@ class CommentCreateSerializer(serializers.ModelSerializer):
  
     # Validates the post and user permissions to for comment creation
     def validate(self, data):
-        post_id = data.get('post_id')
+        post = data.get('post')
+        comment_reply = data.get('comment_reply')
+
         # Post associated with the given ID
-        try:
-            post = Post.objects.get(id=post_id)
-        except Post.DoesNotExist:
-            raise serializers.ValidationError("Post not found.") 
-        
-        # Associate the validated Post object with the comment data
-        data['post'] = post
+        if comment_reply and comment_reply.post != post:
+            raise ValidationError("Reply must be linked to a comment under the same post.")
         return data
 
     # Create a new Comment instance using validated data
     def create(self, validated_data):
-        request = self.context.get('request')
-        user = request.user
-        
-        # Create and return the Comment instance
-        new_comment = Comment.objects.create(author=user, **validated_data)
-        return new_comment
+        user = self.context.get('request').user
+        return Comment.objects.create(author=user, **validated_data)
 
 # Serializer for liking a comment
 class LikeCommentSerializer(serializers.ModelSerializer):
@@ -67,11 +66,12 @@ class LikeCommentSerializer(serializers.ModelSerializer):
     # Check user can like a comment and hasn't already liked it
     def validate(self, data):
         user = self.context.get('request').user
+        if self.instance.comment_reply is not None:
+            raise ValidationError("You can't like a reply.")
         
-        # Flag tracks if like action can be performed or undone
         data['making_like'] = True
         if self.instance in user.liked_comments.all():
-            data['making_like'] = False 
+            data['making_like'] = False
         return data
     
      # Update the comment status 
@@ -98,11 +98,12 @@ class DislikeCommentSerializer(serializers.ModelSerializer):
     # Check user can dislike a comment and hasn't already disliked
     def validate(self, data):
         user = self.context.get('request').user
-        # Check dislike action can be done or undone
+        if self.instance.comment_reply is not None:
+            raise ValidationError("You cannot dislike a reply.")
+        
         data['making_dislike'] = True
         if self.instance in user.disliked_comments.all():
-            data['making_dislike'] = False  
-
+            data['making_dislike'] = False
         return data
 
     # Update comment's dislike

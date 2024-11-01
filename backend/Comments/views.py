@@ -7,17 +7,27 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from Posts.models import Post
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from django.db.models import Count
 # Create your views here.
  
  # Creating a comment  
 class CommentCreate(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = CommentSerializer
+    serializer_class = CommentCreateSerializer
 
     def perform_create(self, serializer):
         post_id = self.kwargs['post_id']  
-        serializer.save(author=self.request.user, post_id=post_id)
-
+        comment_reply_id = self.request.data.get('comment_reply_id')
+        serializer.save(author=self.request.user, post_id=post_id, comment_reply_id=comment_reply_id)
+        
+# Creating a reply       
+class CommentReplyCreate(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentSerializer  
+    def perform_create(self, serializer):
+        comment_id = self.kwargs['comment_id']
+        serializer.save(author=self.request.user, comment_reply_id=comment_id)
+        
 # Using to timestamp to order the comments or can order by most likes
 class CommentList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -25,13 +35,14 @@ class CommentList(generics.ListAPIView):
 
     # Going to list by the most likes
     def get_queryset(self):
-        post_id = self.kwargs['post_id'] 
+        post_id = self.kwargs['post_id']
         order_by = self.request.query_params.get('order_by', 'timestamp')
         
         if order_by == 'likes':
-            return Comment.objects.filter(post_id=post_id, comment_reply__isnull=True).order_by('-likes')
-        else:
-            return Comment.objects.filter(post_id=post_id, comment_reply__isnull=True).order_by('-timestamp')
+            return Comment.objects.filter(post_id=post_id, comment_reply__isnull=True).annotate(
+                like_count=Count('likes')
+            ).order_by('-like_count')
+        return Comment.objects.filter(post_id=post_id, comment_reply__isnull=True).order_by('-timestamp')
         
 # Get details for a single comment by ID
 class CommentDetail(generics.RetrieveAPIView):
