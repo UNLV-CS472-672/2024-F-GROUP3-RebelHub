@@ -2,11 +2,9 @@
 import { useState, useEffect } from "react";
 import styles from "./Calendar.module.css";
 import EventModal from "./EventModal.js";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/utils/constants";
 import UpdateForm from "./UpdateForm.js";
 import CreateForm from "./CreateForm.js";
 import api from "../../utils/api";
-import { useRouter } from 'next/navigation';
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date()); // Holds the current date of the calendar. Can be changed through various acitons.
@@ -14,7 +12,6 @@ const Calendar = () => {
   const [currentEvent, setCurrentEvent] = useState(null); // Holds the event for the current opened modal
   const [currentUpdate, setCurrentUpdate] = useState(null); // Holds the event for the current update form
   const route = '/api/events';
-  const router=useRouter()
   const [hubsModding, setHubsModding] = useState([]); // Holds the hubs that the current user is modding or is an owner of
 
   /*
