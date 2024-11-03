@@ -91,20 +91,12 @@ const Calendar = () => {
   // Fetches events and hubs from API
   useEffect(() => {
 
-    // Need to fix this. Works if first time trying to access website, but doesn't work for subsequent uses.
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    if(!token){
-      console.log("User is currently not logged in. Redirecting to login page.");
-      router.push('/users/login');
-      return;
-    }
-
     console.log("Fetching the hubs the current user is a owner of or is moderating...");
     const fetchHubs = async () => {
       try {
-          const response = await api.get("/api/hubs/modding/", {headers: {Authorization: `Bearer ${token}`}});
+          const response = await api.get("/api/hubs/modding/");
           console.log("Modded hubs: ", response.data);
-          const response2 = await api.get("/api/hubs/owned/", {headers: {Authorization: `Bearer ${token}`}});
+          const response2 = await api.get("/api/hubs/owned/");
           console.log("Owned hubs: ", response2.data);
           // Combine hubs that the user owns and the user is a moderator of. 
           // Note: A user cannot be both an owner and a moderator of the same hub
@@ -118,7 +110,7 @@ const Calendar = () => {
     console.log("Fetching events...");
     const fetchEvents = async () => {
       try {
-        const response = await api.get("/api/events/", {headers: {Authorization: `Bearer ${token}`}});
+        const response = await api.get("/api/events/");
         setEvents(response.data);
         console.log("Successful fetch");
       } catch (error) { console.log("Error fetching events: ", error); }
