@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'calendar_app',
     'users',
     'hubs',
+    'Comments',
 ]
 
 CORS_ALLOWED_ORIGINS = [
