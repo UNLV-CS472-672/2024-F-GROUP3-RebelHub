@@ -4,6 +4,13 @@ import styles from './TwoSideView.module.css';
 
 
 const TwoSideView = ({leftContent, rightContent}) => {
+
+
+
+	
+
+
+
 	return (
 		<div className={styles.viewContainer}>
 			<div className={styles.leftView}>
