@@ -1,0 +1,90 @@
+.nav{
+	display: flex;
+	align-items: center;
+	border-bottom: 2px solid white;
+	background-color: transparent; /*transparent to blend in with page, but we can do black for now*/
+	width: 100%;
+	position: fixed;
+}
+.light{
+	color: black;
+	background-color: white;
+}
+.dark{
+	color: white;
+	background-color: black;
+}
+.homeButton{
+	width: 250px;
+	height: 100px;
+	border: none;
+	background-color: transparent;
+}
+.homeButton:hover{
+	cursor: pointer;
+}
+.homeButtonLogo{
+	width: 250px;
+	height: 100%;
+	border: none;
+}
+
+.searchBar{
+	color: black;
+	margin-left: 100px;
+	margin-right: 100px;
+	padding: 20px;
+	flex: 2;
+	height: 40px;
+	border: 1px solid black;
+	border-radius: 30px;
+	background-color: white;
+	font-size: 20px;
+}
+.searchBar::placeholder{
+	font-size: 20px;
+	color: gray;
+}
+
+.messageButton{
+	border: none;
+	background: transparent;
+	width: 50px;
+	height: 50px;
+}
+.messageButton:hover{
+	cursor: pointer;
+}
+.messageIcon{
+	width: 30px;
+	height: 30px;
+}
+
+.settingsButton{
+	border: none;
+	background: transparent;
+	width: 50px;
+	height: 50px;
+}
+.settingsButton:hover{
+	cursor: pointer;
+}
+.settingsIcon{
+	width: 40px;
+	height: 40px;
+}
+.extraSpace{
+	padding-top: 100px;
+}
+
+@media (max-width: 768px) {
+	.nav{
+		flex-direction: column;
+	}
+	.extraSpace{
+		padding-top: 256px;
+	}
+	.searchBar{
+		display: none;
+	}
+}
