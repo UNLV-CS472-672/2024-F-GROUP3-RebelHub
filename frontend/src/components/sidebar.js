@@ -13,14 +13,10 @@ export default function Sidebar() {
                     className='logo'
                 />
             </div>
-            <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className='link'>Home</Link>
             <Link href="/profile" className='link'>Explore</Link>
             <Link href="/profile" className='link'>Hubs</Link>
-            <Link href="/profile" className='link'>Messages</Link>
-            <Link href="/profile" className='link'>Notifications</Link>
             <Link href="/profile" className='link'>Calendar</Link>
             <Link href="/profile" className='link'>Post</Link>
-            <Link href="/profile" className='link'>Profile</Link>
         </div>
     )
 }
