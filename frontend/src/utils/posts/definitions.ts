@@ -4,7 +4,10 @@ export type Post = {
     title: string,
     message: string,
     timestamp: Date,
-    hub: string,
-    likes: number,
-    dislikes: number,
+    hub: number,
+    likes: number[],
+    dislikes: number[],
+    is_author: boolean,
+    is_disliked: boolean,
+    is_liked: boolean,
 }

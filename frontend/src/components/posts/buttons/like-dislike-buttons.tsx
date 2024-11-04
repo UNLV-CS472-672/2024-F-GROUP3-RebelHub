@@ -5,46 +5,41 @@ import React, { useState } from "react";
 import styles from "../posts.module.css";
 import api from "@/utils/api";
 import clsx from "clsx";
+import { Post } from "@/utils/posts/definitions";
 
 interface ComponentProps {
-    objectId: number;
-    likes: number;
-    dislikes: number;
+    postObject: Post;
     likeUrlFunction: (objectId: number) => string;
     dislikeUrlFunction: (objectId: number) => string;
     containerClassName: string;
 }
 
-const LikeDislikeButtons: React.FC<ComponentProps> = ({ objectId, likes, dislikes, likeUrlFunction, dislikeUrlFunction, containerClassName }) => {
-    const [displayedLikes, setLikes] = useState(likes);
-    const [displayedDislikes, setDislikes] = useState(dislikes);
-
-    // TODO: will also need to check if the user voted here to reduce the likes/dislikes
-    // parameter by 1. This will make the buttons light up correctly.
+const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunction, dislikeUrlFunction, containerClassName }) => {
+    const [displayedLikes, setLikes] = useState(postObject.likes.length);
+    const [displayedDislikes, setDislikes] = useState(postObject.dislikes.length);
+    const [postLiked, setPostLiked] = useState(postObject.is_liked);
+    const [postDisliked, setPostDisliked] = useState(postObject.is_disliked);
 
     const handleLike = async () => {
-        // TODO: check if the post was already liked by the user.
-        // If it is, then undo the addition and tell server to reduce by 1
-        // Else, tell server to add 1.
-        
-        // This will make the likes/dislikes appear correct client-side,
-        // but the database will still see multiple like/dislike posts.
+        // Check if the post was liked before clicking like
+        if (postLiked) {
+            setLikes(displayedLikes - 1);
+        } else {
+            setLikes(displayedLikes + 1);
+        }
 
-        // Check if dislike is pressed
-        if (displayedDislikes == dislikes + 1)
-            setDislikes(dislikes);
+        setPostLiked(!postLiked);
 
-        if (displayedLikes == likes)
-            setLikes(likes + 1);
-        else
-            setLikes(likes);
+        // Check if the post was disliked before clicking like
+        if (postDisliked) {
+            setDislikes(displayedDislikes - 1);
+            setPostDisliked(!postDisliked);
+        }
 
         try {
-            console.log("Like change for " + objectId);
+            console.log("Like change for " + postObject.id);
 
-            const response = await api.post(likeUrlFunction(objectId), {
-                post_id: objectId,
-            });
+            const response = await api.patch(likeUrlFunction(postObject.id));
 
             if (response.status != 200) {
                 throw new Error("Error when posting a vote");
@@ -56,28 +51,25 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ objectId, likes, dislike
     }
 
     const handleDislike = async () => {
-        // TODO: check if the post was already disliked by the user.
-        // If it is, then undo the addition and tell server to reduce by 1
-        // Else, tell server to add 1.
-        
-        // This will make the likes/dislikes appear correct client-side,
-        // but the database will still see multiple like/dislike posts.
+        // Check if the post was disliked before clicking disliked
+        if (postDisliked) {
+            setDislikes(displayedDislikes - 1);
+        } else {
+            setDislikes(displayedDislikes + 1);
+        }
 
-        // Check if like is pressed
-        if (displayedLikes == likes + 1)
-            setLikes(likes);
+        setPostDisliked(!postDisliked);
 
-        if (displayedDislikes == dislikes)
-            setDislikes(dislikes + 1);
-        else
-            setDislikes(dislikes);
+        // Check if the post was liked before clicking dislike
+        if (postLiked) {
+            setLikes(displayedLikes - 1);
+            setPostLiked(!postLiked);
+        }
 
         try {
-            console.log("Dislike change for " + objectId);
+            console.log("Dislike change for " + postObject.id);
 
-            const response = await api.post(dislikeUrlFunction(objectId), {
-                post_id: objectId,
-            });
+            const response = await api.patch(dislikeUrlFunction(postObject.id));
 
             if (response.status != 200) {
                 throw new Error("Error when posting a vote");
@@ -98,7 +90,7 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ objectId, likes, dislike
                     <button onClick={handleLike} className={clsx(
                         [styles.basicButton],
                         {
-                            [styles.likeButton]: displayedLikes == likes + 1,
+                            [styles.likeButton]: postLiked,
                         }
                     )}>
                         Like
@@ -113,7 +105,7 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ objectId, likes, dislike
                     <button onClick={handleDislike} className={clsx(
                         [styles.basicButton],
                         {
-                            [styles.dislikeButton]: displayedDislikes == dislikes + 1,
+                            [styles.dislikeButton]: postDisliked,
                         }
                     )}>
                         Dislike
