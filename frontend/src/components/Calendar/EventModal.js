@@ -2,12 +2,14 @@ import styles from "./EventModal.module.css";
 import { useState, useEffect } from 'react';
 import api from "../../utils/api";
 import Modal from "react-modal";
+import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivileges";
 
-const EventModal = ({ event, isOpen, onClose, onEdit, onDelete, hubsModding}) => {
+const EventModal = ({ event, isOpen, onClose, onEdit, onDelete}) => {
   // Returns null if the modal is blank or it is already open
   if (!isOpen || !event) return null;
-  
+
   const [currentHub, setCurrentHub] = useState(event.hub ? event.hub : null);
+  const [isPrivileged, setIsPrivileged] = useState(false);
   
   const updateButtonClick = () => {
     onEdit();
@@ -33,6 +35,19 @@ const EventModal = ({ event, isOpen, onClose, onEdit, onDelete, hubsModding}) =>
     };
     fetchHub(); 
   }, []); 
+
+  useEffect(() => {
+    const checkPrivileges = async () => {
+      if (!event.isPersonal) {
+        const hubPrivileged = await checkHubPrivileges(event.hub.id);
+        setIsPrivileged(hubPrivileged);
+      } else {
+        const authorPrivileged = await checkAuthorPrivileges(event.author);
+        setIsPrivileged(authorPrivileged);
+      }
+    };
+    checkPrivileges();
+  }, []);
 
   const months = [
     "January",
@@ -93,7 +108,7 @@ const EventModal = ({ event, isOpen, onClose, onEdit, onDelete, hubsModding}) =>
       {/* Only shows update and delete buttons if either the event is a personal event (created by current user)
       or the event is part of a hub that the user is either the owner of or a moderator of*/}
       
-      {(event.isPersonal || !(!event.isPersonal && !hubsModding.some(hub => hub.id === currentHub.id && hub.name === currentHub.name))) && 
+      {isPrivileged && 
         <div className={styles["footer"]}>
           <hr className={styles["bottom-black-line"]} />
           <hr className={styles["bottom-scarlet-line"]} />

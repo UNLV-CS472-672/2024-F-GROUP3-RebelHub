@@ -1,7 +1,7 @@
 from rest_framework import generics
 from .models import Event
 from .serializers import *
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 
 # Create your views here.
