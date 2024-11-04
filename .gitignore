@@ -4,6 +4,8 @@ __pycache__/
 .next/
 node_modules/
 out/
+
+venv/
 htmlcov/
 
 # Django related
