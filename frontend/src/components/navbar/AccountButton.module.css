@@ -1,0 +1,29 @@
+.light{
+	color: black;
+	background-color: white;
+}
+.dark{
+	color: white;
+	background-color: black;
+}
+
+.accountButton{
+	background: transparent;
+	display: flex;
+	justify-content: center;
+	width: 150px;
+	height: 50px;
+	border: none;
+}
+.accountButton:hover{
+	cursor: pointer;
+}
+.avatarIcon{
+	width: 30%;
+	height: 90%;
+}
+
+.accountText{
+	padding-top: 10px;
+}
+
