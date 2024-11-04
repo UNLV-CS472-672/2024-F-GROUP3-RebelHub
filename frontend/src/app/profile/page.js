@@ -1,22 +1,7 @@
-// import { useState } from 'react';
 import Sidebar from '../../components/sidebar';
-import Image from 'next/image';
 import './profile.css';
 
 export default function Profile() {
-//   const [profilePic, setProfilePic] = useState('/profile-pic.jpg'); // Default profile picture
-//   const [view, setView] = useState('posts'); // State to manage selected view
-
-//   const handleImageChange = (event) => {
-//     const file = event.target.files[0];
-//     if (file) {
-//       const reader = new FileReader();
-//       reader.onloadend = () => {
-//         setProfilePic(reader.result);
-//       };
-//       reader.readAsDataURL(file); // Convert image to base64 URL
-//     }
-//   };
 
   return (
     <div style={{ display: 'flex', backgroundColor:'#37474f'}}>
