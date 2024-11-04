@@ -7,6 +7,5 @@ out/
 
 venv/
 htmlcov/
-
 # Django related
 backend/db.sqlite3
