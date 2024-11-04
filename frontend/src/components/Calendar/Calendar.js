@@ -1,14 +1,26 @@
 "use client";
-import axios from "axios";
 import { useState, useEffect } from "react";
 import styles from "./Calendar.module.css";
 import EventModal from "./EventModal.js";
+import UpdateForm from "./UpdateForm.js";
+import CreateForm from "./CreateForm.js";
+import api from "../../utils/api";
 
 const Calendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date()); // Holds the current date in order for today button to work
+  const [currentDate, setCurrentDate] = useState(new Date()); // Holds the current date of the calendar. Can be changed through various acitons.
   const [events, setEvents] = useState([]); // Holds events that are pulled by API
-  const [isModalOpen, setIsModalOpen] = useState(false); // Checks if modal is opened in order to avoid any issues
   const [currentEvent, setCurrentEvent] = useState(null); // Holds the event for the current opened modal
+  const [currentUpdate, setCurrentUpdate] = useState(null); // Holds the event for the current update form
+  const route = '/api/events';
+  const [hubsModding, setHubsModding] = useState([]); // Holds the hubs that the current user is modding or is an owner of
+
+  /*
+  States that check if X is open in order to avoid any issues
+  */
+  const [isModalOpen, setIsModalOpen] = useState(false); // Event modal
+  const [isCreateOpen, setIsCreateOpen] = useState(false); // Create form 
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false); // Update form
+  const [isMonthOpen, setMonthOpen] = useState(false); // Month dropdown
 
   // Function to handle states when a modal is opened
   const openModal = (event) => {
@@ -24,19 +36,84 @@ const Calendar = () => {
     setCurrentEvent(null);
   };
 
-  // Fetches events from API
+  // Function to handle states when an update form is opened
+  const openUpdateForm = () => {
+    setCurrentUpdate(currentEvent);
+    setIsUpdateOpen(true);
+    console.log("Opening update form for event:", currentEvent.title);
+  }
+
+  // Function to handle states when an update form is closed
+  const closeUpdateForm = () => {
+    console.log("Closing update form for event:", currentUpdate.title);
+    setCurrentUpdate(null);
+    setIsUpdateOpen(false);
+  }
+
+  // Function to live update (no browser refresh required) the calendar when an event is updated 
+  const updateEvent = (updatedEvent) => {
+    setEvents((previousEvents) => previousEvents.map((event) => event.id === updatedEvent.id ? updatedEvent : event));
+  };
+
+  // Function to handle states when a create form is opened
+  const openCreateForm = () => {
+    setIsCreateOpen(true);
+    console.log("Opening create form.");
+  }
+
+  // Function to handle states when a create form is closed
+  const closeCreateForm = () => {
+    setIsCreateOpen(false);
+    console.log("Closing create form");
+  } 
+
+  // Function to display a newly created event onto the calendar locally without refreshing the browser
+  const createEvent = (newEvent) => {
+    setEvents((prevEvents) => [...prevEvents, newEvent]); 
+    console.log("Created Event: ", newEvent.title);
+  }
+
+  // Function to delete the current event on a modal
+  const deleteEvent = async (deletedEvent) => {
+    try {
+      // Make DELETE request to delete the event
+      await api.delete(`${route}/${deletedEvent.id}/delete/`);
+      setEvents((previousEvents) => previousEvents.filter((event) => event.id !== deletedEvent.id));
+      closeModal();
+    } catch (error) {
+      console.log("Error deleting event: ", error.response);
+    } 
+  }
+
+  // Fetches events and hubs from API
   useEffect(() => {
-    console.log("Fetching...");
+
+    console.log("Fetching the hubs the current user is a owner of or is moderating...");
+    const fetchHubs = async () => {
+      try {
+          const response = await api.get("/api/hubs/modding/");
+          console.log("Modded hubs: ", response.data);
+          const response2 = await api.get("/api/hubs/owned/");
+          console.log("Owned hubs: ", response2.data);
+          // Combine hubs that the user owns and the user is a moderator of. 
+          // Note: A user cannot be both an owner and a moderator of the same hub
+          setHubsModding([...response.data, ...response2.data]);
+      } catch (error) {
+          console.error("Error fetching modded hubs: ", error);
+      } 
+    };
+    fetchHubs();
+
+    console.log("Fetching events...");
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/events/");
+        const response = await api.get("/api/events/");
         setEvents(response.data);
         console.log("Successful fetch");
-      } catch (error) {
-        console.log("Error fetching events: ", error);
-      }
+      } catch (error) { console.log("Error fetching events: ", error); }
     };
     fetchEvents();
+
   }, []);
 
   const months = [
@@ -88,7 +165,7 @@ const Calendar = () => {
     // Places the first days of the next month to fill out any remaining space in a week
     for (let i = grid.length, j = 1; i < gridSize; i++, j++)
       grid.push(new Date(year, month + 1, j));
-
+    
     return grid;
   };
 
@@ -124,10 +201,36 @@ const Calendar = () => {
             >
               →
             </button>
-            <h2 className={styles.title}>
-              {months[currentDate.getMonth()]} {currentDate.getFullYear()}
-            </h2>
+            <button onClick={openCreateForm} className={styles["create-button"]}>Create</button>
           </div>
+
+          <div className={styles.dropdown}>
+            <h2 className={styles.title}>
+              <span className={styles["title-month"]} onClick={() => setMonthOpen(!isMonthOpen)}>
+                {months[currentDate.getMonth()]} 
+              </span>
+              <span>
+                {currentDate.getFullYear()}
+              </span>
+            </h2>
+            {/* Dropdown menu to change month */}
+            {isMonthOpen && (
+              <ul className={styles["dropdown-list"]}>
+                {months.map((month, index) => (
+                  <li className={styles["dropdown-item"]}
+                  key={index}
+                  onClick={() => { 
+                    setCurrentDate(new Date(currentDate.getFullYear(), index, currentDate.getDate()));
+                    setMonthOpen(false);
+                  }}  
+                  >
+                    {month}
+                  </li> 
+                ))}
+              </ul>
+            )}
+          </div>
+
         </div>
     
         {/* Body includes the weekdays and the calendar grid of days and their events */}
@@ -143,7 +246,7 @@ const Calendar = () => {
           <div className={styles.days}>
             {/* Maps each day of the month onto the grid along with their events */}
             {currentGrid.map((day, index) => {
-
+              
               // Filter events to get events for each day by checking date, month, and year
               const eventsForDay = events.filter((event) => {
                 const eventDate = new Date(event.start_time);
@@ -155,10 +258,10 @@ const Calendar = () => {
               });
 
               return (
-                <div className={styles.day} key={index}>
+                <div className={styles.day} key={day.toISOString()}>
                   <span className={styles["day-number"]}>{day.getDate()}</span>
                   {/* Used to map events onto a day cell on the calendar grid */}
-                  {eventsForDay.map((event, index) => (
+                  {eventsForDay.map((event) => (
                     <div
                       key={event.id}
                       className={styles.event}
@@ -183,11 +286,18 @@ const Calendar = () => {
       {/* Modal for an event is displayed when an event is clicked on */}
       {/* Modal uses another component with the EventModal.js file */}
       <EventModal
-        details={currentEvent}
+        event={currentEvent}
         isOpen={isModalOpen}
         onClose={closeModal}
+        onEdit={openUpdateForm}
+        onDelete={deleteEvent}
+        hubsModding={hubsModding}
       />
       
+      {/* Display update form and create form */}
+      {isUpdateOpen && <UpdateForm event={currentUpdate} isOpen={isUpdateOpen} onClose={closeUpdateForm} onUpdate={updateEvent} route={route}/>}
+      {isCreateOpen && <CreateForm isCreateOpen={isCreateOpen} onClose={closeCreateForm} onCreate={createEvent} hubs={hubsModding} route={route}/>}
+
     </div>
   );
 };

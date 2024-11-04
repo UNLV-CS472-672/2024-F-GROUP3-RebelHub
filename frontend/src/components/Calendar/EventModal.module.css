@@ -1,99 +1,142 @@
 /* CSS for EventModal.js */
 
 .overlay {
-    position: fixed; /* Fixed position to cover the entire screen */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
-    z-index: 100; 
-  }
-  
-  .modal {  
-    position: absolute; 
-    top: 50%;
-    left: 60%;
-    transform: translate(-50%, -50%); 
-    background-color: white; 
-    color: black;
-    padding-left: 1.75vw; 
-    padding-right: 1.75vw; 
-    padding-bottom: 1.75vh; 
-    padding-top: 0;
-    border-radius: 1vw; /* Rounded corners */
-    min-width: 200px;
-    min-height: 100px;
-    max-width: 40vw;
-    max-height: 60vh;
-    overflow-y: auto;
-    margin: 0;
-  }
-  
-  .header{
-    background-color: white;
-    position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    padding-top: clamp(0.5vh, 1.4vh, 2vh);
-  }
+  position: fixed; 
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+  z-index: 100; 
+}
 
-  /* Close button is located top right of the modal */
-  .close-button {
-    position: absolute;
-    top: 0; /* Position from the top */
-    right: clamp(-1.4vw, -1.5vw, -1.5vw); /* Position from the right */
-    background: none; 
-    border: none; 
-    font-size: clamp(0.875rem, 1.6vw, 1.6vw); 
-    color: black;
-    cursor: pointer; 
-    user-select: none;
-    z-index: 10000;
-  }
+.modal {  
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  background-color: white; 
+  color: black;
+  padding-left: 1.75vw; 
+  padding-right: 1.75vw; 
+  border-radius: 1vw; 
+  min-width: 200px;
+  min-height: 100px;
+  max-width: 40vw;
+  max-height: 60vh;
+  overflow-y: auto;
+  margin: 0;
+}
 
-  .title{
-    font-size: clamp(1.125rem, 2.2vw, 2.2vw);
-    overflow-x: auto;
-  }
+.header{
+  background-color: white;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  padding-top: clamp(0.5vh, 1.4vh, 2vh);
+}
 
-  .location{
-    font-size: clamp(.563rem, 1.1vw, 1.1vw);
-  }
+/* Close button is located top right of the modal */
+.close-button {
+  position: absolute;
+  top: 0; 
+  right: clamp(-1.4vw, -1.5vw, -1.5vw); 
+  background: none; 
+  border: none; 
+  font-size: clamp(0.875rem, 1.6vw, 1.6vw); 
+  color: black;
+  cursor: pointer; 
+  user-select: none;
+  z-index: 10000;
+}
 
-  .times{
-    display: flex;
-    justify-content: space-between;
-    font-size: clamp(.563rem, 1.0vw, 1.1vw);
-  }
+.title{
+  font-size: clamp(1.31rem, 2.2vw, 2.2vw);
+  overflow-x: auto;
+  white-space: nowrap;
+}
 
+.location{
+  font-size: clamp(.75rem, 1.1vw, 1.1vw);
+}
 
-  .description{
-    padding-top: 1vh;
-    font-size: clamp(0.625rem, 1.2vw, 1.2vw);
-  }
+.start_time{
+  font-size: clamp(.75rem, 1.0vw, 1.1vw);
+}
 
-  /* Horizontal lines */
+.end_time{
+  font-size: clamp(.75rem, 1.0vw, 1.1vw);
+}
 
-  .grey-line{
-    height: 0.1vh;
-    background-color: grey 0;
-    margin-bottom: .5vh;
-  }
+.description{
+  padding-top: 1vh;
+  font-size: clamp(0.9rem, 1.2vw, 1.2vw);
+}
 
-  .scarlet-line{
-    border: none; 
-    height: 0.35vh;
-    background-color: #CF0A2C;
-    margin-top: 0.5vh;
-  }
+.hub{
+  font-size: clamp(.75rem, 1.0vw, 1.1vw);
+}
 
-  .black-line{
-    border: none; 
-    height: 0.35vh;
-    background-color: black;
-    margin-bottom: 0.3vh;
-  }
+/* Horizontal lines */
 
+.grey-line{
+  height: 0.1vh;
+  background-color: grey 0;
+  margin-bottom: .5vh;
+}
+
+.scarlet-line{
+  border: none; 
+  height: 0.35vh;
+  background-color: #CF0A2C;
+  margin-top: 0.5vh;
+}
+
+.black-line{
+  border: none; 
+  height: 0.35vh;
+  background-color: black;
+  margin-bottom: 0.3vh;
+}
+
+/* Update and Delete buttons */
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white; 
+  z-index: 100000;
+}
+
+.bottom-scarlet-line {
+  border: none; 
+  height: 0.35vh;
+  background-color: #CF0A2C;
+  margin: 0; 
+}
+
+.bottom-black-line {
+  border: none; 
+  height: 0.35vh;
+  background-color: black;
+  margin: 0;
+  margin-top: 0.25vh;
+}
+
+.crud-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: clamp(0.5vh, 1.4vh, 2vh); 
+}
+
+.update-button,
+.delete-button {
+  padding: clamp(4px, .35vw, .35vw); 
+  background-color: #CF0A2C;
+  cursor: pointer;
+  font-size: clamp(0.4rem, .7vw, .7vw); 
+}

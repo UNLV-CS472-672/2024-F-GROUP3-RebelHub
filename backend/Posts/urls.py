@@ -10,10 +10,10 @@ urlpatterns = [
     path('posts/create/', CreatePost.as_view(), name='post-create'),  
     
     # Endpoints for liking and disliking a post. Frontend can send requests to the correct URL when a user interacts with the like or dislike buttons.
-    path('posts/<int:post_id>/like/', LikePost.as_view(), name='like-post'), 
-    path('posts/<int:post_id>/dislike/', DislikePost.as_view(), name='dislike-post'),
+    path('posts/<int:id>/like/', LikePost.as_view(), name='like-post'), 
+    path('posts/<int:id>/dislike/', DislikePost.as_view(), name='dislike-post'),
     
     # Endpoints for retrieving a single post by its ID (GET) and  deleting a post by its ID (DELETE)
-    path('posts/<int:post_id>/', PostDetail.as_view(), name='post-detail'),
-    path('posts/<int:post_id>/delete/', PostDelete.as_view(), name='post-delete'),
+    path('posts/<int:id>/', PostDetail.as_view(), name='post-detail'),
+    path('posts/<int:id>/delete/', PostDelete.as_view(), name='post-delete'),
 ]

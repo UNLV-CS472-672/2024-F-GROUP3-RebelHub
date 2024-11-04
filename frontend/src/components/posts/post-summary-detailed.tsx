@@ -56,9 +56,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 </div>
                 <div className={styles.detailedPostElement}>
                     <LikeDislikeButtons 
-                        objectId={post.id} 
-                        likes={post.likes} 
-                        dislikes={post.dislikes} 
+                        postObject={post}
                         likeUrlFunction={getLikePostUrl} 
                         dislikeUrlFunction={getDislikePostUrl}
                         containerClassName={styles.detailedVoteContainer}/>

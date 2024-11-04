@@ -31,9 +31,7 @@ const PostSummary: React.FC<ComponentProps> = ({ post }) => {
         <div className={styles.postContainer}>
             <div className={styles.postElementColumn}>
                 <LikeDislikeButtons 
-                    objectId={post.id} 
-                    likes={post.likes} 
-                    dislikes={post.dislikes} 
+                    postObject={post} 
                     likeUrlFunction={getLikePostUrl} 
                     dislikeUrlFunction={getDislikePostUrl}
                     containerClassName={styles.summaryVoteContainer}/>

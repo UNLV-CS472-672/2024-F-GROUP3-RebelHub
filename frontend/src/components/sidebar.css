@@ -1,6 +1,6 @@
 .sidebar {
     width: 250px;
-    background-color: #1f1f1f;
+    background-color: transparent;
     height: 100vh;
     position: fixed;
     top: 0;
