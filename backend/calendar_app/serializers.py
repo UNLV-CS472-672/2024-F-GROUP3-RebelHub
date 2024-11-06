@@ -12,14 +12,14 @@ class EventSerializer(serializers.ModelSerializer):
 class EventCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ['id', 'title', 'description', 'location', 'start_time', 'end_time', 'color', 'hub', 'isPersonal']
-        read_only_fields = ['id']
+        fields = ['id', 'title', 'description', 'location', 'start_time', 'end_time', 'color', 'hub', 'isPersonal', 'author']
+        read_only_fields = ['id', 'author']
 
     def validate(self, data):
         request = self.context.get('request')
         user = request.user
-         # Function to test if string is valid hex color. This will act as a helper method
 
+        # Function to test if string is valid hex color. This will act as a helper method
         if data.get('color').startswith('#'):
             if len(data.get('color')) == 7:
                 for char in data.get('color')[1:]:
@@ -51,7 +51,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
 class EventUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ['title', 'description', 'location', 'start_time', 'end_time', 'color']
+        fields = ['id', 'title', 'description', 'location', 'start_time', 'end_time', 'color']
         read_only_fields = ['id']
 
     def validate(self, data):

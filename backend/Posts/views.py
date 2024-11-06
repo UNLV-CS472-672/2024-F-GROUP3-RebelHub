@@ -23,7 +23,8 @@ class PostDelete(generics.DestroyAPIView):
         user = self.request.user
         if user != instance.author:
             if user != instance.hub.owner:
-                raise PermissionDenied("Could Not Delete Post : You are not post author or hub owner")
+                if user not in instance.hub.mods.all():
+                    raise PermissionDenied("Could Not Delete Post: You are not post author, hub owner, or a hub moderator")
         instance.delete()
 
 

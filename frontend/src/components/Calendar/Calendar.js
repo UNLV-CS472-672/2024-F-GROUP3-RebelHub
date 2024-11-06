@@ -5,15 +5,16 @@ import EventModal from "./EventModal.js";
 import UpdateForm from "./UpdateForm.js";
 import CreateForm from "./CreateForm.js";
 import api from "../../utils/api";
+import {fetchHubs} from "../../utils/fetchPrivileges";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date()); // Holds the current date of the calendar. Can be changed through various acitons.
   const [events, setEvents] = useState([]); // Holds events that are pulled by API
   const [currentEvent, setCurrentEvent] = useState(null); // Holds the event for the current opened modal
   const [currentUpdate, setCurrentUpdate] = useState(null); // Holds the event for the current update form
+  const [hubsModding, setHubsModding] = useState([]);
   const route = '/api/events';
-  const [hubsModding, setHubsModding] = useState([]); // Holds the hubs that the current user is modding or is an owner of
-
+  
   /*
   States that check if X is open in order to avoid any issues
   */
@@ -87,23 +88,6 @@ const Calendar = () => {
 
   // Fetches events and hubs from API
   useEffect(() => {
-
-    console.log("Fetching the hubs the current user is a owner of or is moderating...");
-    const fetchHubs = async () => {
-      try {
-          const response = await api.get("/api/hubs/modding/");
-          console.log("Modded hubs: ", response.data);
-          const response2 = await api.get("/api/hubs/owned/");
-          console.log("Owned hubs: ", response2.data);
-          // Combine hubs that the user owns and the user is a moderator of. 
-          // Note: A user cannot be both an owner and a moderator of the same hub
-          setHubsModding([...response.data, ...response2.data]);
-      } catch (error) {
-          console.error("Error fetching modded hubs: ", error);
-      } 
-    };
-    fetchHubs();
-
     console.log("Fetching events...");
     const fetchEvents = async () => {
       try {
@@ -113,6 +97,12 @@ const Calendar = () => {
       } catch (error) { console.log("Error fetching events: ", error); }
     };
     fetchEvents();
+
+    const fetchHubsModding = async () => {
+      const hubs = await fetchHubs();
+      setHubsModding(hubs);
+    }
+    fetchHubsModding();
 
   }, []);
 
@@ -291,12 +281,11 @@ const Calendar = () => {
         onClose={closeModal}
         onEdit={openUpdateForm}
         onDelete={deleteEvent}
-        hubsModding={hubsModding}
       />
       
       {/* Display update form and create form */}
       {isUpdateOpen && <UpdateForm event={currentUpdate} isOpen={isUpdateOpen} onClose={closeUpdateForm} onUpdate={updateEvent} route={route}/>}
-      {isCreateOpen && <CreateForm isCreateOpen={isCreateOpen} onClose={closeCreateForm} onCreate={createEvent} hubs={hubsModding} route={route}/>}
+      {isCreateOpen && <CreateForm isCreateOpen={isCreateOpen} onClose={closeCreateForm} onCreate={createEvent} hubsModding={hubsModding} route={route}/>}
 
     </div>
   );

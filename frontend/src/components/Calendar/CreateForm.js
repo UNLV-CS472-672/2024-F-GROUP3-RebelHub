@@ -2,7 +2,7 @@ import styles from "./CreateForm.module.css";
 import { useState } from 'react';
 import api from "../../utils/api";
 
-const CreateForm = ({isCreateOpen, onClose, onCreate, hubs, route}) => {
+const CreateForm = ({isCreateOpen, onClose, onCreate, hubsModding, route}) => {
     if (!isCreateOpen) return null;
 
     const [title, setTitle] = useState("");
@@ -97,7 +97,7 @@ const CreateForm = ({isCreateOpen, onClose, onCreate, hubs, route}) => {
             {/* Dropdown menu to select hub for event. */}
             {isHubListOpen &&  (
               <ul className={styles["dropdown-list"]}>
-                {hubs.map((hubItem, index) => (
+                {hubsModding.map((hubItem, index) => (
                   <li className={styles["dropdown-item"]}
                   key={index}
                   onClick={() => { 
