@@ -3,6 +3,6 @@
  import Form from "@/components/Accounts/LoginForms";
 
 function Login(){
-    return <Form route="api/users/token/"  />
+    return <Form/>
 }
 export default Login

@@ -1,10 +1,10 @@
 import {useState} from "react";
 import api from "../../utils/api";
 import { useRouter } from 'next/navigation';
-
+import { getRegisterUserUrl } from "@/utils/url-segments";
 import register from "../../app/styles/register.css"
 
-function Form({route}) {
+function Form() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
@@ -23,8 +23,8 @@ function Form({route}) {
             return;
         }
         try {
-            console.log(route)
-            const request = await api.post(route, { email,username, password})
+            console.log(getRegisterUserUrl())
+            const request = await api.post(getRegisterUserUrl(), { email,username, password})
             router.push('/users/login')
             router.refresh()
 

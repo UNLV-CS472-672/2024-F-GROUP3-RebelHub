@@ -1,8 +1,9 @@
 import styles from "./UpdateForm.module.css";
 import { useState } from 'react';
 import api from "../../utils/api";
+import { getUpdateEventURL } from "@/utils/url-segments";
 
-const UpdateForm = ({ event, isOpen, onClose, onUpdate, route }) => {
+const UpdateForm = ({ event, isOpen, onClose, onUpdate}) => {
     if (!isOpen) return null;
 
     /* Converts the DateTimeFormat from start_time and end_time into datetime-local.
@@ -37,7 +38,7 @@ const UpdateForm = ({ event, isOpen, onClose, onUpdate, route }) => {
       e.preventDefault();
       try {
         // Make PUT request to update the event
-        await api.put(`${route}/${event.id}/update/`, { title, description, location, start_time: convertToUTC(startTime), end_time: convertToUTC(endTime) || null, color: color});
+        await api.put(getUpdateEventURL(event.id), { title, description, location, start_time: convertToUTC(startTime), end_time: convertToUTC(endTime) || null, color: color});
         onUpdate({...event, title, description, location, start_time: startTime, end_time: endTime, color: color || "#eb4f34" });
         onClose();
       } catch (error) {

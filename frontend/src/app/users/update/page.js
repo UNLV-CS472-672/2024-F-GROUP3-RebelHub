@@ -5,6 +5,7 @@ import {  useState,useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import api from "@/utils/api";
 import ProtectedRoute from "@/components/Accounts/ProtectedRoutes";
+import { getCurrentUserUrl } from "@/utils/url-segments";
 
 function Update() {
     const [newUsername, setNewUserName] = useState("")
@@ -13,7 +14,7 @@ function Update() {
     const handleUpdate = async () => {
 
         try {
-            const response = await api.patch(`api/users/currentUser/`, {username:newUsername})
+            const response = await api.patch(getCurrentUserUrl(), {username:newUsername})
             console.log("Username changed Successfully")
         } catch (error) {
             console.error("Error updating username")
