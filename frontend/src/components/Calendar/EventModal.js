@@ -4,6 +4,7 @@ import api from "../../utils/api";
 import Modal from "react-modal";
 import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivileges";
 import { getHubUrl } from "@/utils/url-segments";
+import { formatDate } from "@/utils/url-segments";
 
 const EventModal = ({ event, isOpen, onClose, onEdit, onDelete}) => {
   // Returns null if the modal is blank or it is already open
@@ -64,16 +65,6 @@ const EventModal = ({ event, isOpen, onClose, onEdit, onDelete}) => {
     "November",
     "December",
   ];
-
-  // Used to format the start_time and end_time 
-  const formatDate = (date) => {
-    const dateObject = new Date(date);
-    const prepend = (number) => {return number >= 10 ? number : "0" + number;}
-    const AMorPM = dateObject.getHours() >= 12 ? "pm" : "am";
-    const MDY = months[dateObject.getMonth()] + " " + dateObject.getDate() + ", " + dateObject.getFullYear();
-    const HM = (dateObject.getHours() % 12 == 0 ? 12 : dateObject.getHours() % 12) + ":" + prepend(dateObject.getMinutes()) + AMorPM;
-    return MDY + " " + HM;
-  }
 
   return (
     <Modal
