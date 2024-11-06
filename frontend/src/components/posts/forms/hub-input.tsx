@@ -2,7 +2,7 @@
 
 import { FC, useEffect, useState } from "react";
 import styles from "../posts.module.css";
-import { getHubsJoinedURL } from "@/utils/posts/url-segments";
+import { getHubsJoinedURL } from "@/utils/url-segments";
 import api from "@/utils/api";
 import { Hub } from "@/utils/posts/definitions";
 import { useFormContext } from "react-hook-form";

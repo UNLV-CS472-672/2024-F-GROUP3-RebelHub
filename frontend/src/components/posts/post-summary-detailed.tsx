@@ -3,7 +3,7 @@
 import { Post } from "@/utils/posts/definitions";
 import styles from "./posts.module.css";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
-import { getDislikePostUrl, getLikePostUrl } from "@/utils/posts/url-segments";
+import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
 
 interface ComponentProps {
     post: Post;
