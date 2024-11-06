@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import { findInputError, isFormInvalid } from "@/utils/posts/create-post-input-helper";
 
-import styles from "./posts.module.css";
+import styles from "../posts.module.css";
 
 interface ComponentProps {
     label: string,

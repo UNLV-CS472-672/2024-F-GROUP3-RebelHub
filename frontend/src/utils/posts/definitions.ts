@@ -1,6 +1,6 @@
 export type Post = {
     id: number,
-    author: string,
+    author: number,
     title: string,
     message: string,
     timestamp: Date,
@@ -10,4 +10,16 @@ export type Post = {
     is_author: boolean,
     is_disliked: boolean,
     is_liked: boolean,
+}
+
+export type Hub = {
+    id: number,
+    name: string,
+    description: string,
+    owner: number,
+    mods: number[],
+    members: number[],
+    pending_members: number[],
+    created_at: Date,
+    private_hub: boolean,
 }

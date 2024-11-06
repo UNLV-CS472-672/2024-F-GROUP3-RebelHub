@@ -13,6 +13,11 @@ export const URL_SEGMENTS = {
     USERS_HOME: "users/",
 
     USERS_LOGIN: "/login/",
+
+    HUBS_HOME: "hubs/",
+
+    HUBS_API_BASE: "api/hubs/",
+    HUBS_JOINED: "joined/",
 };
 
 // Functions to return a URL for an API call
@@ -39,6 +44,10 @@ export function getCreatePostURL() {
 
 export function getDeletePostURL(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_DELETE;
+}
+
+export function getHubsJoinedURL() {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.HUBS_API_BASE + URL_SEGMENTS.HUBS_JOINED;
 }
 
 // Functions to return a URL for a redirect
