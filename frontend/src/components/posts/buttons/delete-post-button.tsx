@@ -41,7 +41,7 @@ const DeletePostButton: React.FC<ComponentProps> = ({ post }) => {
                 If they are somewhere else, we refresh the page.
             */
 
-            if (pathname == "/" + URL_SEGMENTS.POSTS_HOME + id + "/") {
+            if (pathname == "/" + URL_SEGMENTS.POSTS_HOME + postId + "/") {
                 router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME);
             } else {
                 window.location.reload()

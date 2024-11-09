@@ -29,6 +29,7 @@ export const URL_SEGMENTS = {
     POSTS_DELETE: "/delete/",
     POSTS_LIKE: "/like/",
     POSTS_DISLIKE: "/dislike/",
+    POSTS_EDIT: "/edit/",
     // #endregion
 
     // #region Comments
@@ -36,7 +37,7 @@ export const URL_SEGMENTS = {
     COMMENTS_API_BASE: "api/comments/",
     COMMENTS_CREATE: "create/",
     COMMENTS_LIKE: "/like/",
-    COMMENTS_LIKE: "/dislike/",
+    COMMENTS_DISLIKE: "/dislike/",
     COMMENTS_REPLY: "/reply/",
     // #endregion
 
@@ -182,6 +183,11 @@ export function getCreatePostUrl() {
 // "http://localhost:8000/api/posts/<int:id>/delete/"
 export function getDeletePostUrl(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_DELETE;
+}
+
+// "http://localhost:8000/api/posts/<int:id>/edit/"
+export function getEditPostUrl(postId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_EDIT;
 }
 
 // #endregion

@@ -3,7 +3,7 @@
 import { FormProvider, useForm } from "react-hook-form";
 import CreateInput from "@/components/posts/forms/create-input";
 import { TITLE_VALIDATION, POST_MESSAGE_VALIDATION } from "@/utils/posts/create-post-validations";
-import { gotoDetailedPostPage, URL_SEGMENTS } from "@/utils/posts/url-segments";
+import { gotoDetailedPostPage, URL_SEGMENTS, getEditPostUrl } from "@/utils/url-segments";
 import styles from "./edit-post-form.module.css";
 import api from "@/utils/api";
 import { usePathname, useRouter } from "next/navigation";
@@ -28,7 +28,7 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose }) => {
 
             console.log("Editing a post");
 
-            const response = await api.patch(`api/posts/${post.id}/edit`, {
+            const response = await api.patch(getEditPostUrl(post.id), {
                 title: data["title"],
                 message: data["message"],
             });

@@ -18,5 +18,5 @@ urlpatterns = [
     path('posts/<int:id>/delete/', PostDelete.as_view(), name='post-delete'),
 
     # Endpoint for editing a post by its ID
-    path('posts/<int:id>/edit', PostEdit.as_view(), name='post-edit'),
+    path('posts/<int:id>/edit/', PostEdit.as_view(), name='post-edit'),
 ]
