@@ -4,11 +4,12 @@ import React from "react";
 import { Post } from "@/utils/posts/definitions";
 import { useState, useEffect } from "react";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
+import EditPostButton from "./buttons/edit-post-button";
 import { getDislikePostUrl, getLikePostUrl, gotoDetailedPostPage } from "@/utils/posts/url-segments";
 import Link from "next/link";
 import DeletePostButton from "./buttons/delete-post-button";
 import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivileges";
-import styles from "./posts.module.css";
+import styles from "./post-summary.module.css";
 
 interface ComponentProps {
     post: Post;
@@ -23,10 +24,6 @@ interface ComponentProps {
 */
 
 const PostSummary: React.FC<ComponentProps> = ({ post }) => {
-    if (post == null) {
-        return <>No post.</>;
-    }
-
     const [showDelete, setShowDelete] = useState(false);
 
     useEffect(() => {
@@ -58,8 +55,9 @@ const PostSummary: React.FC<ComponentProps> = ({ post }) => {
                         {post.title}
                     </h2>
                 </Link>
-                <div>
-                    {showDelete && <DeletePostButton id={post.id} />}
+                <div className={styles.postButtonList}>
+                    {showDelete && <DeletePostButton postTitle={post.title} id={post.id} />}
+                    {showDelete && <EditPostButton post={post}/>}
                 </div>
             </div>
         </div>
