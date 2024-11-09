@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-import styles from "../posts.module.css";
+import styles from "./post-buttons.module.css";
 import api from "@/utils/api";
 import clsx from "clsx";
 import { Post } from "@/utils/posts/definitions";
@@ -82,7 +82,7 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
     
     return (
         <div className={containerClassName}>
-            <div className={styles.postLikeContainer}>
+            <div className={styles.voteContainer}>
                 <div>
                     {displayedLikes}
                 </div>
@@ -97,7 +97,7 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
                     </button>
                 </div>
             </div>
-            <div className={styles.postDislikeContainer}>
+            <div className={styles.voteContainer}>
                 <div>
                     {displayedDislikes}
                 </div>
