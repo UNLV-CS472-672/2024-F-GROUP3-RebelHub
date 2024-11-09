@@ -1,0 +1,21 @@
+.basicButton {
+    background-color: white;
+    color:black;
+    padding: 1px;
+}
+
+.likeButton {
+    background-color: green;
+    padding: 1px;
+}
+
+.dislikeButton {
+    background-color: red;
+    padding: 1px;
+}
+
+.voteContainer {
+    color: white;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
