@@ -2,17 +2,18 @@
 
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import DeletePostModal from "../modals/delete-post-modal";
+import DeleteModal from "../modals/delete-modal";
 import { getDeletePostURL, URL_SEGMENTS } from "@/utils/posts/url-segments";
-import styles from "../posts.module.css";
+import styles from "./post-buttons.module.css";
 import api from "@/utils/api";
 import { usePathname, useRouter } from "next/navigation";
 
 interface ComponentProps {
+    postTitle: string,
     id: number|string,
 }
 
-const DeletePostButton: React.FC<ComponentProps> = ({ id }) => {
+const DeletePostButton: React.FC<ComponentProps> = ({ postTitle, id }) => {
     const [showModal, setShowModal] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
@@ -54,7 +55,14 @@ const DeletePostButton: React.FC<ComponentProps> = ({ id }) => {
                 Delete Post
             </button>
             {showModal && createPortal(
-                <DeletePostModal id={id} deleteFunction={deletePost} onClose={() => setShowModal(false)}/>, 
+                <DeleteModal 
+                    warningMessage={"Are you sure you want to delete the post '" + postTitle +"'?"}
+                    deleteButtonName="Delete Post"
+                    cancelButtonName="Cancel" 
+                    id={id} 
+                    deleteFunction={deletePost} 
+                    onClose={() => setShowModal(false)}
+                />, 
                 document.body
             )}
         </div>
