@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from .models import Post
-from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer
+from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer, PostEditSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -68,3 +68,13 @@ class PostDetail(generics.RetrieveAPIView):
         if qs is None:
             raise NotFound("No Post with this ID was found")
         return qs
+
+# Edit a single post by its ID
+class PostEdit(generics.UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostEditSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+    def perform_update(self, serializer):
+        serializer.save()
