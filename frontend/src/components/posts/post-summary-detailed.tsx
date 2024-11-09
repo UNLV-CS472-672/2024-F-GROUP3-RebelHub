@@ -1,9 +1,13 @@
 "use client";
 
 import { Post } from "@/utils/posts/definitions";
-import styles from "./posts.module.css";
+import styles from "./post-summary-detailed.module.css";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
 import { getDislikePostUrl, getLikePostUrl } from "@/utils/posts/url-segments";
+import { useEffect, useState } from "react";
+import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
+import DeletePostButton from "./buttons/delete-post-button";
+import EditPostButton from "./buttons/edit-post-button";
 
 interface ComponentProps {
     post: Post;
@@ -18,9 +22,16 @@ interface ComponentProps {
 */
 
 const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
-    if (post == null) {
-        return <>No post.</>;
-    }
+    const [showDelete, setShowDelete] = useState(false);
+
+    useEffect(() => {
+        const fetchPrivileges = async () => {
+            const authorPrivileges = await checkAuthorPrivileges(post.author);
+            const hubPrivileges = await checkHubPrivileges(post.hub);
+            setShowDelete(authorPrivileges || hubPrivileges);
+        }
+        fetchPrivileges();
+    }, []);
 
     return (
         <div className={styles.detailedPostContainer}>
@@ -35,6 +46,11 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 <br></br>
                 <div>
                     {post.message}
+                </div>
+                <br></br>
+                <div className={styles.detailedPostButtonList}>
+                    {showDelete && <DeletePostButton postTitle={post.title} id={post.id} />}
+                    {showDelete && <EditPostButton post={post}/>}
                 </div>
             </div>
             <div className={styles.detailedPostFooterContainer}>
