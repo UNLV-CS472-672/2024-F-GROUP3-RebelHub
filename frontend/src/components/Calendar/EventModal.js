@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import api from "../../utils/api";
 import Modal from "react-modal";
 import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivileges";
+import { getHubUrl } from "@/utils/url-segments";
 
 const EventModal = ({ event, isOpen, onClose, onEdit, onDelete}) => {
   // Returns null if the modal is blank or it is already open
@@ -25,7 +26,7 @@ const EventModal = ({ event, isOpen, onClose, onEdit, onDelete}) => {
       if (event.hub && Number.isInteger(event.hub)) {
         console.log("Fetching hub from this id: ", event.hub);
         try {
-          const response = await api.get(`/api/hubs/${event.hub}/`);
+          const response = await api.get(getHubUrl(event.hub));
           setCurrentHub(response.data);
           console.log("Fetched the following hub from this key: ", event.hub, response.data);
         } catch (error) {

@@ -4,8 +4,9 @@ import api from "../../utils/api";
 import { useRouter } from 'next/navigation';
 import register from "../../app/styles/register.css"
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "@/utils/constants";
+import { getTokenUserUrl } from "@/utils/url-segments";
 
-function Form({route}) {
+function Form() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -14,8 +15,8 @@ function Form({route}) {
         setLoading(true)
         e.preventDefault()
         try {
-            console.log(route)
-            const request = await api.post(route, {username, password});
+            console.log(getTokenUserUrl())
+            const request = await api.post(getTokenUserUrl(), {username, password});
             localStorage.setItem(ACCESS_TOKEN, request.data.access);
             localStorage.setItem(REFRESH_TOKEN, request.data.refresh);
             router.push('/')

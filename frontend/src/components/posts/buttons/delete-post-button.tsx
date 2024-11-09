@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import DeletePostModal from "../modals/delete-post-modal";
-import { getDeletePostURL, URL_SEGMENTS } from "@/utils/posts/url-segments";
+import { getDeletePostURL, URL_SEGMENTS } from "@/utils/url-segments";
 import styles from "../posts.module.css";
 import api from "@/utils/api";
 import { usePathname, useRouter } from "next/navigation";

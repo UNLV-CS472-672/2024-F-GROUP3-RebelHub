@@ -4,6 +4,6 @@
  import Form from "@/components/Accounts/RegisterForms";
 
 function Register(){
-    return <Form route="api/users/register/"/>
+    return <Form/>
 }
 export default Register

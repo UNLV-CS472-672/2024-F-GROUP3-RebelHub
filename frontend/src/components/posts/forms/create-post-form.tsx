@@ -4,7 +4,7 @@ import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import CreatePostInput from "@/components/posts/forms/create-post-input";
 import { TITLE_VALIDATION, POST_MESSAGE_VALIDATION } from "@/utils/posts/create-post-validations";
-import { getCreatePostURL, URL_SEGMENTS } from "@/utils/posts/url-segments";
+import { getCreatePostURL, URL_SEGMENTS } from "@/utils/url-segments";
 import styles from "../posts.module.css";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";

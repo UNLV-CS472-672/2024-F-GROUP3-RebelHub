@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPostListUrl } from "@/utils/posts/url-segments";
+import { getPostListUrl } from "@/utils/url-segments";
 import CreatePostButton from "../buttons/create-post-button";
 import PostList from "../post-list";
 
