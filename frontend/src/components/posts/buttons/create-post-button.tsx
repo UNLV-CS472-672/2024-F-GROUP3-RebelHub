@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import styles from "./post-buttons.module.css"
-import { gotoCreatePostPage } from "@/utils/posts/url-segments";
+import { gotoCreatePostPage } from "@/utils/url-segments";
 import { FC } from "react";
 
 const CreatePostButton: FC = () => {

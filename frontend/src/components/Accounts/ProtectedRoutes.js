@@ -3,8 +3,7 @@ import api from "@/utils/api";
 import { REFRESH_TOKEN, ACCESS_TOKEN } from "@/utils/constants";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { gotoLoginPage } from "@/utils/posts/url-segments";
-
+import { getTokenRefreshUserUrl, gotoLoginPage } from "@/utils/url-segments";
 
 //This handles authentication for users on certain pages that need to be
 //protected from access if not logged in. Access tokens are good for 30 minutes
@@ -29,7 +28,7 @@ function ProtectedRoute( {children} ) {
         const refreshToken = localStorage.getItem(REFRESH_TOKEN);
         console.log("Refreshing Token")
         try {
-            const res = await api.post("/api/users/token/refresh/", {
+            const res = await api.post(getTokenRefreshUserUrl(), {
                 refresh: refreshToken,
             });
             if (res.status === 200) {

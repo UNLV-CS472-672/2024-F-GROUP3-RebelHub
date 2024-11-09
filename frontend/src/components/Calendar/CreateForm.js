@@ -1,8 +1,9 @@
 import styles from "./CreateForm.module.css";
 import { useState } from 'react';
 import api from "../../utils/api";
+import { getCreateEventURL } from "@/utils/url-segments";
 
-const CreateForm = ({isCreateOpen, onClose, onCreate, hubsModding, route}) => {
+const CreateForm = ({isCreateOpen, onClose, onCreate, hubsModding}) => {
     if (!isCreateOpen) return null;
 
     const [title, setTitle] = useState("");
@@ -25,7 +26,7 @@ const CreateForm = ({isCreateOpen, onClose, onCreate, hubsModding, route}) => {
         e.preventDefault();
         try {
             // Make POST request
-            const response = await api.post(`${route}/create/`, { title, description, location, start_time: convertToUTC(startTime), end_time: endTime ? convertToUTC(endTime) : null, color: color, hub: hub ? hub.id : null, isPersonal});
+            const response = await api.post(getCreateEventURL(), { title, description, location, start_time: convertToUTC(startTime), end_time: endTime ? convertToUTC(endTime) : null, color: color, hub: hub ? hub.id : null, isPersonal});
             onCreate(response.data);
             onClose();
         } catch (error) { console.log("Error creating event: ", error); } 

@@ -4,8 +4,8 @@ import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import CreateInput from "@/components/posts/forms/create-input";
 import { TITLE_VALIDATION, POST_MESSAGE_VALIDATION } from "@/utils/posts/create-post-validations";
-import { getCreatePostURL, URL_SEGMENTS } from "@/utils/posts/url-segments";
 import styles from "./create-post-form.module.css";
+import { getCreatePostUrl, URL_SEGMENTS } from "@/utils/url-segments";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import HubInput from "./create-input-hub";
@@ -28,7 +28,7 @@ const CreatePostForm: FC = () => {
 
             console.log("Creating new post");
 
-            const response = await api.post(getCreatePostURL(), {
+            const response = await api.post(getCreatePostUrl(), {
                 title: data["title"],
                 message: data["message"],
                 hub_id: data["hub_id"],

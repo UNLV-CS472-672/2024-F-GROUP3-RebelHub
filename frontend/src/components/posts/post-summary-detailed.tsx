@@ -3,11 +3,11 @@
 import { Post } from "@/utils/posts/definitions";
 import styles from "./post-summary-detailed.module.css";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
-import { getDislikePostUrl, getLikePostUrl } from "@/utils/posts/url-segments";
 import { useEffect, useState } from "react";
 import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
 import DeletePostButton from "./buttons/delete-post-button";
 import EditPostButton from "./buttons/edit-post-button";
+import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
 
 interface ComponentProps {
     post: Post;

@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import DeleteModal from "../modals/delete-modal";
-import { getDeletePostURL, URL_SEGMENTS } from "@/utils/posts/url-segments";
 import styles from "./post-buttons.module.css";
+import { getDeletePostUrl, URL_SEGMENTS } from "@/utils/url-segments";
 import api from "@/utils/api";
 import { usePathname, useRouter } from "next/navigation";
 import { Post } from "@/utils/posts/definitions";
@@ -26,7 +26,7 @@ const DeletePostButton: React.FC<ComponentProps> = ({ post }) => {
     const deletePost = async (postId: number|string) => {
         try {
             console.log("Delete post " + postId);
-            const response = await api.delete(getDeletePostURL(postId));
+            const response = await api.delete(getDeletePostUrl(postId));
 
             if (response.status != 204) {
                 throw new Error("Error when posting a delete post");

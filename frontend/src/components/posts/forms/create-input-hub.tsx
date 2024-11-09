@@ -2,7 +2,7 @@
 
 import { FC, useEffect, useState } from "react";
 import styles from "./create-input.module.css";
-import { getHubsJoinedURL } from "@/utils/posts/url-segments";
+import { getJoinedHubsUrl } from "@/utils/url-segments";
 import api from "@/utils/api";
 import { Hub } from "@/utils/posts/definitions";
 import { useFormContext } from "react-hook-form";
@@ -17,7 +17,7 @@ const HubInput: FC = () => {
         const getHubs = async () => {
             try {
                 console.log("Getting hubs for user");
-                const response = await api.get(getHubsJoinedURL());
+                const response = await api.get(getJoinedHubsUrl());
 
                 if(response.status == 200) {
                     console.log("Got hubs list");

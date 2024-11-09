@@ -1,7 +1,7 @@
 "use client";
 
 import PostSummary from "@/components/posts/post-summary";
-import { getDetailedPostUrl, URL_SEGMENTS } from "@/utils/posts/url-segments";
+import { getDetailedPostUrl, URL_SEGMENTS } from "@/utils/url-segments";
 
 import styles from "../posts.module.css";
 import { useEffect, useState } from "react";

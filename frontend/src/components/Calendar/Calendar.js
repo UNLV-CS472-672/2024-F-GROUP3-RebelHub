@@ -6,6 +6,7 @@ import UpdateForm from "./UpdateForm.js";
 import CreateForm from "./CreateForm.js";
 import api from "../../utils/api";
 import {fetchHubs} from "../../utils/fetchPrivileges";
+import { getDeleteEventURL, getEventListUrl } from "@/utils/url-segments";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date()); // Holds the current date of the calendar. Can be changed through various acitons.
@@ -13,7 +14,6 @@ const Calendar = () => {
   const [currentEvent, setCurrentEvent] = useState(null); // Holds the event for the current opened modal
   const [currentUpdate, setCurrentUpdate] = useState(null); // Holds the event for the current update form
   const [hubsModding, setHubsModding] = useState([]);
-  const route = '/api/events';
   
   /*
   States that check if X is open in order to avoid any issues
@@ -78,7 +78,7 @@ const Calendar = () => {
   const deleteEvent = async (deletedEvent) => {
     try {
       // Make DELETE request to delete the event
-      await api.delete(`${route}/${deletedEvent.id}/delete/`);
+      await api.delete(getDeleteEventURL(deletedEvent.id));
       setEvents((previousEvents) => previousEvents.filter((event) => event.id !== deletedEvent.id));
       closeModal();
     } catch (error) {
@@ -91,7 +91,7 @@ const Calendar = () => {
     console.log("Fetching events...");
     const fetchEvents = async () => {
       try {
-        const response = await api.get("/api/events/");
+        const response = await api.get(getEventListUrl());
         setEvents(response.data);
         console.log("Successful fetch");
       } catch (error) { console.log("Error fetching events: ", error); }
@@ -284,8 +284,8 @@ const Calendar = () => {
       />
       
       {/* Display update form and create form */}
-      {isUpdateOpen && <UpdateForm event={currentUpdate} isOpen={isUpdateOpen} onClose={closeUpdateForm} onUpdate={updateEvent} route={route}/>}
-      {isCreateOpen && <CreateForm isCreateOpen={isCreateOpen} onClose={closeCreateForm} onCreate={createEvent} hubsModding={hubsModding} route={route}/>}
+      {isUpdateOpen && <UpdateForm event={currentUpdate} isOpen={isUpdateOpen} onClose={closeUpdateForm} onUpdate={updateEvent}/>}
+      {isCreateOpen && <CreateForm isCreateOpen={isCreateOpen} onClose={closeCreateForm} onCreate={createEvent} hubsModding={hubsModding}/>}
 
     </div>
   );
