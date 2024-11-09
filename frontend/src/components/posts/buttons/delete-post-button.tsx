@@ -1,19 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import DeleteModal from "../modals/delete-modal";
 import { getDeletePostURL, URL_SEGMENTS } from "@/utils/posts/url-segments";
 import styles from "./post-buttons.module.css";
 import api from "@/utils/api";
 import { usePathname, useRouter } from "next/navigation";
+import { Post } from "@/utils/posts/definitions";
 
 interface ComponentProps {
-    postTitle: string,
-    id: number|string,
+    post: Post,
 }
 
-const DeletePostButton: React.FC<ComponentProps> = ({ postTitle, id }) => {
+/*
+    This component should be conditionally rendered using the helper
+    methods from fetchPrivileges.js
+*/
+
+const DeletePostButton: React.FC<ComponentProps> = ({ post }) => {
     const [showModal, setShowModal] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
@@ -56,10 +61,10 @@ const DeletePostButton: React.FC<ComponentProps> = ({ postTitle, id }) => {
             </button>
             {showModal && createPortal(
                 <DeleteModal 
-                    warningMessage={"Are you sure you want to delete the post '" + postTitle +"'?"}
+                    warningMessage={"Are you sure you want to delete the post '" + post.title +"'?"}
                     deleteButtonName="Delete Post"
                     cancelButtonName="Cancel" 
-                    id={id} 
+                    id={post.id} 
                     deleteFunction={deletePost} 
                     onClose={() => setShowModal(false)}
                 />, 

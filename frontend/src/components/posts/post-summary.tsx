@@ -24,13 +24,13 @@ interface ComponentProps {
 */
 
 const PostSummary: React.FC<ComponentProps> = ({ post }) => {
-    const [showDelete, setShowDelete] = useState(false);
+    const [showButton, setShowButton] = useState(false);
 
     useEffect(() => {
         const fetchPrivileges = async () => {
             const authorPrivileges = await checkAuthorPrivileges(post.author);
             const hubPrivileges = await checkHubPrivileges(post.hub);
-            setShowDelete(authorPrivileges || hubPrivileges);
+            setShowButton(authorPrivileges || hubPrivileges);
         }
         fetchPrivileges();
     }, []);
@@ -56,8 +56,12 @@ const PostSummary: React.FC<ComponentProps> = ({ post }) => {
                     </h2>
                 </Link>
                 <div className={styles.postButtonList}>
-                    {showDelete && <DeletePostButton postTitle={post.title} id={post.id} />}
-                    {showDelete && <EditPostButton post={post}/>}
+                    {showButton &&
+                    <>
+                        <DeletePostButton post={post} />
+                        <EditPostButton post={post} />
+                    </>
+                    }
                 </div>
             </div>
         </div>
