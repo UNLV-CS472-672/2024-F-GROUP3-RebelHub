@@ -113,3 +113,33 @@ class DislikePostSerializer(serializers.ModelSerializer):
             instance.dislikes.remove(user)
         instance.save()
         return instance
+
+class PostEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'message']
+        read_only_fields = ['id']
+
+    def validate(self, data):
+        request = self.context.get('request')
+        user = request.user
+        post = self.instance
+
+        if user != post.author and user != post.hub.owner and user not in post.hub.mods.all():
+            raise PermissionDenied("User does not have permission to update post")
+
+        # Because of the constraints in the database, these are currently unnecessary
+        if data.get('title') == "" or data.get('title') == None:
+            raise serializers.ValidationError("Post needs to have a title")
+        
+        if data.get('message') == "" or data.get('message') == None:
+            raise serializers.ValidationError("Post needs to have a message")
+
+        return data
+    
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.message = validated_data.get('message', instance.message)
+        instance.save()
+
+        return instance
