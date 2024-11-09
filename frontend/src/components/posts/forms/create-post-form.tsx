@@ -2,13 +2,13 @@
 
 import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import CreatePostInput from "@/components/posts/forms/create-post-input";
+import CreateInput from "@/components/posts/forms/create-input";
 import { TITLE_VALIDATION, POST_MESSAGE_VALIDATION } from "@/utils/posts/create-post-validations";
 import { getCreatePostURL, URL_SEGMENTS } from "@/utils/posts/url-segments";
-import styles from "../posts.module.css";
+import styles from "./create-post-form.module.css";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
-import HubInput from "./hub-input";
+import HubInput from "./create-input-hub";
 
 const CreatePostForm: FC = () => {
     const methods = useForm();
@@ -59,9 +59,9 @@ const CreatePostForm: FC = () => {
                     <h1>Create A Post</h1>
                 </div>
                 <div className={styles.createPostContainer}>
-                    <CreatePostInput {...TITLE_VALIDATION} />
+                    <CreateInput {...TITLE_VALIDATION} />
                     <HubInput/>
-                    <CreatePostInput {...POST_MESSAGE_VALIDATION} />
+                    <CreateInput {...POST_MESSAGE_VALIDATION} />
                 
                     <div className={styles.createPostButtonContainer}>
                         <button className={styles.createPostButton} onClick={onSubmit}>
