@@ -1,0 +1,6 @@
+.listContainer {
+    background-color: transparent;
+}
+.listContainer + .listContainer {
+    margin-top: 10px;
+}
