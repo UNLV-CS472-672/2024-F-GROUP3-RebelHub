@@ -14,6 +14,6 @@ urlpatterns = [
     path('comments/<int:comment_id>/dislike/', DislikeComment.as_view(), name='dislike-comment'),
     
     # Used for replies to a comment 
-    path('posts/<int:post_id>/comments/', CommentReplyList.as_view(), name='comment-list-create'),
+    path('comments/<int:comment_id>/replyList/', CommentReplyList.as_view(), name='comment-list-create'),
     path('comments/<int:comment_id>/reply/', CommentReplyCreate.as_view(), name='comment-reply-create'),
 ]
