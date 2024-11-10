@@ -13,27 +13,27 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         # comment_reply uses ForeignKey. So all the comment replies will have the same parent comment id. 
         # "replies" will list all replies associated with a specific comment.
-        fields = ['id', 'author', 'post', 'content', 'timestamp', 'likes', 'dislikes', 'replies', 'comment_reply']
+        fields = ['id', 'author', 'post', 'message', 'timestamp', 'likes', 'dislikes', 'replies', 'comment_reply']
         read_only_fields = ['author', 'likes', 'dislikes']
         
-        # Retrieves all replies from chosen comment
-        def get_replies(self, obj):
-            if obj.comment_reply is None:  
-                serializer = self.__class__(obj.replies.all(), many=True)
-                serializer.bind('', self)
-                return serializer.data
-            return None
+    # Retrieves all replies from chosen comment
+    def get_replies(self, obj):
+        if obj.comment_reply is None:  
+            serializer = self.__class__(obj.replies.all(), many=True)
+            serializer.bind('', self)
+            return serializer.data
+        return None
 
-        # When given a validated data, update and return the existing Comment instance.  
-        def to_representation(self, instance):
-            representation = super().to_representation(instance)
-            user = self.context.get('request').user
-            representation['is_author'] = user == instance.author
-            
-            # Check if user has already liked or disliked the comment
-            representation['is_liked'] = user in instance.likes.all()
-            representation['is_disliked'] = user in instance.dislikes.all()
-            return representation
+    # When given a validated data, update and return the existing Comment instance.  
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        user = self.context.get('request').user
+        representation['is_author'] = user == instance.author
+        
+        # Check if user has already liked or disliked the comment
+        representation['is_liked'] = user in instance.likes.all()
+        representation['is_disliked'] = user in instance.dislikes.all()
+        return representation
     
  # Serializer for creating any new comments
 class CommentCreateSerializer(serializers.ModelSerializer):
