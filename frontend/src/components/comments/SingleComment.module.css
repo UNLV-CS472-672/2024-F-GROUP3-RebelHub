@@ -1,0 +1,43 @@
+.container {
+    display: grid;
+    background-color: darkred;
+    color: white;
+    grid-template-rows: auto 1fr;
+    border: 10px;
+    border-radius: 10px;
+    gap: 10px;
+    padding: 10px;
+    text-align: left;
+}
+
+.headerContainer {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 10px;
+}
+
+.voteContainer {
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 10px;
+    color: white;
+}
+
+.profileBackground {
+    background-color: black;
+    border: 10px;
+    border-radius: 10px;
+}
+
+.commentMessageContainer {
+    display: grid;
+    grid-template-rows: 1fr 20px;
+}
+
+.buttonList {
+    display: grid;
+    grid-template-columns: auto;
+    align-items: right;
+    text-align: right;
+    gap: 10px;
+}
