@@ -1,13 +1,16 @@
 "use client";
 
-import { Post } from "@/utils/posts/definitions";
+import { Post, PostComment } from "@/utils/posts/definitions";
 import styles from "./post-summary-detailed.module.css";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
 import { useEffect, useState } from "react";
 import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
 import DeletePostButton from "./buttons/delete-post-button";
 import EditPostButton from "./buttons/edit-post-button";
-import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
+import { getCommentsListUrl, getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
+import api from "@/utils/api";
+import RecursiveComment from "../comments/RecursiveComment";
+import RecursiveCommentList from "../comments/RecursiveCommentList";
 
 interface ComponentProps {
     post: Post;
@@ -30,6 +33,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
             const hubPrivileges = await checkHubPrivileges(post.hub);
             setShowButton(authorPrivileges || hubPrivileges);
         }
+
         fetchPrivileges();
     }, []);
 
@@ -68,10 +72,10 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 </div>
                 <div className={styles.detailedPostElement}>
                     <div>
-                        {post.author}
+                        Author: {post.author}
                     </div>
                     <div>
-                        {post.hub}
+                        Hub: {post.hub}
                     </div>
                 </div>
                 <div className={styles.detailedPostElement}>
@@ -86,7 +90,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 </div>
             </div>
             <div>
-                [Comments]
+                <RecursiveCommentList post={post} />
             </div>
         </div>
     )
