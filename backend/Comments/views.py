@@ -77,11 +77,12 @@ class CommentReplyList(generics.ListAPIView):
 
 # Note: Have  to test if the increment works correctly for likes and dislikes        
 # Be able to like or dislike a comment based on the ID
-class LikeComment(generics.GenericAPIView):
+class LikeComment(generics.UpdateAPIView):
+    queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = LikeCommentSerializer
 
-    def post(self, request, comment_id):
+    def patch(self, request, comment_id):
         comment = get_object_or_404(Comment, id=comment_id)
         
         # Likes are only for comments and not replies
@@ -95,11 +96,12 @@ class LikeComment(generics.GenericAPIView):
         return Response({'likes': comment.likes.count(), 'dislikes': comment.dislikes.count()}, status=status.HTTP_200_OK)
 
 
-class DislikeComment(generics.GenericAPIView):
+class DislikeComment(generics.UpdateAPIView):
+    queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = DislikeCommentSerializer
 
-    def post(self, request, comment_id):
+    def patch(self, request, comment_id):
         comment = get_object_or_404(Comment, id=comment_id)
 
         # Dislikes are only for comments and not replies, but might be implemented later
