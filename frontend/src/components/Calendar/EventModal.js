@@ -4,7 +4,7 @@ import api from "../../utils/api";
 import Modal from "react-modal";
 import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivileges";
 import { getHubUrl } from "@/utils/url-segments";
-import { formatDate } from "@/utils/url-segments";
+import { formatDate } from "@/utils/datetime-conversion";
 
 const EventModal = ({ event, isOpen, onClose, onEdit, onDelete}) => {
   // Returns null if the modal is blank or it is already open
