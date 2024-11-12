@@ -9,7 +9,6 @@ import DeletePostButton from "./buttons/delete-post-button";
 import EditPostButton from "./buttons/edit-post-button";
 import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
 import RecursiveCommentList from "../comments/RecursiveCommentList";
-import CreateComment from "../comments/CreateComment";
 import CreateCommentButton from "../comments/buttons/CreateCommentButton";
 
 interface ComponentProps {
@@ -94,16 +93,11 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 </div>
             </div>
             <div>
-                {showCreateComment && 
-                    <div className={styles.detailedCreateComment}>
-                        <CreateComment 
-                            post={post} 
-                            onClose={() => setShowCreateComment(false)} 
-                            commentReply={null} 
-                        />
-                    </div>
-                }
-                <RecursiveCommentList post={post} />
+                <RecursiveCommentList 
+                    post={post} 
+                    showCreateComment={showCreateComment} 
+                    setShowCreateComment={setShowCreateComment}
+                />
             </div>
         </div>
     )
