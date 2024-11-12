@@ -48,6 +48,11 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
             
         } catch (error) {
             console.log("Error posting a like: " + error);
+
+            // If the object was deleted before someone tried to vote, reload the page.
+            if (error.status == 404) {
+                window.location.reload();
+            }
         }
     }
 
@@ -78,6 +83,11 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
             
         } catch (error) {
             console.log("Error posting a dislike: " + error);
+
+            // If the object was deleted before someone tried to vote, reload the page.
+            if (error.status == 404) {
+                window.location.reload();
+            }
         }
     }
     

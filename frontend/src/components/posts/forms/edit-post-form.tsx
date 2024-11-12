@@ -50,6 +50,12 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose }) => {
 
         } catch (error) {
             alert("There was an error in your edit: " + error);
+
+            // If the post was deleted while someone was editing it, reload the page
+            if (error.status == 404) {
+                window.location.reload();
+            }
+
             return null;
         }
     })

@@ -8,7 +8,7 @@ import { createPortal } from "react-dom";
 import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
 
 interface ComponentProps {
-    post: Post,
+    post: Post;
 }
 
 /*
