@@ -40,7 +40,8 @@ class CommentCreateSerializer(serializers.ModelSerializer):
     post_id = serializers.IntegerField(write_only=True) 
     class Meta:
         model = Comment
-        fields = ['message', 'post_id'] 
+        fields = ['id', 'message', 'post_id', 'author', 'post', 'message', 'timestamp', 'likes', 'dislikes', 'replies', 'comment_reply']
+        read_only_fields = ['id', 'author', 'post', 'timestamp', 'likes', 'dislikes', 'replies', 'comment_reply']
  
     # Validates the post and user permissions to for comment creation
     def validate(self, data):
