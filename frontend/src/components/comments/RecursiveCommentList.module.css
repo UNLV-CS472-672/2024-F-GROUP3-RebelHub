@@ -4,3 +4,7 @@
 .listContainer + .listContainer {
     margin-top: 10px;
 }
+
+.createComment {
+    margin-bottom: 10px;
+}

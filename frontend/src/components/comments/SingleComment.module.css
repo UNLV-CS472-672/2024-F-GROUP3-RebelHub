@@ -2,7 +2,7 @@
     display: grid;
     background-color: darkred;
     color: white;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto;
     border: 10px;
     border-radius: 10px;
     gap: 10px;
@@ -37,11 +37,6 @@
     background-color: black;
     border: 10px;
     border-radius: 10px;
-}
-
-.commentMessageContainer {
-    display: grid;
-    grid-template-rows: 1fr 20px;
 }
 
 .buttonList {
