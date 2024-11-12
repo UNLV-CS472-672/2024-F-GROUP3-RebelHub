@@ -12,9 +12,21 @@ interface ComponentProps {
     post: Post;
     onClose: () => void;
     commentReply: PostComment;
+    parentCreate: (create: PostComment) => void;
 }
 
-const CreateCommentForm: React.FC<ComponentProps> = ({ post, onClose, commentReply=null }) => {
+/*
+    CreateCommentForm
+
+    The form that creates a comment or a reply.
+
+    post: the post that the comment is being posted on
+    onClose: the function used to hide the dummy CreateComment component
+    commentReply: the comment that another comment is replying to. By default, it is null to represent a comment directly on a post
+    parentCreate: the function used to update a comment list without refreshing the page
+*/
+
+const CreateCommentForm: React.FC<ComponentProps> = ({ post, onClose, commentReply=null, parentCreate }) => {
     const methods = useForm();
 
     const onSubmit = methods.handleSubmit(async data => {
@@ -48,9 +60,9 @@ const CreateCommentForm: React.FC<ComponentProps> = ({ post, onClose, commentRep
 
             methods.reset();
 
-            // Reload the page so the user can see their comment/reply
-
-            window.location.reload();
+            // Use function to add comment to the hooks
+            parentCreate(response.data);
+            onClose();
 
         } catch (error) {
             alert("There was an error in your comment: " + error);

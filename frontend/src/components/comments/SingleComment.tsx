@@ -6,19 +6,47 @@ import recursiveStyles from "./RecursiveComment.module.css";
 import LikeDislikeButtons from "../posts/buttons/like-dislike-buttons";
 import { getLikeCommentUrl, getDislikeCommentUrl } from "@/utils/url-segments";
 import AccountButton from "@/components/navbar/AccountButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateCommentButton from "./buttons/CreateCommentButton";
 import CreateComment from "./CreateComment";
 import DeleteCommentButton from "./buttons/DeleteCommentButton";
+import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
 
 interface ComponentProps {
     post: Post;
     comment: PostComment;
+    parentUpdate: (update: PostComment) => void;
+    parentCreate: (create: PostComment) => void;
+    parentDelete: (del: PostComment) => void;
     showButtons?: boolean;
 }
 
-const SingleComment: React.FC<ComponentProps> = ({ post, comment, showButtons=true }) => {
+/*
+    SingleComment
+
+    Displays a single comment along with all the necessary components.
+
+    post: the post the comment is on
+    comment: the comment that is being displayed
+    parentUpdate: used to change the information in the current comment so the parent can render the changes
+    parentCreate: used to create a reply to the current comment
+    parentDelete: used to delete the current comment
+    showButtons: used to show the likes/dislikes buttons or just show some text
+*/
+
+const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, parentDelete, parentUpdate, showButtons=true }) => {
     const [showCreateComment, setShowCreateComment] = useState(false);
+    const [showButton, setShowButton] = useState(false);
+
+    useEffect(() => {
+        const fetchPrivileges = async () => {
+            const authorPrivileges = await checkAuthorPrivileges(comment.author);
+            const hubPrivileges = await checkHubPrivileges(post.hub);
+            setShowButton(authorPrivileges || hubPrivileges);
+        }
+
+        fetchPrivileges();
+    }, []);
 
     return (
         <div>
@@ -35,21 +63,34 @@ const SingleComment: React.FC<ComponentProps> = ({ post, comment, showButtons=tr
                         showButtons={showButtons}
                     />
                     <div className={styles.buttonList}>
-                        [Edit]
-                        <DeleteCommentButton comment={comment}/>
+                        {showButton ? ( 
+                                <>
+                                    [Edit]
+                                    <DeleteCommentButton comment={comment} parentDelete={parentDelete}/>
+                                </>
+                            ) : (
+                                <>
+                                    <div></div>
+                                    <div></div>
+                                </>
+                            )
+                        }
                         <CreateCommentButton toggleReply={() => setShowCreateComment(!showCreateComment)} buttonMessage="Reply"/>
                     </div>
                 </div>
-                <div className={styles.commentMessageContainer}>
-                    <div>
-                        {comment.message}
-                    </div>
+                <div>
+                    {comment.message}
                 </div>
             </div>
             {showCreateComment &&
                 <div className={recursiveStyles.recursiveContainer}>
                     <div></div>
-                    <CreateComment post={post} onClose={() => setShowCreateComment(false)} commentReply={comment} />
+                    <CreateComment 
+                        post={post} 
+                        onClose={() => setShowCreateComment(false)} 
+                        commentReply={comment}
+                        parentCreate={parentCreate}
+                    />
                 </div>
             }
         </div>

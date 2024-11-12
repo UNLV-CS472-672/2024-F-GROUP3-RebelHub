@@ -9,9 +9,19 @@ import api from "@/utils/api";
 
 interface ComponentProps {
     comment: PostComment;
+    parentDelete: (del: PostComment) => void;
 }
 
-const DeleteCommentButton: React.FC<ComponentProps> = ({ comment }) => {
+/*
+    DeleteCommentButton
+
+    Used to delete a comment from the database and update the hooks that show the comments on a post.
+
+    comment: the comment that is being deleted
+    parentDelete: the function that should call the set... hook function in the parent of the comment
+*/
+
+const DeleteCommentButton: React.FC<ComponentProps> = ({ comment, parentDelete }) => {
     const [showModal, setShowModal] = useState(false);
 
     const deleteComment = async (commentId: number|string) => {
@@ -22,7 +32,7 @@ const DeleteCommentButton: React.FC<ComponentProps> = ({ comment }) => {
 
             if(response.status == 204) {
                 setShowModal(false);
-                window.location.reload();
+                parentDelete(comment);
             }
 
         } catch (error) {
