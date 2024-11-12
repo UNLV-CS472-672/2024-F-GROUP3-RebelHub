@@ -23,7 +23,7 @@ class CommentCreate(generics.CreateAPIView):
 # Creating a reply       
 class CommentReplyCreate(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = CommentSerializer  
+    serializer_class = CommentCreateSerializer  
     def perform_create(self, serializer):
         comment_id = self.kwargs['comment_id']
         serializer.save(author=self.request.user, comment_reply_id=comment_id)
@@ -57,6 +57,15 @@ class CommentDetail(generics.RetrieveAPIView):
 class CommentDelete(generics.DestroyAPIView):
     queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated]
+    lookup_field = 'comment_id'
+
+    def perform_destroy(self, instance):
+        user = self.request.user
+        if user != instance.author:
+            if user != instance.post.hub.owner:
+                if user not in instance.post.hub.mods.all():
+                    raise PermissionDenied("Could not delete comment: You do not have permission to delete this.")
+        instance.delete()
 
     def get_object(self):
         comment = get_object_or_404(Comment, id=self.kwargs['comment_id'])

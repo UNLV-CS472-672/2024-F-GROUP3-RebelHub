@@ -40,6 +40,7 @@ export const URL_SEGMENTS = {
     COMMENTS_DISLIKE: "/dislike/",
     COMMENTS_REPLY: "/reply/",
     COMMENTS_REPLY_LIST: "/replyList/",
+    COMMENTS_DELETE: "/delete/",
     // #endregion
 
     // #region Users
@@ -226,6 +227,10 @@ export function getReplyListUrl(commentId: number|string) {
 // "http://localhost:8000/api/comments/<int:comment_id>/reply/"
 export function getCreateReplyUrl(commentId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.COMMENTS_API_BASE + commentId + URL_SEGMENTS.COMMENTS_REPLY;
+}
+
+export function getDeleteCommentUrl(commentId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.COMMENTS_API_BASE + commentId + URL_SEGMENTS.COMMENTS_DELETE;
 }
 
 // #region Functions to return a URL for an API call (events)

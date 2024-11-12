@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CommentList, CommentCreate, LikeComment, DislikeComment, CommentDetail,  CommentReplyList, CommentReplyCreate
+from .views import CommentList, CommentCreate, LikeComment, DislikeComment, CommentDetail,  CommentReplyList, CommentReplyCreate, CommentDelete
 
 urlpatterns = [
     # Used to get the all comments (GET), and create comments (POST)
@@ -12,6 +12,9 @@ urlpatterns = [
     # Endpoints for liking and disliking a comment using buttons from the frontend
     path('comments/<int:comment_id>/like/', LikeComment.as_view(), name='like-comment'),
     path('comments/<int:comment_id>/dislike/', DislikeComment.as_view(), name='dislike-comment'),
+
+    # Used for deleting a comment
+    path('comments/<int:comment_id>/delete/', CommentDelete.as_view(), name='delete-comment'),
     
     # Used for replies to a comment 
     path('comments/<int:comment_id>/replyList/', CommentReplyList.as_view(), name='comment-list-create'),
