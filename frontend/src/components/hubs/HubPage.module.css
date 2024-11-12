@@ -1,0 +1,89 @@
+.pageBG{
+	/*the image shoudl be whatever the hubs background image is*/
+	background-image: url(https://img.freepik.com/free-vector/circuit-board-neon-background_23-2148335792.jpg);
+	background-size: cover;
+	background-position: center;
+
+	/* i set the height so the whole page is taken up, but we can omit it once we fill it with content*/
+	height: 100vh; 
+}
+
+/* hub view container holds heading, hub name, hub desc, details, owner, timestamp */
+.hubViewContainer{
+	background-color: rgba(227, 24, 55, 0.5);
+	border: 2px solid black;
+	border-radius: 10px;
+}
+
+.hubViewHeading{
+	justify-content: center;
+}
+.hubName{
+	font-size: 70px;
+	color: black;
+	text-align: center;
+}
+.hubTimestamp{
+	text-align: center;
+	color: black;
+}
+.hubDescription{
+	text-align: center;
+	color: black;
+}
+.hubViewDetails{
+	display: flex;
+	justify-content: center;
+	padding-left: 20px;
+}
+.hubOwner{
+	color: black;
+	flex: 2;
+}
+
+
+
+/* container for holding the posts and members list */
+.hubPageContentContainer{
+	padding-top: 50px;
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.postsList{
+	flex: 2;
+	width: 100%;
+	border: 2px solid black;
+
+}
+
+.membersList{
+	background-color: rgba(227, 24, 55, 0.5);
+	width: 200px;
+	max-width: 200px;
+	align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	border: 2px black solid;
+	border-radius: 20px;
+
+}
+
+.membersListHeader{
+	color: black;
+}
+
+.memberLI{
+	list-style-type: none;
+
+}
+
+.memberItemButton{
+	cursor: pointer;
+
+}
+
+
+

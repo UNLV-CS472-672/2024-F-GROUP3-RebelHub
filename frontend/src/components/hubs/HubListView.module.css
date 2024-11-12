@@ -1,0 +1,77 @@
+.hubCard {
+	border-radius: 12px;
+	background-color: #E31837;
+	width: 100%;
+	height: auto;
+	padding: 20px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	position: relative;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hubCard:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.hubHeader {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 20px;
+	position: relative;
+}
+
+.hubName {
+	font-size: 47px;
+	font-weight: bold;
+	color: black;
+	margin: 0;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.hubListTitle {
+	padding-top: 20px;
+	text-align: center;
+}
+
+.hubButton {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+}
+
+.hubDate {
+	font-size: 14px;
+	color: rgba(0, 0, 0, 0.7);
+}
+
+.hubDescription {
+	color: black;
+	font-size: 16px;
+	margin: 10px 0;
+	text-align: center;
+	line-height: 1.4;
+}
+
+.hubFooter {
+	display: flex;
+	justify-content: center;
+	margin-top: 10px;
+}
+
+.hubMembers {
+	color: black;
+	font-size: 16px;
+	text-align: center;
+}
+
+.hubButton:hover .hubName {
+	color: darkblue;
+}
