@@ -45,7 +45,7 @@ const RecursiveCommentList: React.FC<ComponentProps> = ({ post, commentsToPrint=
             {
                 comments.map((comment) => (
                     <div className={styles.listContainer} key={comment.id}>
-                        <RecursiveComment currentComment={comment} />
+                        <RecursiveComment post={post} currentComment={comment} />
                     </div>
                 ))
             }

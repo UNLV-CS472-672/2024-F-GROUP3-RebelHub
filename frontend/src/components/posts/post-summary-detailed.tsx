@@ -1,16 +1,16 @@
 "use client";
 
-import { Post, PostComment } from "@/utils/posts/definitions";
+import { Post } from "@/utils/posts/definitions";
 import styles from "./post-summary-detailed.module.css";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
 import { useEffect, useState } from "react";
 import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
 import DeletePostButton from "./buttons/delete-post-button";
 import EditPostButton from "./buttons/edit-post-button";
-import { getCommentsListUrl, getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
-import api from "@/utils/api";
-import RecursiveComment from "../comments/RecursiveComment";
+import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
 import RecursiveCommentList from "../comments/RecursiveCommentList";
+import CreateComment from "../comments/CreateComment";
+import CreateCommentButton from "../comments/buttons/CreateCommentButton";
 
 interface ComponentProps {
     post: Post;
@@ -26,6 +26,7 @@ interface ComponentProps {
 
 const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
     const [showButton, setShowButton] = useState(false);
+    const [showCreateComment, setShowCreateComment] = useState(false);
 
     useEffect(() => {
         const fetchPrivileges = async () => {
@@ -86,10 +87,22 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                         containerClassName={styles.detailedVoteContainer}/>
                 </div>
                 <div className={styles.detailedPostElement}>
-                    [Create Comment]
+                    <CreateCommentButton 
+                        toggleReply={() => setShowCreateComment(!showCreateComment)}
+                        buttonMessage={"Create Comment"}
+                    />
                 </div>
             </div>
             <div>
+                {showCreateComment && 
+                    <div className={styles.detailedCreateComment}>
+                        <CreateComment 
+                            post={post} 
+                            onClose={() => setShowCreateComment(false)} 
+                            commentReply={null} 
+                        />
+                    </div>
+                }
                 <RecursiveCommentList post={post} />
             </div>
         </div>
