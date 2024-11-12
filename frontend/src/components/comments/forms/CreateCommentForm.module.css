@@ -1,0 +1,31 @@
+.commentInputContainer {
+    text-align: left;
+    border: 2px;
+    border-radius: 12px;
+    color: white;
+    display: grid;
+    grid-template-rows: auto auto;
+}
+
+.commentButtonContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+}
+
+.commentConfirm {
+    width: 100px;
+    background-color: darkgreen;
+    border-color: black;
+    border-radius: 5px;
+    color: white;
+}
+
+.commentCancel {
+    width: 100px;
+    background-color: red;
+    border-color: black;
+    border-radius: 5px;
+    color: white;
+    margin-left: auto;
+}

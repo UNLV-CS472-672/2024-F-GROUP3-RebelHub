@@ -39,3 +39,7 @@
     align-items: left;
     gap: 10px;
 }
+
+.detailedCreateComment {
+    margin-bottom: 10px;
+}

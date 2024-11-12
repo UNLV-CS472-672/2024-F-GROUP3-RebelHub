@@ -54,8 +54,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
     # Create a new Comment instance using validated data
     def create(self, validated_data):
-        user = self.context.get('request').user
-        return Comment.objects.create(author=user, **validated_data)
+        return Comment.objects.create(**validated_data)
 
 # Serializer for liking a comment
 class LikeCommentSerializer(serializers.ModelSerializer):
