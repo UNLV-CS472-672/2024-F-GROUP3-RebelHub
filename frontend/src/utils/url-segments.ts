@@ -37,7 +37,7 @@ export const URL_SEGMENTS = {
     COMMENTS_API_BASE: "api/comments/",
     COMMENTS_CREATE: "create/",
     COMMENTS_LIKE: "/like/",
-    COMMENTS_LIKE: "/dislike/",
+    COMMENTS_DISLIKE: "/dislike/",
     COMMENTS_REPLY: "/reply/",
     // #endregion
 
