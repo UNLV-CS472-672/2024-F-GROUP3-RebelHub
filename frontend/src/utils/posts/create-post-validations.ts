@@ -10,6 +10,10 @@ export const TITLE_VALIDATION = {
             value: true,
             message: "Required",
         },
+        maxLength: {
+            value: 150,
+            message: "Post title cannot be more than 150 characters.",
+        },
     },
 };
 
