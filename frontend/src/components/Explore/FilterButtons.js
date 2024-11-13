@@ -4,24 +4,11 @@ import api from "../../utils/api";
 import { getExploreListUrl } from "@/utils/url-segments";
 
 const FilterButtons = ({posts, setPosts}) => {
-    const [sort, setSort] = useState('-likes'); // -likes = top, timestamp = old, -timestamp = new
     const [time, setTime] = useState('week');
-    const [currentSortButton, setCurrentSortButton] = useState('-likes');
+    const [sort, setSort] = useState('top'); 
     const [currentTimeButton, setCurrentTimeButton] = useState('week');
-
-    // Done so that we can change the sort all in the frontend (without api call)
-    const changeSort = (newSort) => {
-        if(sort === newSort && newSort != 'random') return;
-        setSort(newSort);
-        let sortedPosts = [...posts];
-        if (newSort === '-likes') sortedPosts.sort((a, b) => b.likes.length - a.likes.length);
-        else if (newSort === 'timestamp') sortedPosts.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        else if (newSort === '-timestamp') sortedPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        else if (newSort === 'random') sortedPosts.sort(() => Math.random() - 0.5);
-        setPosts(sortedPosts); 
-        setCurrentSortButton(newSort);
-    };
-
+    const [currentSortButton, setCurrentSortButton] = useState('top');
+    
     const changeTime = async (newTime) => {
         if(time === newTime) return;
         console.log("Fetching explore page posts...");
@@ -35,6 +22,19 @@ const FilterButtons = ({posts, setPosts}) => {
         setCurrentTimeButton(newTime);
     }
 
+    // Done so that we can change the sort all in the frontend (without api call)
+    const changeSort = (newSort) => {
+        if(sort === newSort && newSort != 'random') return;
+        setSort(newSort);
+        let sortedPosts = [...posts];
+        if (newSort === 'top') sortedPosts.sort((a, b) => b.likes.length - a.likes.length);
+        else if (newSort === 'old') sortedPosts.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        else if (newSort === 'new') sortedPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        else if (newSort === 'random') sortedPosts.sort(() => Math.random() - 0.5);
+        setPosts(sortedPosts); 
+        setCurrentSortButton(newSort);
+    };
+
     return(
         <div className={styles.buttons}>
             <button
@@ -44,20 +44,20 @@ const FilterButtons = ({posts, setPosts}) => {
                 Random
             </button>
             <button
-                className={`${currentSortButton === '-likes' ? styles.current : ''}`}
-                onClick={() => changeSort('-likes')}
+                className={`${currentSortButton === 'top' ? styles.current : ''}`}
+                onClick={() => changeSort('top')}
             >
                 Top
             </button>
             <button
-                className={`${currentSortButton === 'timestamp' ? styles.current : ''}`}
-                onClick={() => changeSort('timestamp')}
+                className={`${currentSortButton === 'old' ? styles.current : ''}`}
+                onClick={() => changeSort('old')}
             >
                 Old
             </button>
             <button
-                className={`${currentSortButton === '-timestamp' ? styles.current : ''}`}
-                onClick={() => changeSort('-timestamp')}
+                className={`${currentSortButton === 'new' ? styles.current : ''}`}
+                onClick={() => changeSort('new')}
             >
                 New
             </button>
