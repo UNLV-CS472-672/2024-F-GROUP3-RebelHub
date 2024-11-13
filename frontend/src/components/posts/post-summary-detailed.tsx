@@ -22,13 +22,20 @@ interface ComponentProps {
 */
 
 const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
-    const [showButton, setShowButton] = useState(false);
+    const [isAuthor, setIsAuthor] = useState(false);
+    const [isMod, setIsMod] = useState(false);
 
     useEffect(() => {
         const fetchPrivileges = async () => {
             const authorPrivileges = await checkAuthorPrivileges(post.author);
+            
+            if(authorPrivileges) {
+                setIsAuthor(authorPrivileges);
+                return;
+            }
+
             const hubPrivileges = await checkHubPrivileges(post.hub);
-            setShowButton(authorPrivileges || hubPrivileges);
+            setIsMod(hubPrivileges);
         }
         fetchPrivileges();
     }, []);
@@ -49,12 +56,18 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 </div>
                 <br></br>
                 <div className={styles.detailedPostButtonList}>
-                    {showButton && 
+                    {isAuthor &&
                         <>
                             <DeletePostButton post={post} />
                             <EditPostButton post={post} />
                         </>
-                    } 
+                    }
+                    {!isAuthor && isMod &&
+                        <>
+                            <DeletePostButton post={post} />
+                            <div></div>
+                        </>
+                    }
                 </div>
             </div>
             <div className={styles.detailedPostFooterContainer}>
