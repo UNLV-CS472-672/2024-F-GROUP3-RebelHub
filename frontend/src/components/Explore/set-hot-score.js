@@ -1,4 +1,4 @@
-import { getCommentsListUrl } from "@/utils/url-segments";
+import { getCommentsListUrl, getEditPostUrl } from "@/utils/url-segments";
 import api from "../../utils/api";
 
 const calculate_time_factor = (timestamp) => {
@@ -14,7 +14,7 @@ const calculate_time_factor = (timestamp) => {
 }
 
 const calculate_hot_score = (likes, comments, timestamp) => {
-    likes_score = number_of_likes * calculate_time_factor(timestamp)
+    likes_score = likes * calculate_time_factor(timestamp)
     comments_score = 0
     for (let comment in comments)
         comments_score += calculate_time_factor(comment.timestamp)
@@ -30,13 +30,14 @@ const set_hot_score = async (posts) => {
             console.log(response.data);
             console.log("Successful fetch of comments");
         } catch (error) { console.log("Error fetching comments: ", error); }
-        calculate_hot_score(post.likes.length, comments, post.timestamp)
+        new_hot_score = calculate_hot_score(post.likes.length, comments, post.timestamp);
+        try {
+            const response = await api.patch(getEditPostUrl(post.id), { hot_score: new_hot_score });
+            console.log(response.data);
+            console.log("Successful update of hot score");
+        } catch (error) { console.log("Error updating hot score: ", error)}; 
     }
 }
 
 export default set_hot_score;
 
-/*
-def calculate_hot_score(number_of_likes, comments, timestamp):
-
-*/
