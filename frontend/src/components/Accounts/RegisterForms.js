@@ -1,4 +1,4 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import api from "../../utils/api";
 import { useRouter } from 'next/navigation';
 import { getRegisterUserUrl } from "@/utils/url-segments";
@@ -36,36 +36,43 @@ function Form() {
     }
 
     return <form onSubmit={handleSubmit} className="form-container">
+        <img
+            width={250}
+            height={100}
+            src="/UNLV.png"
+            className='logo'
+        />
+        <br></br>
         <div>
-        <h1>Register</h1>
+            <h1>Register</h1>
 
-        <input
-            className={"form-input"}
-            type={"email"}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="UNLV Email Address"
-        />
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-        <input
-            className={"form-input"}
-            type={"username"}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-        />
-        <input
-            className={"form-input"}
-            type={"password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-        />
-        <button className="form-button" type="submit">
-            {"Register"}
-        </button>
-</div>
-</form>
+            <input
+                className={"form-input"}
+                type={"email"}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="UNLV Email Address"
+            />
+            {error && <p style={{color: 'red'}}>{error}</p>}
+            <input
+                className={"form-input"}
+                type={"username"}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+            />
+            <input
+                className={"form-input"}
+                type={"password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+            />
+            <button className="register-button" type="submit">
+                {"Register"}
+            </button>
+        </div>
+    </form>
 
 }
 

@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer
+from .serializers import UserSerializer, ResetPasswordSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.http import JsonResponse
+from django.contrib.auth.forms import PasswordResetForm
 
 # Create your views here.
 class CreateUserView(generics.CreateAPIView):
@@ -20,5 +23,16 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         # Get access to current user
         user = self.request.user
         return user
+@method_decorator(csrf_exempt, name='dispatch')
+class CustomPasswordResetView(generics.CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = ResetPasswordSerializer
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        form = PasswordResetForm(data)
 
+        if form.is_valid():
+            form.save(request=request)
+            return JsonResponse({"message": "Password reset email sent!"}, status=200)
+        return JsonResponse({"error": "Invalid data"}, status=400)
 

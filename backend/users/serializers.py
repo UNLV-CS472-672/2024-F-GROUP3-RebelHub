@@ -18,3 +18,5 @@ class UserSerializer(serializers.ModelSerializer):
         instance.username = validated_data.get('username', instance.username)
         instance.save()
         return instance
+class ResetPasswordSerializer(serializers.Serializer):
+    email=serializers.EmailField()
