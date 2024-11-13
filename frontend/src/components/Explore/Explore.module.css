@@ -1,24 +1,44 @@
-
-.post {
+.buttons button{
     color: black;
+    margin-right: .5vw;
+    cursor: pointer;
+    transition: background-color 0.1s;
 }
 
-.top {
-    color: black;
+.buttons button:hover{
+    background-color: #f76359;
 }
 
-.old {
-    color: black;
+.postsContainer {
+    display: grid;
+    grid-row-start: auto;
+    padding: 1.1vh;
+    background-color: black;
+    color: white;
 }
 
-.new {
-    color: black;
+.header {
+    background-color: darkred;
+    border: 2px;
+    border-radius: 12px;
+    height: auto;
+    padding: 1.4vw;
+    text-align: center;
+    align-items: center;
 }
 
-.pastDay{
-    color: black;
+.mainContent{
+    width: 86.7vw;
+    margin-left: 13.3vw;
+    margin-top: 11.3vh;
 }
 
-.allTime{
-    color: black;
+.container {
+    display: flex;
+    height: 100vh; 
+    background-color: #0a0a0a;
+}
+
+.current {
+    background-color: #f76359;
 }
