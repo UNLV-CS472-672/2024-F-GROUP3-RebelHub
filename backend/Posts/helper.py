@@ -2,17 +2,18 @@ from django.utils import timezone
 from datetime import timedelta
 from rest_framework import generics, filters
 from .models import Post
+from django.db.models import Count
 
 def filter_queryset(self, queryset):
     # Gets time_range parameter from api call. If none, then default is a week
     time_range = self.request.query_params.get('time_range', 'none')
     time_range_allowed = ['24_hours', 'week', 'month', 'year', 'all_time']
-    # If invalid time_range is given, set time_range to a week
-    if time_Range == 'none'
+    if time_range == 'none':
         pass
+    # If invalid time_range is given, set time_range to a week
     elif time_range not in time_range_allowed:
         time_range = 'week'
-    if time_range == '24_hours':
+    elif time_range == '24_hours':
         start_date = timezone.now() - timedelta(hours=24)
     elif time_range == 'week':
         start_date = timezone.now() - timedelta(weeks=1)
@@ -25,17 +26,22 @@ def filter_queryset(self, queryset):
         queryset = queryset.filter(timestamp__gte=start_date)
 
     ordering = self.request.query_params.get('ordering', 'none')
-    orderings_allowed = ['likes', '-likes', 'timestamp', '-timestamp', 'random']
-    if ordering == 'none'
+    orderings_allowed = ['bottom', 'top', 'old', 'new', 'random']
+    if ordering == 'none':
         pass
+    # If invalid ordering is given, set ordering to top
     elif ordering not in orderings_allowed:
-        ordering = '-likes'
-    if ordering == 'likes': # Need to change to number_of_likes since 'likes' and '-likes' are used in the url parameters
-        queryset = queryset.order_by('number_of_likes')  
-    elif ordering == '-likes':
-        queryset = queryset.order_by('-number_of_likes')
+        ordering = 'top'
+    if ordering == 'bottom':
+        queryset = queryset.annotate(number_of_likes=Count('likes')).order_by('number_of_likes')  
+    elif ordering == 'top':
+        queryset = queryset.annotate(number_of_likes=Count('likes')).order_by('-number_of_likes')
     elif ordering == 'random': 
         queryset = queryset.order_by('?')
-    else:
-        queryset = queryset.order_by(ordering) # For timestamp and -timestamp
+    elif ordering == 'old':
+        queryset = queryset.order_by('timestamp')
+    elif ordering == 'new':
+        queryset = queryset.order_by('-timestamp')
     return queryset
+
+#def calculate_hot_score(self, queryset):
