@@ -16,7 +16,7 @@ const Explore = () => {
         console.log("Fetching initial explore page posts...");
         const fetchInitialPosts = async () => {
             try {
-                const response = await api.get(getExploreListUrl('week', '-likes')); // Week time range and sort by top are default
+                const response = await api.get(getExploreListUrl()); 
                 setPosts(response.data);
                 console.log(response.data);
                 console.log("Successful fetch");
