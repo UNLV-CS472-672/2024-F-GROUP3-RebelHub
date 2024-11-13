@@ -26,7 +26,7 @@ def filter_queryset(self, queryset):
         queryset = queryset.filter(timestamp__gte=start_date)
 
     ordering = self.request.query_params.get('ordering', 'none')
-    orderings_allowed = ['bottom', 'top', 'old', 'new', 'random']
+    orderings_allowed = ['bottom', 'top', 'old', 'new', 'random', 'hot']
     if ordering == 'none':
         pass
     # If invalid ordering is given, set ordering to top
@@ -42,6 +42,7 @@ def filter_queryset(self, queryset):
         queryset = queryset.order_by('timestamp')
     elif ordering == 'new':
         queryset = queryset.order_by('-timestamp')
+    elif ordering == 'hot':
+        queryset = queryset.order_by('-hot_score')
     return queryset
 
-#def calculate_hot_score(self, queryset):

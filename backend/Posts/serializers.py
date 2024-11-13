@@ -7,7 +7,7 @@ from hubs.models import Hub
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes'] 
+        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score'] 
         read_only_fields = ['author', 'likes', 'dislikes']
     
     def to_representation(self, instance):
