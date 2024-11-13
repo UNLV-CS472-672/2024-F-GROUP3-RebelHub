@@ -5,8 +5,7 @@ import api from "../../utils/api";
 import { } from "../../utils/fetchPrivileges";
 import { getExploreListUrl } from "@/utils/url-segments";
 import PostList from "../posts/post-list";
-import SideBar from "../sidebar.js";
-import ExploreButtons from "./ExploreButtons.js";
+import FilterButtons from "./FilterButtons.js/index.js";
 
 const Explore = () => {
     const [posts, setPosts] = useState([]);
@@ -29,7 +28,7 @@ const Explore = () => {
         <main className={styles.mainContent}>
             <header className={styles.header}>
                 <h1 style={{ marginBottom: '2vh' }}>Explore</h1>
-                <ExploreButtons posts={posts} setPosts={setPosts}/>
+                <FilterButtons posts={posts} setPosts={setPosts}/>
             </header>
             <section className={styles.postsContainer}>
                 <PostList posts={posts} />

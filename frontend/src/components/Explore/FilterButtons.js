@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import api from "../../utils/api";
 import { getExploreListUrl } from "@/utils/url-segments";
 
-const ExploreButtons = ({posts, setPosts}) => {
+const FilterButtons = ({posts, setPosts}) => {
     const [sort, setSort] = useState('-likes'); // -likes = top, timestamp = old, -timestamp = new
     const [time, setTime] = useState('week');
     const [currentSortButton, setCurrentSortButton] = useState('-likes');
@@ -95,4 +95,4 @@ const ExploreButtons = ({posts, setPosts}) => {
     );
 }
 
-export default ExploreButtons;
+export default FilterButtons;
