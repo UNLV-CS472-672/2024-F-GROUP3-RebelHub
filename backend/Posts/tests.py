@@ -59,21 +59,22 @@ class PostTestCase(TestCase):
         self.assertEqual(response.data['title'], new_data['title'], "Post title did not change")
         self.assertEqual(response.data['message'], new_data['message'], "Post message did not change")
     
-    def test_mod_edit_hub_post(self):
+    def test_mod_cannot_edit_hub_post(self):
         """
-        Make sure that a mod can edit posts on a hub that they moderate.
+        Make sure that a mod cannot edit posts on a hub that they moderate.
         """
         response = self.edit_user_client.post(reverse('post-create'), self.edit_dummy_post, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Post was not created")
+        post = response.data
 
         new_data = {'title': "edited title", 'message': "edited message"}
 
         response = self.edit_hub_mod_client.patch(reverse('post-edit', kwargs={'id': response.data['id']}), new_data, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK, "Post could not be edited by hub mod")
-        self.assertEqual(response.data['title'], new_data['title'], "Post title did not change")
-        self.assertEqual(response.data['message'], new_data['message'], "Post message did not change")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, "Post could be edited by hub mod")
+        self.assertNotEqual(post['title'], new_data['title'], "Post title changed")
+        self.assertNotEqual(post['message'], new_data['message'], "Post message changed")
     
     def test_owner_edit_hub_post(self):
         """
@@ -82,14 +83,15 @@ class PostTestCase(TestCase):
         response = self.edit_user_client.post(reverse('post-create'), self.edit_dummy_post, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Post was not created")
+        post = response.data
 
         new_data = {'title': "edited title", 'message': "edited message"}
 
         response = self.edit_hub_owner_client.patch(reverse('post-edit', kwargs={'id': response.data['id']}), new_data, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK, "Post could not be edited by post author")
-        self.assertEqual(response.data['title'], new_data['title'], "Post title did not change")
-        self.assertEqual(response.data['message'], new_data['message'], "Post message did not change")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, "Post could be edited by hub owner")
+        self.assertNotEqual(post['title'], new_data['title'], "Post title changed")
+        self.assertNotEqual(post['message'], new_data['message'], "Post message changed")
 
     def test_user_cannot_edit_unowned_post(self):
         """

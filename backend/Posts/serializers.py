@@ -125,7 +125,7 @@ class PostEditSerializer(serializers.ModelSerializer):
         user = request.user
         post = self.instance
 
-        if user != post.author and user != post.hub.owner and user not in post.hub.mods.all():
+        if user != post.author:
             raise PermissionDenied("User does not have permission to update post")
 
         # Because of the constraints in the database, these are currently unnecessary
