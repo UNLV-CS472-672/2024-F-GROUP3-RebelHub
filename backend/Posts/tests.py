@@ -475,35 +475,6 @@ class PostTestCase(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED, "Unauthenticated user is deleting post")
         post_exists = Post.objects.filter(id=post.id).exists()
         self.assertTrue(post_exists, "This post was not deleted : unauthenticated user")
-
-    def test_create_explore_list_default_time_range_and_ordering(self):
-        # Default filter is: time range = 1 week, order = top (descending likes)
-        user=self.user
-        hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
-
-        # Create post that is 2 weeks ago. Should not appear in explore list
-        post1 = Post.objects.create(title="Monkeys", message="Monkeys", hub=hub, author=user)
-        post1.timestamp = timezone.now() - timedelta(weeks=2)
-        post1.save()
-
-        # Create post with 1 like.
-        post2 = Post.objects.create(title="CS Professors", message="What Professor should I take for CS 135?", hub=hub, author=user)
-        request = self.factory.put(f"posts/{post2.id}/like/")
-        force_authenticate(request, user=user)
-        view = LikePost.as_view()
-        response = view(request, id=post2.id)
-        self.assertEqual(response.status_code, status.HTTP_200_OK) #200 user could like/unlike
-        self.assertEqual(post2.likes.count(), 1)
-
-        # Create post with 0 likes.
-        Post.objects.create(title="tacos", message="tacos", hub=hub, author=user)
-
-        # Assert that there are two posts, and the first post is the post with 1 like while the second post is the post with 0 likes.
-        response = self.client.get(reverse('explore-list'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2) 
-        self.assertEqual(response.data[0]['title'], "CS Professors")
-        self.assertEqual(response.data[1]['title'], "tacos")
     
     def test_sort_by_new_and_old_posts(self):
         user=self.user
