@@ -18,5 +18,5 @@ urlpatterns = [
     path('posts/<int:id>/delete/', PostDelete.as_view(), name='post-delete'),
 
     # Endpoints for retrieving a list of posts for the explore page (with optional filters and sorting)
-    path('posts/explore/', ExploreList.as_view(), name='post-explore'),
+    path('posts/explore/', ExploreList.as_view(), name='explore-list'),
 ]
