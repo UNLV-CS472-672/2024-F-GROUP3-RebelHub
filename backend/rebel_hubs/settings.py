@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'users',
     'hubs',
     'Comments',
+    'django_filters',
 ]
 
 CORS_ALLOWED_ORIGINS = [

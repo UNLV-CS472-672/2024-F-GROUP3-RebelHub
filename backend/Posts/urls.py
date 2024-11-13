@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostList, CreatePost, LikePost, DislikePost, PostDetail, PostDelete
+from .views import PostList, CreatePost, LikePost, DislikePost, PostDetail, PostDelete, ExploreList
 
 urlpatterns = [
 
@@ -16,4 +16,7 @@ urlpatterns = [
     # Endpoints for retrieving a single post by its ID (GET) and  deleting a post by its ID (DELETE)
     path('posts/<int:id>/', PostDetail.as_view(), name='post-detail'),
     path('posts/<int:id>/delete/', PostDelete.as_view(), name='post-delete'),
+
+    # Endpoints for retrieving a list of posts for the explore page (with optional filters and sorting)
+    path('posts/explore/', ExploreList.as_view(), name='post-explore'),
 ]
