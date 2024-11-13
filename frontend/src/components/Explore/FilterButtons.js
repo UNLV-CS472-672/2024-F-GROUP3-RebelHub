@@ -1,7 +1,8 @@
 import styles from "./Explore.module.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import api from "../../utils/api";
 import { getExploreListUrl } from "@/utils/url-segments";
+import { set_hot_score } from "./set-hot-score.js";
 
 const FilterButtons = ({posts, setPosts}) => {
     const [time, setTime] = useState('week');
@@ -31,6 +32,10 @@ const FilterButtons = ({posts, setPosts}) => {
         else if (newSort === 'old') sortedPosts.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         else if (newSort === 'new') sortedPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         else if (newSort === 'random') sortedPosts.sort(() => Math.random() - 0.5);
+        else if (newSort === 'hot'){
+            set_hot_score(sortedPosts);
+            sortedPosts.sort((a, b) => b.hot_score - a.hot_score);
+        } 
         setPosts(sortedPosts); 
         setCurrentSortButton(newSort);
     };
@@ -42,6 +47,12 @@ const FilterButtons = ({posts, setPosts}) => {
                 onClick={() => changeSort('random')}
             >
                 Random
+            </button>
+            <button
+                className={`${currentSortButton === 'hot' ? styles.current : ''}`}
+                onClick={() => changeSort('hot')}
+            >
+                Hot
             </button>
             <button
                 className={`${currentSortButton === 'top' ? styles.current : ''}`}
