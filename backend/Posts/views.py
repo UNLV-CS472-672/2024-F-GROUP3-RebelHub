@@ -107,13 +107,15 @@ class ExploreList(generics.ListAPIView):
             queryset = queryset.filter(timestamp__gte=start_date)
 
         ordering = self.request.query_params.get('ordering', '-number_of_likes')
-        orderings_allowed = ['likes', '-likes', 'timestamp', '-timestamp']
+        orderings_allowed = ['likes', '-likes', 'timestamp', '-timestamp', 'random']
         if ordering not in orderings_allowed:
             ordering = '-likes'
         if ordering == 'likes': # Need to change to number_of_likes since 'likes' and '-likes' are used in the url parameters
             queryset = queryset.order_by('number_of_likes')  
         elif ordering == '-likes':
             queryset = queryset.order_by('-number_of_likes')
+        elif ordering == 'random': 
+            queryset = queryset.order_by('?')
         else:
             queryset = queryset.order_by(ordering) # For timestamp and -timestamp
         return queryset
