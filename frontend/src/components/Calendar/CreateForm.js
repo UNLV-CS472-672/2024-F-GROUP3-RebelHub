@@ -2,6 +2,7 @@ import styles from "./CreateForm.module.css";
 import { useState } from 'react';
 import api from "../../utils/api";
 import { getCreateEventURL } from "@/utils/url-segments";
+import { convertLocalStringToUtcString } from "@/utils/datetime-conversion";
 
 const CreateForm = ({isCreateOpen, onClose, onCreate, hubsModding}) => {
     if (!isCreateOpen) return null;
@@ -16,17 +17,11 @@ const CreateForm = ({isCreateOpen, onClose, onCreate, hubsModding}) => {
     const [isPersonal, setIsPersonal] = useState(false);
     const [isHubListOpen, setIsHubListOpen] = useState(false);
 
-    const convertToUTC = (date) => {
-        if (!date) return null;
-        const localDate = new Date(date);
-        return localDate.toISOString();
-      }
-
     const onSubmit = async (e) => {
         e.preventDefault();
         try {
             // Make POST request
-            const response = await api.post(getCreateEventURL(), { title, description, location, start_time: convertToUTC(startTime), end_time: endTime ? convertToUTC(endTime) : null, color: color, hub: hub ? hub.id : null, isPersonal});
+            const response = await api.post(getCreateEventURL(), { title, description, location, start_time: convertLocalStringToUtcString(startTime), end_time: endTime ? convertLocalStringToUtcString(endTime) : null, color: color, hub: hub ? hub.id : null, isPersonal});
             onCreate(response.data);
             onClose();
         } catch (error) { console.log("Error creating event: ", error); } 
