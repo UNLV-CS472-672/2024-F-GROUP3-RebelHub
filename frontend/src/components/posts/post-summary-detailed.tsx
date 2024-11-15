@@ -8,6 +8,7 @@ import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileg
 import DeletePostButton from "./buttons/delete-post-button";
 import EditPostButton from "./buttons/edit-post-button";
 import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
+import  { formatDate } from "@/utils/datetime-conversion";
 
 interface ComponentProps {
     post: Post;
@@ -24,6 +25,8 @@ interface ComponentProps {
 const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
     const [isAuthor, setIsAuthor] = useState(false);
     const [isMod, setIsMod] = useState(false);
+    const [postTitle, setPostTitle] = useState(post.title);
+    const [postMessage, setPostMessage] = useState(post.message);
 
     useEffect(() => {
         const fetchPrivileges = async () => {
@@ -40,11 +43,17 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
         fetchPrivileges();
     }, []);
 
+    // Function to change the title and message without reloading the page
+    const editPostHooks = (newTitle: string, newMessage: string) => {
+        setPostTitle(newTitle);
+        setPostMessage(newMessage);
+    };
+
     return (
         <div className={styles.detailedPostContainer}>
             <div className={styles.detailedPostElement}>
                 <div>
-                    <h1>{post.title}</h1>
+                    <h1>{postTitle}</h1>
                 </div>
                 <br></br>
                 <div>
@@ -52,14 +61,14 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 </div>
                 <br></br>
                 <div>
-                    {post.message}
+                    {postMessage}
                 </div>
                 <br></br>
                 <div className={styles.detailedPostButtonList}>
                     {isAuthor &&
                         <>
                             <DeletePostButton post={post} />
-                            <EditPostButton post={post} />
+                            <EditPostButton post={post} changeFields={editPostHooks}/>
                         </>
                     }
                     {!isAuthor && isMod &&
@@ -76,7 +85,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                         Posted
                     </div>
                     <div>
-                        {post.timestamp.toString().slice(0, 10)}
+                        {formatDate(post.timestamp)}
                     </div>
                 </div>
                 <div className={styles.detailedPostElement}>

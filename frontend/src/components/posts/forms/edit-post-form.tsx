@@ -3,21 +3,19 @@
 import { FormProvider, useForm } from "react-hook-form";
 import CreateInput from "@/components/posts/forms/create-input";
 import { TITLE_VALIDATION, POST_MESSAGE_VALIDATION } from "@/utils/posts/create-post-validations";
-import { gotoDetailedPostPage, URL_SEGMENTS, getEditPostUrl } from "@/utils/url-segments";
+import { getEditPostUrl } from "@/utils/url-segments";
 import styles from "./edit-post-form.module.css";
 import api from "@/utils/api";
-import { usePathname, useRouter } from "next/navigation";
 import { Post } from "@/utils/posts/definitions";
 
 interface ComponentProps {
     post: Post;
     onClose: () => void;
+    changeFields: (title: string, message?: string) => void;
 }
 
-const EditPostForm: React.FC<ComponentProps> = ({ post, onClose }) => {
+const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, changeFields }) => {
     const methods = useForm();
-    const pathname = usePathname();
-    const router = useRouter();
 
     const onSubmit = methods.handleSubmit(async data => {
         try {
@@ -39,14 +37,18 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose }) => {
 
             methods.reset();
 
-            // If the user is on the post they are editing, reload the page so they can see the
-            // changes.
-            // Else, send them to the edited page
-            if (pathname == "/" + URL_SEGMENTS.POSTS_HOME + response.data.id + "/") {
-                window.location.reload();
-            } else {
-                router.push(gotoDetailedPostPage(response.data.id));
-            }
+            // Instead of redirecting to a page, just use the function to change
+            // what is displayed to the user and change the client's copy
+            // of the post.
+            changeFields(data["title"], data["message"]);
+
+            // We need to update the object in case the user tries to edit the post again.
+            // If they try to edit the post again and we don't change the client object,
+            // then the original title/message will be displayed in the form.
+            post.title = data["title"];
+            post.message = data["message"];
+
+            onClose();
 
         } catch (error) {
             alert("There was an error in your edit: " + error);

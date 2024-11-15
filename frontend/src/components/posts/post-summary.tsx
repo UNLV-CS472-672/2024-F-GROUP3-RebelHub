@@ -26,6 +26,7 @@ interface ComponentProps {
 const PostSummary: React.FC<ComponentProps> = ({ post }) => {
     const [isAuthor, setIsAuthor] = useState(false);
     const [isMod, setIsMod] = useState(false);
+    const [postTitle, setPostTitle] = useState(post.title);
 
     useEffect(() => {
         const fetchPrivileges = async () => {
@@ -59,14 +60,14 @@ const PostSummary: React.FC<ComponentProps> = ({ post }) => {
             <div className={styles.postElementColumn}>
                 <Link href={gotoDetailedPostPage(post.id)}>
                     <h2 className={styles.postTitle}>
-                        {post.title}
+                        {postTitle}
                     </h2>
                 </Link>
                 <div className={styles.postButtonList}>
                     {isAuthor &&
                         <>
                             <DeletePostButton post={post} />
-                            <EditPostButton post={post} />
+                            <EditPostButton post={post} changeFields={setPostTitle}/>
                         </>
                     }
                     {!isAuthor && isMod &&

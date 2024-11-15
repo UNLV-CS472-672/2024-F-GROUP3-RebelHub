@@ -6,11 +6,12 @@ import styles from "./edit-post-modal.module.css";
 import EditPostForm from "../forms/edit-post-form";
 
 interface ComponentProps {
-    post: Post,
-    onClose: () => void,
+    post: Post;
+    onClose: () => void;
+    changeFields: (title: string, message?: string) => void;
 }
 
-const EditPostModal: React.FC<ComponentProps> = ({ post, onClose }) => {
+const EditPostModal: React.FC<ComponentProps> = ({ post, onClose, changeFields }) => {
     const handleCloseClick = (e) => {
         e.preventDefault();
         onClose();
@@ -28,7 +29,7 @@ const EditPostModal: React.FC<ComponentProps> = ({ post, onClose }) => {
                     X
                 </a>
             </div>
-            <EditPostForm post={post} onClose={onClose}/> 
+            <EditPostForm post={post} onClose={onClose} changeFields={changeFields}/> 
         </Modal>
     );
 }
