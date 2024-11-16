@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'users',
     'hubs',
     'Comments',
+    'Private_Messaging',
 ]
 
 CORS_ALLOWED_ORIGINS = [
