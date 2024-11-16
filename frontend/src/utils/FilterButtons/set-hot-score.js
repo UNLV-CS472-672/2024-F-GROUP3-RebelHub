@@ -1,5 +1,5 @@
 import { getCommentsListUrl } from "@/utils/url-segments";
-import api from "../../utils/api";
+import api from "../api";
 
 const calculate_time_factor = (timestamp) => {
     const now = new Date()
@@ -28,10 +28,8 @@ const set_hot_score = async (posts) => {
         try {
             const response = await api.get(getCommentsListUrl(post.id)); 
             comments = response.data;
-            console.log(response.data);
-            console.log("Successful fetch of comments");
         } catch (error) { console.log("Error fetching comments: ", error); }
-        calculate_hot_score(post.likes.length, comments, post.timestamp)
+        post.hot_score = calculate_hot_score(post.likes.length, comments, post.timestamp)
     }
 }
 
