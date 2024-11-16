@@ -4,6 +4,7 @@ import React from 'react';
 import styles from './HubListView.module.css';
 import api from '@/utils/api';
 import { getHubListUrl } from '@/utils/url-segments';
+import { useRouter } from 'next/navigation';
 /*
  * id
  * name
@@ -19,10 +20,17 @@ const HubLimitedView = (data) => {
 	console.log("in hublimited view", data);
 	//console.log("hub name, ", hubData.hubData.name);
 	const hubData = data.hubData; 
+	const router = useRouter();
+
+	const gotoHub = () => {
+		const id = hubData.id;
+		router.push(`/hubs/${id}`);
+	};
+
 	return(
 	<div className={styles.hubCard}>
 		<div className={styles.hubHeader}>
-		<button type="button" className={styles.hubButton}>
+		<button type="button" onClick={gotoHub} className={styles.hubButton}>
 			<h1 className={styles.hubName}> {hubData.name} </h1>
 		</button>
 		<p className={styles.hubDate}> Hub Since: {hubData.created_at} </p>
