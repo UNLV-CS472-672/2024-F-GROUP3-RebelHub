@@ -2,7 +2,7 @@ import styles from "./Explore.module.css";
 import { useState } from "react";
 import api from "../../utils/api";
 import { getExploreListUrl } from "@/utils/url-segments";
-import { set_hot_score } from "./set-hot-score.js";
+import set_hot_score from "./set-hot-score.js";
 
 const FilterButtons = ({posts, setPosts}) => {
     const [time, setTime] = useState('week');

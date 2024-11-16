@@ -2,20 +2,21 @@ import { getCommentsListUrl } from "@/utils/url-segments";
 import api from "../../utils/api";
 
 const calculate_time_factor = (timestamp) => {
-    if (timestamp >= (timezone.now() - timedelta(hours=4))) return 5;
-    else if (timestamp >= (timezone.now() - timedelta(hours=12))) return 4.5;
-    else if (timestamp >= (timezone.now() - timedelta(hours=24))) return 4;
-    else if (timestamp >= (timezone.now() - timedelta(days=3))) return 3;
-    else if (timestamp >= (timezone.now() - timedelta(weeks=1))) return .5;
-    else if (timestamp >= (timezone.now() - timedelta(weeks=2))) return .1;
-    else if (timestamp >= (timezone.now() - timedelta(weeks=4))) return .01;
-    else if (timestamp >= (timezone.now() - timedelta(weeks=8))) return .0025;
+    const now = new Date()
+    if (timestamp >=  new Date(now.getTime() - (4 * 60 * 60 * 1000))) return 5; // 4 hours
+    else if (timestamp >= new Date(now.getTime() - (12 * 60 * 60 * 1000))) return 4.5; // 12 hours
+    else if (timestamp >= new Date(now.getTime() - (24 * 60 * 60 * 1000))) return 4; // 24 hours
+    else if (timestamp >= new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000))) return 3; // 3 days
+    else if (timestamp >= new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000))) return .5; // 1 week
+    else if (timestamp >= new Date(now.getTime() - (2 * 7 * 24 * 60 * 60 * 1000))) return .1; // 2 weeks
+    else if (timestamp >= new Date(now.getTime() - (4 * 7 * 24 * 60 * 60 * 1000))) return .01; // 4 weeks
+    else if (timestamp >= new Date(now.getTime() - (8 * 7 * 24 * 60 * 60 * 1000))) return .0025; // 8 weeks
     else return .0001;
 }
 
 const calculate_hot_score = (likes, comments, timestamp) => {
-    likes_score = number_of_likes * calculate_time_factor(timestamp)
-    comments_score = 0
+    let likes_score = likes * calculate_time_factor(timestamp)
+    let comments_score = 0
     for (let comment in comments)
         comments_score += calculate_time_factor(comment.timestamp)
     return likes_score + comments_score
@@ -23,7 +24,7 @@ const calculate_hot_score = (likes, comments, timestamp) => {
 
 const set_hot_score = async (posts) => {
     for (let post of posts){
-        comments = [];
+        let comments = [];
         try {
             const response = await api.get(getCommentsListUrl(post.id)); 
             comments = response.data;
@@ -35,8 +36,3 @@ const set_hot_score = async (posts) => {
 }
 
 export default set_hot_score;
-
-/*
-def calculate_hot_score(number_of_likes, comments, timestamp):
-
-*/
