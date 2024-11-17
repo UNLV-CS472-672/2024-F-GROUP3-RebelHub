@@ -55,6 +55,7 @@ class PostTestCase(TestCase):
 
         response = self.edit_user_client.patch(reverse('post-edit', kwargs={'id': response.data['id']}), new_data, format='json')
 
+        # Check if the post author was able to change the post. If they weren't, then state what couldn't be changed.
         self.assertEqual(response.status_code, status.HTTP_200_OK, "Post could not be edited by post author")
         self.assertEqual(response.data['title'], new_data['title'], "Post title did not change")
         self.assertEqual(response.data['message'], new_data['message'], "Post message did not change")
@@ -66,32 +67,36 @@ class PostTestCase(TestCase):
         response = self.edit_user_client.post(reverse('post-create'), self.edit_dummy_post, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Post was not created")
-        post = response.data
+        post_id = response.data['id']
 
         new_data = {'title': "edited title", 'message': "edited message"}
 
-        response = self.edit_hub_mod_client.patch(reverse('post-edit', kwargs={'id': response.data['id']}), new_data, format='json')
+        response = self.edit_hub_mod_client.patch(reverse('post-edit', kwargs={'id': post_id}), new_data, format='json')
+        post = Post.objects.get(id=post_id)
 
+        # Check that a mod cannot edit the post. The title and message should not change.
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, "Post could be edited by hub mod")
-        self.assertNotEqual(post['title'], new_data['title'], "Post title changed")
-        self.assertNotEqual(post['message'], new_data['message'], "Post message changed")
+        self.assertNotEqual(post.title, new_data['title'], "Post title changed")
+        self.assertNotEqual(post.message, new_data['message'], "Post message changed")
     
-    def test_owner_edit_hub_post(self):
+    def test_owner_cannot_edit_hub_post(self):
         """
         Make sure that an owner can edit posts on a hub that they own.
         """
         response = self.edit_user_client.post(reverse('post-create'), self.edit_dummy_post, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Post was not created")
-        post = response.data
+        post_id = response.data['id']
 
         new_data = {'title': "edited title", 'message': "edited message"}
 
-        response = self.edit_hub_owner_client.patch(reverse('post-edit', kwargs={'id': response.data['id']}), new_data, format='json')
+        response = self.edit_hub_owner_client.patch(reverse('post-edit', kwargs={'id': post_id}), new_data, format='json')
+        post = Post.objects.get(id=post_id)
 
+        # Check that an owner cannot edit the post. The title and message should not change.
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, "Post could be edited by hub owner")
-        self.assertNotEqual(post['title'], new_data['title'], "Post title changed")
-        self.assertNotEqual(post['message'], new_data['message'], "Post message changed")
+        self.assertNotEqual(post.title, new_data['title'], "Post title changed")
+        self.assertNotEqual(post.message, new_data['message'], "Post message changed")
 
     def test_user_cannot_edit_unowned_post(self):
         """
@@ -100,16 +105,17 @@ class PostTestCase(TestCase):
         response = self.edit_hub_mod_client.post(reverse('post-create'), self.edit_dummy_post, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Post was not created")
-        made_post_id = response.data['id']
+        post_id = response.data['id']
 
         new_data = {'title': "edited title", 'message': "edited message"}
 
-        response = self.edit_user_client.patch(reverse('post-edit', kwargs={'id': made_post_id}), new_data, format='json')
-        made_post = Post.objects.get(id=made_post_id)
+        response = self.edit_user_client.patch(reverse('post-edit', kwargs={'id': post_id}), new_data, format='json')
+        post = Post.objects.get(id=post_id)
 
+        # Check that a user cannot edit the post. The title and message should not change.
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, "Post was edited by someone unauthorized")
-        self.assertEqual(made_post.title, self.edit_dummy_post['title'], "Post title changed")
-        self.assertEqual(made_post.message, self.edit_dummy_post['message'], "Post message changed")
+        self.assertEqual(post.title, self.edit_dummy_post['title'], "Post title changed")
+        self.assertEqual(post.message, self.edit_dummy_post['message'], "Post message changed")
     
     def test_user_cannot_remove_post_title_or_message(self):
         """
@@ -118,25 +124,25 @@ class PostTestCase(TestCase):
         response = self.edit_user_client.post(reverse('post-create'), self.edit_dummy_post, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Post was not created")
-        made_post_id = response.data['id']
+        post_id = response.data['id']
 
         new_data = {'title': "", 'message': "edited message"}
 
-        response = self.edit_user_client.patch(reverse('post-edit', kwargs={'id': made_post_id}), new_data, format='json')
-        made_post = Post.objects.get(id=made_post_id)
+        response = self.edit_user_client.patch(reverse('post-edit', kwargs={'id': post_id}), new_data, format='json')
+        post = Post.objects.get(id=post_id)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, "Post was edited to have no title")
-        self.assertEqual(made_post.title, self.edit_dummy_post['title'], "Post title changed")
-        self.assertEqual(made_post.message, self.edit_dummy_post['message'], "Post message changed")
+        self.assertEqual(post.title, self.edit_dummy_post['title'], "Post title changed")
+        self.assertEqual(post.message, self.edit_dummy_post['message'], "Post message changed")
 
         new_data = {'title': "edited title", 'message': ""}
 
-        response = self.edit_user_client.patch(reverse('post-edit', kwargs={'id': made_post_id}), new_data, format='json')
-        made_post = Post.objects.get(id=made_post_id)
+        response = self.edit_user_client.patch(reverse('post-edit', kwargs={'id': post_id}), new_data, format='json')
+        post = Post.objects.get(id=post_id)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, "Post was edited to have no message")
-        self.assertEqual(made_post.title, self.edit_dummy_post['title'], "Post title changed")
-        self.assertEqual(made_post.message, self.edit_dummy_post['message'], "Post message changed")
+        self.assertEqual(post.title, self.edit_dummy_post['title'], "Post title changed")
+        self.assertEqual(post.message, self.edit_dummy_post['message'], "Post message changed")
 
     def test_get_post_list(self):
         """
