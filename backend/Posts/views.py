@@ -76,12 +76,5 @@ class PostEdit(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     lookup_field = "id"
 
-    def get_queryset(self):
-        user = self.request.user
-
-        qs = Post.objects.filter(author=user)
-
-        return qs
-
     def perform_update(self, serializer):
         serializer.save()
