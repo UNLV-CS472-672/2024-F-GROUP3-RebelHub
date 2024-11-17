@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+from .views import NewConversation, SendMessage
 
 urlpatterns = [
-    path('create/', views.createConversation, name='create-conversation'),
+    path('private-messaging/new/', NewConversation.as_view(), name='private-messaging-new'),
+    path('private-messaging/<int:conversation_id>/send/', SendMessage.as_view(), name='private-messaging-send'),
 ]
