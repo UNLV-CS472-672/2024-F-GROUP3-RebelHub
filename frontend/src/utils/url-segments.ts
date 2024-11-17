@@ -185,7 +185,8 @@ export function getDeletePostURL(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_DELETE;
 }
 
-// "http://localhost:8000/api/posts/explore/
+// "http://localhost:8000/api/posts/explore/"
+// "http://localhost:8000/api/posts/explore/?time_range=week&ordering=hot"
 export function getExploreListUrl(time_range: string, ordering: string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + URL_SEGMENTS.POSTS_EXPLORE + "?time_range=" + time_range + "&ordering=" + ordering; 
 }

@@ -82,10 +82,9 @@ class ExploreList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['timestamp']  
-    ordering_fields = ['timestamp'] # Do not need to include likes since likes isn't directly used
+    ordering_fields = ['timestamp'] 
     def get_queryset(self):
         user = self.request.user
         
-        # Since likes is a ManyToMany field, we need to convert to a numerical value that is the number of likes
         queryset = Post.objects.filter(Q(hub__private_hub=False) | Q(hub__in=user.joined_hubs.all())) 
-        return filter_queryset(self, queryset)
+        return filter_queryset(self, queryset) # Uses filter_queryset function from helper.py to filter and sort posts
