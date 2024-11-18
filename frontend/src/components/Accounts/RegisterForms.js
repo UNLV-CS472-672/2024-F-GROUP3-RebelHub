@@ -24,6 +24,7 @@ function Form() {
         }
         try {
             console.log(getRegisterUserUrl())
+            localStorage.clear();
             const request = await api.post(getRegisterUserUrl(), { email,username, password})
             router.push('/users/login')
             router.refresh()
