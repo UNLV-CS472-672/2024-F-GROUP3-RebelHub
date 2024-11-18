@@ -10,6 +10,7 @@ export type Post = {
     is_author: boolean,
     is_disliked: boolean,
     is_liked: boolean,
+    last_edited: Date|null,
 }
 
 export type Hub = {

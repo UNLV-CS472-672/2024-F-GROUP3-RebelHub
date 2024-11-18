@@ -10,6 +10,8 @@ import EditPostButton from "./buttons/edit-post-button";
 import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
 import RecursiveCommentList from "../comments/RecursiveCommentList";
 import CreateCommentButton from "../comments/buttons/CreateCommentButton";
+import  { formatDate } from "@/utils/datetime-conversion";
+import EditedHover from "./others/EditedHover";
 
 interface ComponentProps {
     post: Post;
@@ -24,24 +26,40 @@ interface ComponentProps {
 */
 
 const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
-    const [showButton, setShowButton] = useState(false);
     const [showCreateComment, setShowCreateComment] = useState(false);
+    const [isAuthor, setIsAuthor] = useState(false);
+    const [isMod, setIsMod] = useState(false);
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         const fetchPrivileges = async () => {
             const authorPrivileges = await checkAuthorPrivileges(post.author);
+            
+            if(authorPrivileges) {
+                setIsAuthor(authorPrivileges);
+                return;
+            }
+
             const hubPrivileges = await checkHubPrivileges(post.hub);
-            setShowButton(authorPrivileges || hubPrivileges);
+            setIsMod(hubPrivileges);
         }
 
         fetchPrivileges();
     }, []);
 
+    // Function to refresh the component but not reload the page
+    const refreshComponent = () => {
+        setRefresh(!refresh);
+    };
+
     return (
         <div className={styles.detailedPostContainer}>
             <div className={styles.detailedPostElement}>
                 <div>
-                    <h1>{post.title}</h1>
+                    <h1>
+                        {post.title}
+                    </h1>
+                    <EditedHover editedDate={post.last_edited}/>
                 </div>
                 <br></br>
                 <div>
@@ -53,12 +71,18 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 </div>
                 <br></br>
                 <div className={styles.detailedPostButtonList}>
-                    {showButton && 
+                    {isAuthor &&
                         <>
                             <DeletePostButton post={post} />
-                            <EditPostButton post={post} />
+                            <EditPostButton post={post} refreshComponent={refreshComponent}/>
                         </>
-                    } 
+                    }
+                    {!isAuthor && isMod &&
+                        <>
+                            <DeletePostButton post={post} />
+                            <div></div>
+                        </>
+                    }
                 </div>
             </div>
             <div className={styles.detailedPostFooterContainer}>
@@ -67,7 +91,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                         Posted
                     </div>
                     <div>
-                        {post.timestamp.toString().slice(0, 10)}
+                        {formatDate(post.timestamp)}
                     </div>
                 </div>
                 <div className={styles.detailedPostElement}>

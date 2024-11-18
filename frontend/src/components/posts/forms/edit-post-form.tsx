@@ -3,21 +3,19 @@
 import { FormProvider, useForm } from "react-hook-form";
 import CreateInput from "@/components/posts/forms/create-input";
 import { TITLE_VALIDATION, POST_MESSAGE_VALIDATION } from "@/utils/posts/create-post-validations";
-import { gotoDetailedPostPage, URL_SEGMENTS, getEditPostUrl } from "@/utils/url-segments";
+import { getEditPostUrl } from "@/utils/url-segments";
 import styles from "./edit-post-form.module.css";
 import api from "@/utils/api";
-import { usePathname, useRouter } from "next/navigation";
 import { Post } from "@/utils/posts/definitions";
 
 interface ComponentProps {
     post: Post;
     onClose: () => void;
+    refreshComponent: () => void;
 }
 
-const EditPostForm: React.FC<ComponentProps> = ({ post, onClose }) => {
+const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponent }) => {
     const methods = useForm();
-    const pathname = usePathname();
-    const router = useRouter();
 
     const onSubmit = methods.handleSubmit(async data => {
         try {
@@ -31,6 +29,7 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose }) => {
             const response = await api.patch(getEditPostUrl(post.id), {
                 title: data["title"],
                 message: data["message"],
+                last_edited: new Date(),
             });
 
             if (response.status != 200) {
@@ -39,14 +38,18 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose }) => {
 
             methods.reset();
 
-            // If the user is on the post they are editing, reload the page so they can see the
-            // changes.
-            // Else, send them to the edited page
-            if (pathname == "/" + URL_SEGMENTS.POSTS_HOME + response.data.id + "/") {
-                window.location.reload();
-            } else {
-                router.push(gotoDetailedPostPage(response.data.id));
-            }
+            // We need to update the object in case the user tries to edit the post again.
+            // If they try to edit the post again and we don't change the client object,
+            // then the original title/message will be displayed in the form.
+            post.title = data["title"];
+            post.message = data["message"];
+            post.last_edited = new Date();
+
+            // Instead of redirecting to a page, just use the function to refresh
+            // the component of the post
+            refreshComponent();
+
+            onClose();
 
         } catch (error) {
             alert("There was an error in your edit: " + error);

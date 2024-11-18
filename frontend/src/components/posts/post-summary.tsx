@@ -10,6 +10,7 @@ import Link from "next/link";
 import DeletePostButton from "./buttons/delete-post-button";
 import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivileges";
 import styles from "./post-summary.module.css";
+import EditedHover from "./others/EditedHover";
 
 interface ComponentProps {
     post: Post;
@@ -24,16 +25,28 @@ interface ComponentProps {
 */
 
 const PostSummary: React.FC<ComponentProps> = ({ post }) => {
-    const [showButton, setShowButton] = useState(false);
+    const [isAuthor, setIsAuthor] = useState(false);
+    const [isMod, setIsMod] = useState(false);
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         const fetchPrivileges = async () => {
             const authorPrivileges = await checkAuthorPrivileges(post.author);
+            
+            if(authorPrivileges) {
+                setIsAuthor(authorPrivileges);
+                return;
+            }
+
             const hubPrivileges = await checkHubPrivileges(post.hub);
-            setShowButton(authorPrivileges || hubPrivileges);
+            setIsMod(hubPrivileges);
         }
         fetchPrivileges();
     }, []);
+
+    const refreshComponent = () => {
+        setRefresh(!refresh);
+    }
 
     return (
         <div className={styles.postContainer}>
@@ -50,17 +63,30 @@ const PostSummary: React.FC<ComponentProps> = ({ post }) => {
                 </Link>
             </div>
             <div className={styles.postElementColumn}>
-                <Link href={gotoDetailedPostPage(post.id)}>
-                    <h2 className={styles.postTitle}>
-                        {post.title}
-                    </h2>
-                </Link>
+                <div className={styles.postTitle}>
+                    <div className={styles.postTitleComponent}>
+                        <Link href={gotoDetailedPostPage(post.id)}>
+                            <h2 className={styles.postTitle}>
+                                {post.title}
+                            </h2>
+                        </Link>
+                    </div>
+                    <div className={styles.postTitleComponent}>
+                        <EditedHover editedDate={post.last_edited}/>
+                    </div>
+                </div>
                 <div className={styles.postButtonList}>
-                    {showButton &&
-                    <>
-                        <DeletePostButton post={post} />
-                        <EditPostButton post={post} />
-                    </>
+                    {isAuthor &&
+                        <>
+                            <DeletePostButton post={post} />
+                            <EditPostButton post={post} refreshComponent={refreshComponent}/>
+                        </>
+                    }
+                    {!isAuthor && isMod &&
+                        <>
+                            <DeletePostButton post={post} />
+                            <div></div>
+                        </>
                     }
                 </div>
             </div>
