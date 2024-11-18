@@ -2,7 +2,7 @@ import React from "react";
 import PostSummary from "./post-summary";
 import { Post } from "@/utils/posts/definitions";
 
-import styles from "./posts.module.css";
+import styles from "./post-list.module.css";
 
 interface ComponentProps {
     posts: Post[];

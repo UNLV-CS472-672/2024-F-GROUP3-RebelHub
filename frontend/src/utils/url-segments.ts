@@ -30,6 +30,7 @@ export const URL_SEGMENTS = {
     POSTS_LIKE: "/like/",
     POSTS_DISLIKE: "/dislike/",
     POSTS_EXPLORE: "explore/",
+    POSTS_EDIT: "/edit/",
     // #endregion
 
     // #region Comments
@@ -176,12 +177,12 @@ export function getDetailedPostUrl(postId: number|string) {
 }
 
 // "http://localhost:8000/api/posts/create/"
-export function getCreatePostURL() {
+export function getCreatePostUrl() {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + URL_SEGMENTS.POSTS_CREATE;
 }
 
 // "http://localhost:8000/api/posts/<int:id>/delete/"
-export function getDeletePostURL(postId: number|string) {
+export function getDeletePostUrl(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_DELETE;
 }
 
@@ -189,6 +190,11 @@ export function getDeletePostURL(postId: number|string) {
 // "http://localhost:8000/api/posts/explore/?time_range=week&ordering=hot"
 export function getExploreListUrl(time_range: string, ordering: string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + URL_SEGMENTS.POSTS_EXPLORE + "?time_range=" + time_range + "&ordering=" + ordering; 
+}
+
+// "http://localhost:8000/api/posts/<int:id>/edit/"
+export function getEditPostUrl(postId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_EDIT;
 }
 
 // #endregion

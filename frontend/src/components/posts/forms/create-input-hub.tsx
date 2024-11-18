@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useEffect, useState } from "react";
-import styles from "../posts.module.css";
+import styles from "./create-input.module.css";
 import { getJoinedHubsUrl } from "@/utils/url-segments";
 import api from "@/utils/api";
 import { Hub } from "@/utils/posts/definitions";
@@ -33,7 +33,7 @@ const HubInput: FC = () => {
     }, []);
 
     return (
-        <div className={styles.createPostInputContainer}>
+        <div className={styles.createInputContainer}>
             <div>
                 <h2>
                     Hub to Post

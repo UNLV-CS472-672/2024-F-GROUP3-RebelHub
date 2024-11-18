@@ -1,7 +1,8 @@
 import { useFormContext } from "react-hook-form";
 import { findInputError, isFormInvalid } from "@/utils/posts/create-post-input-helper";
 
-import styles from "../posts.module.css";
+import styles from "./create-input.module.css";
+import { useState } from "react";
 
 interface ComponentProps {
     label: string,
@@ -11,10 +12,11 @@ interface ComponentProps {
     name: string,
     validation: any,
     multiline: boolean,
+    startingValue?: string,
 }
 
 /*
-    CreatePostInput
+    CreateInput
 
     This is a form component that can be customized to dynamically display error messages on
     the form.
@@ -26,12 +28,14 @@ interface ComponentProps {
     name:           the key associated with the input value when submitting a form to the server
     validation:     a set of values such as "validation: { required: { value: true, message: 'Required', }, }"
     multiline:      boolean that states if the input is supposed to be a multiline
+    startingValue:  an optional input that controls the starting value in the input field
 
     Follow the formatting from utils/posts/create-post-validations.ts to try create a new input.
 */
 
-const CreatePostInput: React.FC<ComponentProps> = ({ label, type, id, placeholder, name, validation, multiline }) => {
+const CreateInput: React.FC<ComponentProps> = ({ label, type, id, placeholder, name, validation, multiline, startingValue="" }) => {
     const { register, formState: { errors }, } = useFormContext();
+    const [value, setValue] = useState(startingValue);
 
     // Use helper functions from utils/posts/create-post-input-helpers to check for errors
     const inputError = findInputError(errors, name);
@@ -40,7 +44,7 @@ const CreatePostInput: React.FC<ComponentProps> = ({ label, type, id, placeholde
     // Javascript is used to determine whether to display error messages or a text area input.
     // ...register is used to pass the validation checks.
     return (
-        <div className={styles.createPostInputContainer}>
+        <div className={styles.createInputContainer}>
             <div>
                 <h2>
                     {label}
@@ -56,18 +60,21 @@ const CreatePostInput: React.FC<ComponentProps> = ({ label, type, id, placeholde
                 {multiline ? (
                     <textarea
                         id={id}
-                        className={styles.createPostTextarea}
-                        type={type}
+                        className={styles.createTextarea}
                         placeholder={placeholder}
                         {...register(name, validation)}
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
                     />
                 ) : (
                     <input
                         id={id}
-                        className={styles.createPostInput}
+                        className={styles.createInput}
                         type={type}
                         placeholder={placeholder}
                         {...register(name, validation)}
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
                     />
                 )
                 }
@@ -79,10 +86,10 @@ const CreatePostInput: React.FC<ComponentProps> = ({ label, type, id, placeholde
 const InputError = ({ message }) => {
     // Displays an error message
     return (
-        <div className={styles.createPostError}>
+        <div className={styles.createError}>
             {message}
         </div>
     )
 }
 
-export default CreatePostInput;
+export default CreateInput;

@@ -39,6 +39,10 @@ export default function DetailedPostPage({ id, }: { id: number|string }) {
         getPost();
     }, []);
 
+    if (post == null) {
+        return <>Could not find post.</>;
+    }
+
     return (
         <PostSummaryDetailed post={post} />
     );

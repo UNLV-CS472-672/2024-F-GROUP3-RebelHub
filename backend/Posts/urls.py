@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostList, CreatePost, LikePost, DislikePost, PostDetail, PostDelete, ExploreList
+from .views import PostList, CreatePost, LikePost, DislikePost, PostDetail, PostDelete, ExploreList, PostEdit
 
 urlpatterns = [
 
@@ -19,4 +19,6 @@ urlpatterns = [
 
     # Endpoints for retrieving a list of posts for the explore page (with optional filters and sorting)
     path('posts/explore/', ExploreList.as_view(), name='explore-list'),
+    # Endpoint for editing a post by its ID
+    path('posts/<int:id>/edit/', PostEdit.as_view(), name='post-edit'),
 ]

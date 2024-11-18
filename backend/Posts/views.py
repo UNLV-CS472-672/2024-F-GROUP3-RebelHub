@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status, filters
 from .models import Post
-from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer
+from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer, PostEditSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -88,3 +88,13 @@ class ExploreList(generics.ListAPIView):
         
         queryset = Post.objects.filter(Q(hub__private_hub=False) | Q(hub__in=user.joined_hubs.all())) 
         return filter_queryset(self, queryset) # Uses filter_queryset function from helper.py to filter and sort posts
+      
+# Edit a single post by its ID
+class PostEdit(generics.UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostEditSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+    def perform_update(self, serializer):
+        serializer.save()

@@ -1,0 +1,38 @@
+.editPostContainer {
+    text-align: left;
+    border: 2px;
+    border-radius: 12px;
+    color: black;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    padding: 10px;
+    gap: 10px;
+}
+
+.editPostButtonContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.editPostTitle {
+    text-align: center; 
+    margin-top: 10px;
+    color: black;
+}
+
+.editConfirm {
+    width: 100px;
+    background-color: darkgreen;
+    border-color: black;
+    border-radius: 5px;
+    color: white;
+}
+
+.editCancel {
+    width: 100px;
+    background-color: darkred;
+    border-color: black;
+    border-radius: 5px;
+    color: white;
+    margin-left: auto;
+}
