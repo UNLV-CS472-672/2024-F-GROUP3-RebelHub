@@ -1,0 +1,21 @@
+.createPostContainer {
+    text-align: left;
+    background-color: black;
+    border: 2px;
+    border-radius: 12px;
+    color: white;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    padding: 10px;
+    gap: 10px;
+}
+
+.createPostButtonContainer {
+    text-align: center;
+}
+
+.createPostButton {
+    background-color: white;
+    color: black;
+    padding: 1px;
+}

@@ -1,0 +1,28 @@
+.createInputContainer {
+    background-color: darkred;
+    border: 2px;
+    border-radius: 12px;
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 10px;
+    padding: 10px;
+}
+
+.createInput {
+    width: 100%;
+    height: 25px;
+}
+
+.createTextarea {
+    width: 100%;
+    height: 200px;
+}
+
+.createError {
+    background-color: black;
+    border: 2px;
+    border-radius: 10px;
+    color: red;
+    width: fit-content;
+    padding: 5px;
+}
