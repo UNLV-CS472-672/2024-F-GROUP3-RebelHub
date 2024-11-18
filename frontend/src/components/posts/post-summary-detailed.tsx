@@ -9,6 +9,7 @@ import DeletePostButton from "./buttons/delete-post-button";
 import EditPostButton from "./buttons/edit-post-button";
 import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
 import  { formatDate } from "@/utils/datetime-conversion";
+import EditedHover from "./others/EditedHover";
 
 interface ComponentProps {
     post: Post;
@@ -25,8 +26,7 @@ interface ComponentProps {
 const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
     const [isAuthor, setIsAuthor] = useState(false);
     const [isMod, setIsMod] = useState(false);
-    const [postTitle, setPostTitle] = useState(post.title);
-    const [postMessage, setPostMessage] = useState(post.message);
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         const fetchPrivileges = async () => {
@@ -43,17 +43,19 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
         fetchPrivileges();
     }, []);
 
-    // Function to change the title and message without reloading the page
-    const editPostHooks = (newTitle: string, newMessage: string) => {
-        setPostTitle(newTitle);
-        setPostMessage(newMessage);
+    // Function to refresh the component but not reload the page
+    const refreshComponent = () => {
+        setRefresh(!refresh);
     };
 
     return (
         <div className={styles.detailedPostContainer}>
             <div className={styles.detailedPostElement}>
                 <div>
-                    <h1>{postTitle}</h1>
+                    <h1>
+                        {post.title}
+                    </h1>
+                    <EditedHover editedDate={post.last_edited}/>
                 </div>
                 <br></br>
                 <div>
@@ -61,14 +63,14 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 </div>
                 <br></br>
                 <div>
-                    {postMessage}
+                    {post.message}
                 </div>
                 <br></br>
                 <div className={styles.detailedPostButtonList}>
                     {isAuthor &&
                         <>
                             <DeletePostButton post={post} />
-                            <EditPostButton post={post} changeFields={editPostHooks}/>
+                            <EditPostButton post={post} refreshComponent={refreshComponent}/>
                         </>
                     }
                     {!isAuthor && isMod &&

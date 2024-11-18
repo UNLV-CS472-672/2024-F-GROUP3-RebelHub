@@ -11,10 +11,10 @@ import { Post } from "@/utils/posts/definitions";
 interface ComponentProps {
     post: Post;
     onClose: () => void;
-    changeFields: (title: string, message?: string) => void;
+    refreshComponent: () => void;
 }
 
-const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, changeFields }) => {
+const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponent }) => {
     const methods = useForm();
 
     const onSubmit = methods.handleSubmit(async data => {
@@ -29,6 +29,7 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, changeFields })
             const response = await api.patch(getEditPostUrl(post.id), {
                 title: data["title"],
                 message: data["message"],
+                last_edited: new Date(),
             });
 
             if (response.status != 200) {
@@ -37,16 +38,16 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, changeFields })
 
             methods.reset();
 
-            // Instead of redirecting to a page, just use the function to change
-            // what is displayed to the user and change the client's copy
-            // of the post.
-            changeFields(data["title"], data["message"]);
-
             // We need to update the object in case the user tries to edit the post again.
             // If they try to edit the post again and we don't change the client object,
             // then the original title/message will be displayed in the form.
             post.title = data["title"];
             post.message = data["message"];
+            post.last_edited = new Date();
+
+            // Instead of redirecting to a page, just use the function to refresh
+            // the component of the post
+            refreshComponent();
 
             onClose();
 

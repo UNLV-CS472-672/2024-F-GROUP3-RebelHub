@@ -20,7 +20,13 @@
 }
 
 .postTitle {
+    text-align: left;
     margin-bottom: 10px;
+}
+
+.postTitleComponent {
+    display: flex;
+    vertical-align: left;
 }
 
 .postButtonList {

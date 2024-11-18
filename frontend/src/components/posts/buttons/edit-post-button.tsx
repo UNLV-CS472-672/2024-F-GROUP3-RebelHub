@@ -9,7 +9,7 @@ import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileg
 
 interface ComponentProps {
     post: Post;
-    changeFields: (title: string, message?: string) => void;
+    refreshComponent: () => void;
 }
 
 /*
@@ -17,7 +17,7 @@ interface ComponentProps {
     methods from fetchPrivileges.js
 */
 
-const EditPostButton: React.FC<ComponentProps> = ({ post, changeFields }) => {
+const EditPostButton: React.FC<ComponentProps> = ({ post, refreshComponent }) => {
     const [showModal, setShowModal] = useState(false);
 
     return (
@@ -29,7 +29,7 @@ const EditPostButton: React.FC<ComponentProps> = ({ post, changeFields }) => {
                 <EditPostModal 
                     post={post} 
                     onClose={() => setShowModal(false)} 
-                    changeFields={changeFields}
+                    refreshComponent={refreshComponent}
                 />,
                 document.body
             )}

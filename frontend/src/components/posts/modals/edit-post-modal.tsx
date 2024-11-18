@@ -8,10 +8,10 @@ import EditPostForm from "../forms/edit-post-form";
 interface ComponentProps {
     post: Post;
     onClose: () => void;
-    changeFields: (title: string, message?: string) => void;
+    refreshComponent: () => void;
 }
 
-const EditPostModal: React.FC<ComponentProps> = ({ post, onClose, changeFields }) => {
+const EditPostModal: React.FC<ComponentProps> = ({ post, onClose, refreshComponent }) => {
     const handleCloseClick = (e) => {
         e.preventDefault();
         onClose();
@@ -29,7 +29,7 @@ const EditPostModal: React.FC<ComponentProps> = ({ post, onClose, changeFields }
                     X
                 </a>
             </div>
-            <EditPostForm post={post} onClose={onClose} changeFields={changeFields}/> 
+            <EditPostForm post={post} onClose={onClose} refreshComponent={refreshComponent}/> 
         </Modal>
     );
 }
