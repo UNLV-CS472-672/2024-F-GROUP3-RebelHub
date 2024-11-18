@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import RecursiveComment from "./RecursiveComment";
 import styles from "./RecursiveCommentList.module.css";
 import CreateComment from "./CreateComment";
+import ShowMoreButton from "./buttons/ShowMoreButton";
 
 interface ComponentProps {
     post: Post;
@@ -52,8 +53,9 @@ interface ComponentProps {
     Basically, this component needs an outside hook and some kind of button to toggle the hook.
 */
 
-const RecursiveCommentList: React.FC<ComponentProps> = ({ post, showCreateComment, setShowCreateComment, commentsToPrint=null }) => {
-    const [comments, setComments] = useState<PostComment[]>([]);
+const RecursiveCommentList: React.FC<ComponentProps> = ({ post, showCreateComment, setShowCreateComment, commentsToPrint=5 }) => {
+    const [allComments, setAllComments] = useState<PostComment[]>([]);
+    const [displayComments, setDisplayComments] = useState<PostComment[]>([]);
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -63,11 +65,13 @@ const RecursiveCommentList: React.FC<ComponentProps> = ({ post, showCreateCommen
                 if(response.status == 200) {
                     console.log("got comment list");
 
+                    setAllComments(response.data);
+
                     // Decide whether to print all base comments or just a specific amount
-                    if(commentsToPrint == null || commentsToPrint >= response.data.length) {
-                        setComments(response.data);
+                    if(response.data.length > commentsToPrint) {
+                        setDisplayComments(response.data.slice(0, commentsToPrint));
                     } else {
-                        setComments(response.data.slice(0, commentsToPrint));
+                        setDisplayComments(response.data);
                     }
                     
                 }
@@ -80,19 +84,16 @@ const RecursiveCommentList: React.FC<ComponentProps> = ({ post, showCreateCommen
         fetchComments();
     }, []);
 
-    // Function to update a comment in the list
-    const updateComment = (updatedComment: PostComment) => {
-        setComments((previousComments) => previousComments.map((comment) => comment.id === updatedComment.id ? updatedComment : comment))
-    }
-
     // Function to add a new comment to the list
     const newComment = (newComment: PostComment) => {
-        setComments((previousComments) => [newComment, ...previousComments]);
+        setDisplayComments((previousComments) => [newComment, ...previousComments]);
+        setAllComments((previousComments) => [newComment, ...previousComments]);
     }
 
     // Function to delete a comment in the list
     const deleteComment = (deletedComment: PostComment) => {
-        setComments((previousComments) => previousComments.filter((comment) => comment.id !== deletedComment.id));
+        setDisplayComments((previousComments) => previousComments.filter((comment) => comment.id !== deletedComment.id));
+        setAllComments((previousComments) => previousComments.filter((comment) => comment.id !== deletedComment.id));
     }
 
     return (
@@ -108,16 +109,26 @@ const RecursiveCommentList: React.FC<ComponentProps> = ({ post, showCreateCommen
                 </div>
             }
             {
-                comments.map((comment) => (
+                displayComments.map((comment) => (
                     <div className={styles.listContainer} key={comment.id}>
                         <RecursiveComment 
                             post={post} 
                             currentComment={comment} 
                             parentDelete={deleteComment}
-                            parentUpdate={updateComment}
                         />
                     </div>
                 ))
+            }
+            {displayComments.length < allComments.length &&
+                <div className={styles.showMoreComments}>
+                    <ShowMoreButton
+                        displayList={displayComments}
+                        fullList={allComments}
+                        setDisplayList={setDisplayComments}
+                        message="Show more comments..."
+                        increment={3}
+                    />
+                </div>
             }
         </div>
     );

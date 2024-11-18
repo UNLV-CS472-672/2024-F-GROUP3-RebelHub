@@ -15,7 +15,6 @@ import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileg
 interface ComponentProps {
     post: Post;
     comment: PostComment;
-    parentUpdate: (update: PostComment) => void;
     parentCreate: (create: PostComment) => void;
     parentDelete: (del: PostComment) => void;
     showButtons?: boolean;
@@ -34,7 +33,7 @@ interface ComponentProps {
     showButtons: used to show the likes/dislikes buttons or just show some text
 */
 
-const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, parentDelete, parentUpdate, showButtons=true }) => {
+const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, parentDelete, showButtons=true }) => {
     const [showCreateComment, setShowCreateComment] = useState(false);
     const [showButton, setShowButton] = useState(false);
 

@@ -7,12 +7,13 @@ import { useEffect, useState } from "react";
 import { getReplyListUrl } from "@/utils/url-segments";
 import api from "@/utils/api";
 import React from "react";
+import ShowMoreButton from "./buttons/ShowMoreButton";
 
 interface ComponentProps {
     post: Post;
     currentComment: PostComment;
-    parentUpdate: (update: PostComment) => void;
     parentDelete: (del: PostComment) => void;
+    repliesToPrint?: number;
 }
 
 /*
@@ -26,8 +27,6 @@ interface ComponentProps {
 
     post: the post of the comment
     currentComment: the comment/reply that is going to be displayed by the SingleComment
-    parentUpdate: the replyUpdate from the parent. Since the current comment is a reply to a parent comment,
-        we need to call the parent's update function as the parent has the list of replies that includes the current comment.
     parentDelete: the replyDelete from the parent. Since the current comment is a reply to a parent comment,
         we need to call the parent's function.
     
@@ -35,8 +34,9 @@ interface ComponentProps {
     the replies. The single comment gets passed this function as it is the comment that will be replied to.
 */
 
-const RecursiveComment: React.FC<ComponentProps> = ({ post, currentComment, parentDelete, parentUpdate }) => {
-    const [repliesToCurrentComment, setReplies] = useState<PostComment[]>([]);
+const RecursiveComment: React.FC<ComponentProps> = ({ post, currentComment, parentDelete, repliesToPrint=3 }) => {
+    const [displayReplies, setDisplayReplies] = useState<PostComment[]>([]);
+    const [allReplies, setAllReplies] = useState<PostComment[]>([]);
 
     useEffect(() => {
         const fetchReplies = async () => {
@@ -44,7 +44,15 @@ const RecursiveComment: React.FC<ComponentProps> = ({ post, currentComment, pare
                 const response = await api.get(getReplyListUrl(currentComment.id));
 
                 if(response.status == 200) {
-                    setReplies(response.data);
+                    setAllReplies(response.data);
+
+                    // Decide whether to print all replies or just a certain amount
+                    if (response.data.length > repliesToPrint) {
+                        setDisplayReplies(response.data.slice(0, repliesToPrint));
+                    } else {
+                        setDisplayReplies(response.data);
+                    }
+
                 }
 
             } catch (error) {
@@ -55,19 +63,17 @@ const RecursiveComment: React.FC<ComponentProps> = ({ post, currentComment, pare
         fetchReplies();
     }, []);
 
-    // Function to update a reply to the current comment
-    const updateReply = (updatedReply: PostComment) => {
-        setReplies((previousReplies) => previousReplies.map((reply) => reply.id === updatedReply.id ? updatedReply : reply));
-    }
-
     // Function to create a reply to the current comment
     const createReply = (newReply: PostComment) => {
-        setReplies((previousReplies) => [newReply, ...previousReplies]);
+        setDisplayReplies((previousReplies) => [newReply, ...previousReplies]);
+        setAllReplies((previousReplies) => [newReply, ...previousReplies]);
+        
     }
 
     // Function to delete a reply to the current comment
     const deleteReply = (deletedReply: PostComment) => {
-        setReplies((previousReplies) => previousReplies.filter((reply) => reply.id !== deletedReply.id));
+        setDisplayReplies((previousReplies) => previousReplies.filter((reply) => reply.id !== deletedReply.id));
+        setAllReplies((previousReplies) => previousReplies.filter((reply) => reply.id !== deletedReply.id));
     }
 
     return (
@@ -77,21 +83,34 @@ const RecursiveComment: React.FC<ComponentProps> = ({ post, currentComment, pare
                 post={post} 
                 parentCreate={createReply}
                 parentDelete={parentDelete}
-                parentUpdate={parentUpdate}
             />
-            {repliesToCurrentComment.length > 0 && 
-                repliesToCurrentComment.map((reply) => (
+            {
+                displayReplies.map((reply) => (
                     <div className={styles.recursiveContainer} key={reply.id}>
                         <div>
+                            {/* This is the empty div for the indentation. */}
                         </div>
                         <RecursiveComment 
                             currentComment={reply}
                             post={post}
                             parentDelete={deleteReply}
-                            parentUpdate={updateReply}
                         />
                     </div>
                 ))        
+            }
+            {displayReplies.length < allReplies.length &&
+                <div className={styles.recursiveContainer}>
+                    <div>
+                        {/* This is the empty div for the indentation. */}
+                    </div>
+                    <ShowMoreButton 
+                        displayList={displayReplies}
+                        fullList={allReplies}
+                        setDisplayList={setDisplayReplies}
+                        message="Show more replies..."
+                        increment={3}
+                    />
+                </div>
             }
         </div>
     );
