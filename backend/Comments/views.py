@@ -72,7 +72,9 @@ class CommentDelete(generics.DestroyAPIView):
         
         # User neeeds to the author of the comment or reply
         if comment.author != self.request.user and comment.post.author != self.request.user:
-            raise PermissionDenied("You do not have permission to delete this.")
+            if self.request.user != comment.post.hub.owner:
+                if self.request.user not in comment.post.hub.mods.all():
+                    raise PermissionDenied("You do not have permission to delete this.")
         return comment       
        
 # List for all replies from a comment, most recent reply is seen first

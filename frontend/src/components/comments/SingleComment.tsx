@@ -35,13 +35,20 @@ interface ComponentProps {
 
 const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, parentDelete, showButtons=true }) => {
     const [showCreateComment, setShowCreateComment] = useState(false);
-    const [showButton, setShowButton] = useState(false);
+    const [isAuthor, setIsAuthor] = useState(false);
+    const [isMod, setIsMod] = useState(false);
 
     useEffect(() => {
         const fetchPrivileges = async () => {
             const authorPrivileges = await checkAuthorPrivileges(comment.author);
+            
+            if(authorPrivileges) {
+                setIsAuthor(authorPrivileges);
+                return;
+            }
+
             const hubPrivileges = await checkHubPrivileges(post.hub);
-            setShowButton(authorPrivileges || hubPrivileges);
+            setIsMod(hubPrivileges);
         }
 
         fetchPrivileges();
@@ -62,17 +69,17 @@ const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, 
                         showButtons={showButtons}
                     />
                     <div className={styles.buttonList}>
-                        {showButton ? ( 
-                                <>
-                                    [Edit]
-                                    <DeleteCommentButton comment={comment} parentDelete={parentDelete}/>
-                                </>
-                            ) : (
-                                <>
-                                    <div></div>
-                                    <div></div>
-                                </>
-                            )
+                        {isAuthor &&  
+                            <>
+                                [Edit]
+                                <DeleteCommentButton comment={comment} parentDelete={parentDelete} />
+                            </>
+                        }
+                        {!isAuthor && isMod &&
+                            <>
+                                <div></div>
+                                <DeleteCommentButton comment={comment} parentDelete={parentDelete} />
+                            </>
                         }
                         <CreateCommentButton toggleReply={() => setShowCreateComment(!showCreateComment)} buttonMessage="Reply"/>
                     </div>
