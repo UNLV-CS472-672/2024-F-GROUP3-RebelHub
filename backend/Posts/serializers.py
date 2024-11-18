@@ -7,8 +7,8 @@ from hubs.models import Hub
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes'] 
-        read_only_fields = ['author', 'likes', 'dislikes']
+        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'last_edited'] 
+        read_only_fields = ['author', 'likes', 'dislikes', 'last_edited']
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -117,7 +117,7 @@ class DislikePostSerializer(serializers.ModelSerializer):
 class PostEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'title', 'message']
+        fields = ['id', 'title', 'message', 'last_edited']
         read_only_fields = ['id']
 
     def validate(self, data):
@@ -134,12 +134,16 @@ class PostEditSerializer(serializers.ModelSerializer):
         
         if data.get('message') == "" or data.get('message') == None:
             raise serializers.ValidationError("Post needs to have a message")
+        
+        if data.get('last_edited') == None:
+            raise serializers.ValidationError("When editing a post, a last_edited field is required")
 
         return data
     
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
         instance.message = validated_data.get('message', instance.message)
+        instance.last_edited = validated_data.get('last_edited', instance.last_edited)
         instance.save()
 
         return instance
