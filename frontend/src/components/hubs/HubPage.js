@@ -5,6 +5,7 @@ import styles from './HubPage.module.css';
 import api from '@/utils/api';
 import PostList from '@/components/posts/post-list';
 import { getHubUrl, getCurrentUserUrl, getPostsHubUrl } from "@/utils/url-segments";
+import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
 /*
  * id
  * name
@@ -80,6 +81,7 @@ const HubPage = ({id}) => {
 		);
 	};
 
+	const created_date = convertUtcStringToLocalString(hubData.created_at);
 
 	return (
 		<>
@@ -91,21 +93,26 @@ const HubPage = ({id}) => {
 				<p className={styles.hubDescription}>{hubData.description} </p>
 				<div className={styles.hubViewDetails}>
 					<p className={styles.hubOwner}> Owned By: {hubData.owner} </p>
-					<p className={styles.hubTimestamp}> Created At: {hubData.created_at} </p>
+					<p className={styles.hubTimestamp}> Created At: {created_date.slice(0, created_date.length-6)} </p>
 				</div>
 			</div>
 			{/* the hubs calander events component can go here */}
-			<div className={styles.hubPageContentContainer}>
-				<PostList className={styles.postsList} posts={hubPosts}/>
-				<div className={styles.membersList}>
-					<h2 className={styles.membersListHeader} > Members </h2>
-					<ul>
-					{membersData.map((member, index) => (
-						<li className={styles.memberLI} key={index} >
-							<MemberItem data={member}/>
-						</li>
-					))}
-					</ul>
+			<div className={styles.parentContentContainer} >
+				<div className={styles.postTitleContainer} >
+					<h1 className={styles.postTitle} > Latest Posts </h1>
+					<div className={styles.hubPageContentContainer}>
+						<PostList className={styles.postsList} posts={hubPosts}/>
+						<div className={styles.membersList}>
+							<h2 className={styles.membersListHeader} > Members </h2>
+							<ul>
+							{membersData.map((member, index) => (
+								<li className={styles.memberLI} key={index} >
+									<MemberItem data={member}/>
+								</li>
+							))}
+							</ul>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

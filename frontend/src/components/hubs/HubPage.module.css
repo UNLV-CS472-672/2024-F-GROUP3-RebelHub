@@ -10,7 +10,7 @@
 
 /* hub view container holds heading, hub name, hub desc, details, owner, timestamp */
 .hubViewContainer{
-	background-color: rgba(227, 24, 55, 0.5);
+	background-color: rgba(227, 24, 55, 0.9);
 	border: 2px solid black;
 	border-radius: 10px;
 }
@@ -20,16 +20,16 @@
 }
 .hubName{
 	font-size: 70px;
-	color: black;
+	color: white;
 	text-align: center;
 }
 .hubTimestamp{
 	text-align: center;
-	color: black;
+	color: white;
 }
 .hubDescription{
 	text-align: center;
-	color: black;
+	color: white;
 }
 .hubViewDetails{
 	display: flex;
@@ -37,16 +37,28 @@
 	padding-left: 20px;
 }
 .hubOwner{
-	color: black;
+	color: white;
 	flex: 2;
 }
 
+.postTitleContainer{
+	text-align: left;
+}
+.postTitle{
+	padding-left: 80px;
+	padding-top: 80px;
+}
+.parentContentContainer{
+	background-color: rgba(0,0,0,0.5);
+	height: 100vh;
+}
 
 
 /* container for holding the posts and members list */
 .hubPageContentContainer{
 	padding-top: 50px;
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	width: 100%;
 }
@@ -59,7 +71,7 @@
 }
 
 .membersList{
-	background-color: rgba(227, 24, 55, 0.5);
+	background-color: rgba(227, 24, 55, 0.9);
 	width: 200px;
 	max-width: 200px;
 	align: center;
