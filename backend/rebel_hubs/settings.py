@@ -41,10 +41,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'testhubs',
     'Posts',
-    'calendar_app',
+    'Events',
     'users',
     'hubs',
     'Comments',
+    'Tags',
     'django_filters',
 ]
 

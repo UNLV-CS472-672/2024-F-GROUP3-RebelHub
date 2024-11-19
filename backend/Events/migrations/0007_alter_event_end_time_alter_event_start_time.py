@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('calendar_app', '0006_event_color'),
+        ('Events', '0006_event_color'),
     ]
 
     operations = [

@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('hubs', '0003_hub_pending_members'),
-        ('calendar_app', '0010_remove_event_date_alter_event_end_time_and_more'),
+        ('Events', '0010_remove_event_date_alter_event_end_time_and_more'),
     ]
 
     operations = [

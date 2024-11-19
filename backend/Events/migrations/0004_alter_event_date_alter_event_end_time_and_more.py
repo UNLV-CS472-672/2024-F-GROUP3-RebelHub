@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('calendar_app', '0003_rename_name_event_title'),
+        ('Events', '0003_rename_name_event_title'),
     ]
 
     operations = [
