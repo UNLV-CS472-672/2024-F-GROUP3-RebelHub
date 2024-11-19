@@ -1,5 +1,5 @@
 .viewContainer{
-	background-color: #E31837;
+	background-color: black;
 	display: flex;
 	padding: 1%;
 	height: 75vh;
@@ -12,7 +12,7 @@
 	
 }
 .leftView{
-	background-color: black;
+	background-color: black;/*#E31837;*/
 }
 
 .rightView{
