@@ -1,11 +1,12 @@
 .hubCard {
 	border-radius: 12px;
 	background-color: #E31837;
-	width: 100%;
+	width: 50%;
 	height: auto;
 	padding: 20px;
 	box-sizing: border-box;
 	display: flex;
+	flex: 0.75;
 	flex-direction: column;
 	justify-content: space-between;
 	position: relative;
@@ -29,7 +30,7 @@
 .hubName {
 	font-size: 47px;
 	font-weight: bold;
-	color: black;
+	color: white;
 	margin: 0;
 	text-decoration: underline;
 	cursor: pointer;
@@ -53,7 +54,7 @@
 }
 
 .hubDescription {
-	color: black;
+	color: white;
 	font-size: 16px;
 	margin: 10px 0;
 	text-align: center;
@@ -67,7 +68,7 @@
 }
 
 .hubMembers {
-	color: black;
+	color: white;
 	font-size: 16px;
 	text-align: center;
 }

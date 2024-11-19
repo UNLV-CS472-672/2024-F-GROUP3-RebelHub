@@ -5,6 +5,7 @@ import styles from './HubListView.module.css';
 import api from '@/utils/api';
 import { getHubListUrl } from '@/utils/url-segments';
 import { useRouter } from 'next/navigation';
+import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
 /*
  * id
  * name
@@ -27,13 +28,15 @@ const HubLimitedView = (data) => {
 		router.push(`/hubs/${id}`);
 	};
 
+	const created = convertUtcStringToLocalString(hubData.created_at);
+
 	return(
 	<div className={styles.hubCard}>
 		<div className={styles.hubHeader}>
 		<button type="button" onClick={gotoHub} className={styles.hubButton}>
 			<h1 className={styles.hubName}> {hubData.name} </h1>
 		</button>
-		<p className={styles.hubDate}> Hub Since: {hubData.created_at} </p>
+		<p className={styles.hubDate}> Hub Since: {created.slice(0, created.length-6)} </p>
 		</div>
 		<p className={styles.hubDescription}> {hubData.description} </p>
 		<div className={styles.hubFooter}>
@@ -70,7 +73,7 @@ const HubListView = () => {
 		<>
 		<div style={{ display: 'flex', flexDirection: 'column'}} >
 			<h1 className={styles.hubListTitle} > Browse Community Hubs! </h1>
-			<div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height:'100%', padding: '20px'}}>
+			<div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '10px', height:'100%', padding: '20px'}}>
 				{hubListData.map((hubData, id) => (
 					<HubLimitedView key={id} hubData={hubData}/>
 				))}
