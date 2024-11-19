@@ -8,11 +8,13 @@ import HubCreate from '@/components/hubs/HubCreate';
 const HubListPage = () => {
 	return (
 		<>
+		<div style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
 		<RebelHubNavBar />
 		<div style={{ padding: '5%' }}>
 			<TwoSideView leftContent={<HubListView/>} 
 				     rightContent={<HubCreate/>} />
 		< /div>
+		</div>
 		</>
 	);
 };
