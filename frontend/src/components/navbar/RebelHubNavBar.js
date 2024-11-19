@@ -11,6 +11,7 @@ const settingsIconPath = "/navbar/icons/settings.png" // path for the settings i
 const logoLightThemePath = "/navbar/logo/logo_light_alt.png" // path for the light theme logo.
 const logoDarkThemePath = "/navbar/logo/logo_dark_alt.png" // path for the dark theme logo.
 const logoRebelPath = "/navbar/logo/logo.png" // path for the rebel version logo.
+const logoReturnKeyPath = "/navbar/logo/logoreturn.png" // path for the rebel hub return key logo.
 
 const RebelHubNavBar = () => {
 
@@ -34,7 +35,7 @@ const RebelHubNavBar = () => {
 		<>
 		<nav className={`${styles.nav} ${darkTheme ? styles.dark : styles.light}`}>
 			<button className={styles.homeButton} onClick={homeButtonPressed}>
-				<img src={darkTheme ? logoDarkThemePath : logoLightThemePath} className={styles.homeButtonLogo}/>
+				<img src={logoReturnKeyPath/*darkTheme ? logoDarkThemePath : logoLightThemePath*/} className={styles.homeButtonLogo}/>
 			</button>
 			<input className={styles.searchBar} type="text" placeholder="Search..." />
 			<button className={styles.messageButton} onClick={messageButtonPressed}>
@@ -43,7 +44,7 @@ const RebelHubNavBar = () => {
 			<button className={styles.settingsButton} onClick={settingsButtonPressed}>
 				<img src={settingsIconPath} className={styles.settingsIcon}/>
 			</button>
-			<AccountButton username="some user" darkTheme={darkTheme}/>
+			<AccountButton username="UNLV Student" darkTheme={darkTheme}/>
 		</nav>
 		<div className={styles.extraSpace}> </div>
 		</>
