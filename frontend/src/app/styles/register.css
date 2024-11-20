@@ -29,7 +29,9 @@ div{
     outline-style: groove;
     width:420px;
 }
-
+button{
+    margin-bottom: 10px;
+}
 .login-button{
     width:100%;
     height:45px;
