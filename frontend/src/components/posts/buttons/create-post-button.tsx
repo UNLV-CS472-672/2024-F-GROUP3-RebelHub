@@ -3,6 +3,10 @@
 import Link from "next/link";
 import styles from "./post-buttons.module.css"
 import { gotoCreatePostPage } from "@/utils/url-segments";
+=======
+import styles from "./post-buttons.module.css"
+import { gotoCreatePostPage } from "@/utils/posts/url-segments";
+>>>>>>> b905c44 (Update create-post-button.tsx)
 import { FC } from "react";
 
 const CreatePostButton: FC = () => {
