@@ -5,7 +5,7 @@ import api from "../../utils/api";
 import { } from "../../utils/fetchPrivileges";
 import { getExploreListUrl } from "@/utils/url-segments";
 import PostList from "../posts/post-list";
-import FilterButtons from "../../utils/FilterButtons/FilterButtons.js";
+import FilterButtons from "../FilterButtons/FilterButtons.js";
 
 const Explore = () => {
     const [posts, setPosts] = useState([]);
