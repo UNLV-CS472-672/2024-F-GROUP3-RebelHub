@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from hubs.models import Hub
+from Tags.models import Tags
 # Note: The "user" is just a placeholder name as it hasn't been made yet. The foreign key will be changed based on the Hub api
 
 # Create your models here.
@@ -23,6 +24,9 @@ class Post(models.Model):
     hot_score = models.FloatField(default=0)
     # Stores the date of when the post was last edited
     last_edited = models.DateTimeField(blank=True, null=True)
+
+    # Used for viewing posts based on tags
+    tag = models.ForeignKey(Tags, related_name='post', on_delete=models.SET_NULL, null=True, blank=True)
 
     # Used for the string repersentation and will make the post selectable from like a menu or dropdown list 
     def __str__(self):
