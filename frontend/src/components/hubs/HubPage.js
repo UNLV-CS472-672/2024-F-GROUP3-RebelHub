@@ -57,7 +57,7 @@ const HubPage = ({id}) => {
 				for(const UserId of hubData.members)
 				{
 				    try {
-					const response = await api.get(getCurrentUserUrl());
+					const response = await api.get(`http://localhost:8000/api/users/${UserId}/info`);
 					members.push(response.data);
 					console.log("response:", response.data);
 				    } catch (error) {
@@ -82,6 +82,8 @@ const HubPage = ({id}) => {
 	};
 
 	const created_date = convertUtcStringToLocalString(hubData.created_at);
+	const hubOwner = hubData.owned;
+	const hubMod = hubData.modding;
 
 	return (
 		<>
@@ -89,6 +91,7 @@ const HubPage = ({id}) => {
 			<div className={styles.hubViewContainer}>
 				<div className={styles.hubViewHeading}>
 					<h1 className={styles.hubName}> {hubData.name} </h1><br/>
+					{hubOwner && <button className={styles.updateHubInfoBtn}> Edit </button> }
 				</div>
 				<p className={styles.hubDescription}>{hubData.description} </p>
 				<div className={styles.hubViewDetails}>
