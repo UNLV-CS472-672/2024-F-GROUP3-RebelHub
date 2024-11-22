@@ -57,35 +57,43 @@ const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, 
     return (
         <div>
             <div className={styles.container}>
-                <div className={styles.headerContainer}>
-                    <div className={styles.profileBackground}>
-                        <AccountButton username={comment.author} darkTheme={true}/>    
-                    </div>
-                    <LikeDislikeButtons 
-                        postObject={comment} 
-                        likeUrlFunction={getLikeCommentUrl} 
-                        dislikeUrlFunction={getDislikeCommentUrl}
-                        containerClassName={styles.voteContainer}
-                        showButtons={showButtons}
-                    />
-                    <div className={styles.buttonList}>
-                        {isAuthor &&  
-                            <>
-                                [Edit]
-                                <DeleteCommentButton comment={comment} parentDelete={parentDelete} />
-                            </>
-                        }
-                        {!isAuthor && isMod &&
-                            <>
-                                <div></div>
-                                <DeleteCommentButton comment={comment} parentDelete={parentDelete} />
-                            </>
-                        }
-                        <CreateCommentButton toggleReply={() => setShowCreateComment(!showCreateComment)} buttonMessage="Reply"/>
-                    </div>
+                <div className={styles.profileBackground}>
+                    <AccountButton username={comment.author} darkTheme={true}/>    
                 </div>
-                <div>
-                    {comment.message}
+                <div className={styles.messageContainer}>
+                    <div>
+                        {comment.message}
+                    </div>
+                    <div className={styles.buttonList}>
+                        <LikeDislikeButtons 
+                            postObject={comment} 
+                            likeUrlFunction={getLikeCommentUrl} 
+                            dislikeUrlFunction={getDislikeCommentUrl}
+                            containerClassName={styles.voteContainer}
+                            showButtons={showButtons}
+                        />
+                        <div className={styles.modifyButtons}>
+                            <CreateCommentButton toggleReply={() => setShowCreateComment(!showCreateComment)} buttonMessage="Reply"/>
+                            {isAuthor &&  
+                                <>
+                                    <DeleteCommentButton comment={comment} parentDelete={parentDelete} />
+                                    <div>[Edit]</div>
+                                </>
+                            }
+                            {!isAuthor && isMod &&
+                                <>
+                                    <DeleteCommentButton comment={comment} parentDelete={parentDelete} />
+                                    <div></div>
+                                </>
+                            }
+                            {!isAuthor && !isMod &&
+                                <>
+                                    <div></div>
+                                    <div></div>
+                                </>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
             {showCreateComment &&

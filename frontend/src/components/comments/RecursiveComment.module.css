@@ -5,6 +5,6 @@
 
 .recursiveContainer {
     display: grid;
-    grid-template-columns: 30px 1fr;
+    grid-template-columns: 2.5% 1fr;
     margin-top: 10px;
 }

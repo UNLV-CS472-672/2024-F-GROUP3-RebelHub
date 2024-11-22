@@ -2,7 +2,7 @@
     display: grid;
     background-color: darkred;
     color: white;
-    grid-template-rows: auto auto;
+    grid-template-columns: auto 1fr;
     border: 10px;
     border-radius: 10px;
     gap: 10px;
@@ -20,16 +20,15 @@
     text-align: left;
 }
 
-.headerContainer {
+.messageContainer {
     display: grid;
-    grid-template-columns: auto auto 1fr;
+    grid-template-rows: 1fr auto;
     gap: 10px;
 }
 
 .voteContainer {
-    display: grid;
-    grid-template-rows: auto auto;
-    gap: 10px;
+    display: flex;
+    gap: 40px;
     color: white;
 }
 
@@ -37,12 +36,17 @@
     background-color: black;
     border: 10px;
     border-radius: 10px;
+    align-self: start;
 }
 
 .buttonList {
     display: grid;
-    grid-template-columns: 1fr auto auto auto;
-    align-items: right;
-    text-align: right;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+}
+
+.modifyButtons {
+    display: flex;
+    flex-direction: row-reverse;
     gap: 10px;
 }
