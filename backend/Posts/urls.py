@@ -21,4 +21,7 @@ urlpatterns = [
     path('posts/explore/', ExploreList.as_view(), name='explore-list'),
     # Endpoint for editing a post by its ID
     path('posts/<int:id>/edit/', PostEdit.as_view(), name='post-edit'),
+
+    # Endpoint for updating a hub tag for a post
+    path('posts/<int:id>/tag/', PostTag.as_view(), name'post-tag'),
 ]

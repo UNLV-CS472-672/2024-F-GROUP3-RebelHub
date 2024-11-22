@@ -147,3 +147,39 @@ class PostEditSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+class PostTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'tag']
+        read_only_fields = ['id']
+
+    def validate(self, data):
+        request = self.context.get('request')
+        user = request.user
+        post = self.instance
+
+        if not post:
+            raise serializers.ValidationError("Need a post to put or remove the tag from.")
+
+        if user != post.author and user != post.hub.owner and user not in post.hub.mods.all():
+            raise PermissionDenied("User does not have permission to add or remove a tag from this post.")
+
+        tag = data.get('tag', None) 
+        if tag is not None:
+            if isinstance(tag, Tag) and tag.hub != post.hub:
+                raise PermissionDenied("The tag does not belong to this hub.")
+            elif isinstance(tag, int):  
+                tag = Tag.objects.get(pk=tag)
+                if tag.hub != post.hub:
+                    raise PermissionDenied("The tag does not belong to this hub.")
+        return data
+    
+    def update(self, instance, validated_data):
+        tag = validated_data.get('tag')
+        if tag is not None:
+            if isinstance(tag, int):
+                tag = Tags.objects.get(pk=tag)
+        instance.tag = tag
+        instance.save()
+        return instance

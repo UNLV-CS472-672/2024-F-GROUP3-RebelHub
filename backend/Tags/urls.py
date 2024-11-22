@@ -10,6 +10,6 @@ urlpatterns = [
     path('tags/<int:hub_id>/<int:id>', HubTag.as_view(), name='get-hub-tag'),
     # Used for creating a hub tag (POST) 
     path('tags/<int:hub_id>/create/', HubTagCreate.as_view(), name='tags-hub-create'),
-    # Used for deleting a global tag (DELETE) 
+    # Used for deleting a hub tag (DELETE) 
     path('tags/<int:hub_id>/delete/<int:id>', HubTagDelete.as_view(), name='tags-hub-delete'),
 ]

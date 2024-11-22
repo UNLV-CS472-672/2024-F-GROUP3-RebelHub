@@ -98,3 +98,14 @@ class PostEdit(generics.UpdateAPIView):
 
     def perform_update(self, serializer):
         serializer.save()
+
+# Add or remove a hub tag from a post
+class PostTag(generics.UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostTagSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+    def perform_update(self, serializer):
+        serializer.save()
+
