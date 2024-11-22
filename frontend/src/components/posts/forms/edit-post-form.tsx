@@ -15,10 +15,21 @@ interface ComponentProps {
 }
 
 const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponent }) => {
-    const methods = useForm();
+    const methods = useForm({
+        defaultValues: {
+            title: post.title,
+            message: post.message
+        }
+    });
 
     const onSubmit = methods.handleSubmit(async data => {
         try {
+
+            // If the post was unchanged and user clicked submit, just close the form
+            if (data["title"] == post.title && data["message"] == post.message) {
+                onClose();
+                return null;
+            }
 
             /*
                 Additional error checking beyond the basic validations can go here.
@@ -73,8 +84,8 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
                     <h1>Edit Post '{post.title}'</h1>
                 </div>
                 <div className={styles.editPostContainer}>
-                    <CreateInput {...{...TITLE_VALIDATION, 'startingValue': post.title}} />
-                    <CreateInput {...{...POST_MESSAGE_VALIDATION, 'startingValue': post.message}} />
+                    <CreateInput {...TITLE_VALIDATION} />
+                    <CreateInput {...POST_MESSAGE_VALIDATION} />
                 
                     <div className={styles.editPostButtonContainer}>
                         <button className={styles.editConfirm} onClick={onSubmit}>
