@@ -57,22 +57,17 @@
 /* container for holding the posts and members list */
 .hubPageContentContainer{
 	padding-top: 50px;
-	display: flex;
-	flex-direction: row;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 50px;
 	justify-content: space-between;
 	width: 100%;
 }
 
-.postsList{
-	flex: 2;
-	width: 100%;
-	border: 2px solid black;
-
-}
 
 .membersList{
 	background-color: rgba(227, 24, 55, 0.9);
-	width: 200px;
+	width: 700px;
 	max-width: 200px;
 	align: center;
 	display: flex;
