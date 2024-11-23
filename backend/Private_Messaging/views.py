@@ -7,8 +7,8 @@ from django.contrib.auth.models import User
 from .models import Message
 from .serializers import MessageSerializer
 
-class NewConversation(APIView):
-    def post(self, request, recipient_id):
+class CreateConversation(APIView):
+    async def createConversation(self, request, recipient_id):
         creator = request.user 
         other_participant = User.objects.get(id=recipient_id)  
         participants = User.objects.filter(id__in=[creator.id, other_participant.id])
@@ -29,7 +29,7 @@ class NewConversation(APIView):
 
 class CreateMessage(APIView):
 
-    def post(self, request, conversation_id):
+    async def createMessage(self, request, conversation_id):
         creator = request.user
         messageContent = request.data.get("messageContent")
         if not messageContent:
@@ -45,7 +45,7 @@ class CreateMessage(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class ConversationList(APIView):
-    def get(self, request):
+    async def getConversations(self, request):
         user = request.user
         # Conversation list based on what last conversation had
         conversations = Conversation.objects.filter(participants=user).order_by('-timestamp')
@@ -53,8 +53,8 @@ class ConversationList(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-class MessageListView(APIView):
-    def get(self, request, conversation_id):
+class MessageList(APIView):
+    async def getMessages(self, request, conversation_id):
         user = request.user
         try:
             conversationMessages = Conversation.objects.get(id=conversation_id, participants=user)
