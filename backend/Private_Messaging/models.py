@@ -25,6 +25,11 @@ class Conversation(models.Model):
             for message in messages
         ]
 
+    def add_participants(self, *users):
+        if self.participants.count() + len(users) > 2:
+            raise ValueError("No more than two participants is allowed.")
+        self.participants.add(*users)
+
 class Message(models.Model):
     # Unique ID for each message
     messageID = models.AutoField(primary_key=True)
