@@ -1,0 +1,60 @@
+.deleteModal {
+    background-color: white;
+    border-radius: 10px;
+    position: absolute;
+    min-width: 200px;
+    width: auto;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    gap: 10px;
+    padding: 10px;
+    display: grid;
+    grid-template-rows: auto;
+}
+
+.deleteModalMessage {
+    color: black;
+    text-align: left;
+}
+
+.deleteModalClose {
+    position: absolute;
+    color: black;
+    background-color: transparent;
+    top: 0px; 
+    right: 4px;
+    margin-bottom: 20px;
+}
+
+.deleteModalButtonContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.deleteModalConfirm {
+    width: 100px;
+    background-color: darkgreen;
+    border-color: black;
+    border-radius: 5px;
+    color: white;
+}
+
+.deleteModalCancel {
+    width: 100px;
+    background-color: darkred;
+    border-color: black;
+    border-radius: 5px;
+    color: white;
+}
+
+.deleteModalOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}

@@ -19,6 +19,9 @@ class Post(models.Model):
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     dislikes = models.ManyToManyField(User, related_name='disliked_posts', blank=True)
 
+    # Stores the date of when the post was last edited
+    last_edited = models.DateTimeField(blank=True, null=True)
+
     # Used for the string repersentation and will make the post selectable from like a menu or dropdown list 
     def __str__(self):
         return self.title
