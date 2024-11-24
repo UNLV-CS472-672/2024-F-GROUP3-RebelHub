@@ -4,7 +4,7 @@
     border-radius: 12px;
     color: black;
     display: grid;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: repeat(4, auto);
     padding: 10px;
     gap: 10px;
 }
