@@ -1,9 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 from hubs.models import Hub
+from django_resized import ResizedImageField
 # Note: The "user" is just a placeholder name as it hasn't been made yet. The foreign key will be changed based on the Hub api
 
 # Create your models here.
+
+def get_upload_path(instance, filename):
+    print(instance)
+    return f'posts/{instance.author.id}/{filename}'
 
 # Class for creating post, includes author, title, message, and hub
 class Post(models.Model):
@@ -21,6 +26,9 @@ class Post(models.Model):
 
     # Stores the date of when the post was last edited
     last_edited = models.DateTimeField(blank=True, null=True)
+
+    # Stores the image for a post
+    image = ResizedImageField(upload_to=get_upload_path, blank=True, null=True)
 
     # Used for the string repersentation and will make the post selectable from like a menu or dropdown list 
     def __str__(self):
