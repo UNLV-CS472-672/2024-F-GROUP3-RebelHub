@@ -11,6 +11,7 @@ export type Post = {
     is_disliked: boolean,
     is_liked: boolean,
     last_edited: Date|null,
+    image: any|null,
 }
 
 export type Hub = {
