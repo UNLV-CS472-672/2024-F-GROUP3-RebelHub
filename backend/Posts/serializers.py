@@ -7,7 +7,7 @@ from hubs.models import Hub
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'last_edited'] 
+        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'last_edited', 'image'] 
         read_only_fields = ['author', 'likes', 'dislikes', 'last_edited']
     
     def to_representation(self, instance):
@@ -27,7 +27,7 @@ class PostCreateSerializer(serializers.ModelSerializer):
     hub_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Post
-        fields = ['id', 'title', 'message', 'hub_id']
+        fields = ['id', 'title', 'message', 'hub_id', 'image']
 
     def validate(self, data):
         request = self.context.get('request')
@@ -117,7 +117,7 @@ class DislikePostSerializer(serializers.ModelSerializer):
 class PostEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'title', 'message', 'last_edited']
+        fields = ['id', 'title', 'message', 'last_edited', 'image']
         read_only_fields = ['id']
 
     def validate(self, data):
@@ -144,6 +144,11 @@ class PostEditSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get('title', instance.title)
         instance.message = validated_data.get('message', instance.message)
         instance.last_edited = validated_data.get('last_edited', instance.last_edited)
+
+        if validated_data.get('image'):
+            instance.image.delete()
+            instance.image = validated_data.get('image', instance.image)
+        
         instance.save()
 
         return instance

@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
+from rest_framework.parsers import MultiPartParser, FormParser
 # Create your views here
 
 # Able to create and view the post, should only handles POST requests to create a post
@@ -73,6 +74,7 @@ class PostDetail(generics.RetrieveAPIView):
 class PostEdit(generics.UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostEditSerializer
+    parser_classes = (MultiPartParser, FormParser)
     permission_classes = [IsAuthenticated]
     lookup_field = "id"
 
