@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from .models import Post
-from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer, PostEditSerializer
+from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer, PostEditSerializer, PostCountSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
+from rest_framework.views import APIView
+from django.http import JsonResponse
+from django.contrib.auth.models import User
 # Create your views here
 
 # Able to create and view the post, should only handles POST requests to create a post
@@ -78,3 +81,23 @@ class PostEdit(generics.UpdateAPIView):
 
     def perform_update(self, serializer):
         serializer.save()
+
+class UserPostCountAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, username=None):
+        try:
+            if username:
+                try:
+                    user = User.objects.get(username=username)
+                except User.DoesNotExist:
+                    return JsonResponse({"error": "User not found"}, status=404)
+            else:
+                user = request.user
+            
+            serializer = PostCountSerializer(user)
+            return Response(serializer.data)
+
+        except Exception as e:
+            print(f"Error: {e}")
+            return JsonResponse({"error": "Internal server error"}, status=500)

@@ -30,6 +30,7 @@ export const URL_SEGMENTS = {
     POSTS_LIKE: "/like/",
     POSTS_DISLIKE: "/dislike/",
     POSTS_EDIT: "/edit/",
+    POSTS_COUNT: "postcount/",
     // #endregion
 
     // #region Comments
@@ -56,6 +57,10 @@ export const URL_SEGMENTS = {
     EVENTS_CREATE: "create/",
     EVENTS_DELETE: "/delete/",
     EVENTS_UPDATE: "/update/",
+    // #endregion
+
+    //#region Profile
+    PROFILE_API: 'api/profile/',
     // #endregion
 };
 
@@ -190,6 +195,11 @@ export function getEditPostUrl(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_EDIT;
 }
 
+// "http://localhost:8000/api/posts/postcount"
+export function getPostCountUrl() {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE +  URL_SEGMENTS.POSTS_COUNT;
+}
+
 // #endregion
 
 // "http://localhost:8000/api/posts/<int:post_id>/comments/"
@@ -290,6 +300,15 @@ export function gotoPostListPage() {
 // "http://localhost:3000/users/login/"
 export function gotoLoginPage() {
     return URL_SEGMENTS.FRONTEND + URL_SEGMENTS.USERS_HOME + URL_SEGMENTS.USERS_LOGIN;
+}
+
+// #endregion
+
+//#region Functions for profile api
+
+//"http//locatlhost:8000/api/profile/"
+export function getProfileUrl(){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PROFILE_API
 }
 
 // #endregion

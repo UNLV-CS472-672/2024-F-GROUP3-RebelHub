@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 from .models import Post
 from hubs.models import Hub
+from django.contrib.auth.models import User
 
 # To serialise the post which validates data from the front end
 class PostSerializer(serializers.ModelSerializer):
@@ -147,3 +148,13 @@ class PostEditSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+class PostCountSerializer(serializers.ModelSerializer):
+    post_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'post_count']
+
+    def get_post_count(self, obj):
+        return Post.objects.filter(author=obj).count()

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostList, CreatePost, LikePost, DislikePost, PostDetail, PostDelete, PostEdit
+from .views import PostList, CreatePost, LikePost, DislikePost, PostDetail, PostDelete, PostEdit, UserPostCountAPIView
 
 urlpatterns = [
 
@@ -19,4 +19,6 @@ urlpatterns = [
 
     # Endpoint for editing a post by its ID
     path('posts/<int:id>/edit/', PostEdit.as_view(), name='post-edit'),
+
+    path('posts/postcount/', UserPostCountAPIView.as_view(), name='post-count')
 ]
