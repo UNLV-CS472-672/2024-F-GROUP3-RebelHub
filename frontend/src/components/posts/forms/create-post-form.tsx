@@ -40,7 +40,7 @@ const CreatePostForm: FC = () => {
             let formData = new FormData();
 
             if (data["image"] != null && data["image"][0] instanceof File){
-                formData.append("image", data["image"][0], data["image"][0].name);
+                formData.append("image", data["image"][0]);
             }
 
             formData.append("title", data["title"]);

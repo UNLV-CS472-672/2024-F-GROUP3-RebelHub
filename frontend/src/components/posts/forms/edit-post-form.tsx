@@ -43,7 +43,7 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
             // If the image was changed in the form, then add the image to the 
             // form data.
             if (data["image"] != null && data["image"][0] instanceof File) {
-                formData.append("image", data["image"][0], data["image"][0].name);
+                formData.append("image", data["image"][0]);
             }
 
             formData.append("title", data["title"]);

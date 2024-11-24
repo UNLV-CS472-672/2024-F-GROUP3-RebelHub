@@ -59,23 +59,24 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 </div>
                 <div>
                     {post.image != null &&
-                        <img src={post.image} />
+                        <img src={post.image} className={styles.image}/>
                     } 
                 </div>
                 <div>
                     {post.message}
                 </div>
                 <div className={styles.detailedPostButtonList}>
+                    <div></div>
                     {isAuthor &&
                         <>
-                            <DeletePostButton post={post} />
                             <EditPostButton post={post} refreshComponent={refreshComponent} />
+                            <DeletePostButton post={post} />
                         </>
                     }
                     {!isAuthor && isMod &&
                         <>
-                            <DeletePostButton post={post} />
                             <div></div>
+                            <DeletePostButton post={post} />
                         </>
                     }
                 </div>

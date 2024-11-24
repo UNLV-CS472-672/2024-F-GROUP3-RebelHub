@@ -34,7 +34,12 @@
 
 .detailedPostButtonList {
     display: grid;
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: 1fr auto auto ;
     align-items: left;
     gap: 10px;
+}
+
+.image {
+    max-width: 100%;
+    max-height: 100%;
 }
