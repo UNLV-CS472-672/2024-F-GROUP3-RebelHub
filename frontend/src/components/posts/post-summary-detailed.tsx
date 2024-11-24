@@ -57,20 +57,19 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                     </h1>
                     <EditedHover editedDate={post.last_edited}/>
                 </div>
-                <br></br>
                 <div>
-                    [Full post thumbnail or image]
+                    {post.image != null &&
+                        <img src={post.image} />
+                    } 
                 </div>
-                <br></br>
                 <div>
                     {post.message}
                 </div>
-                <br></br>
                 <div className={styles.detailedPostButtonList}>
                     {isAuthor &&
                         <>
                             <DeletePostButton post={post} />
-                            <EditPostButton post={post} refreshComponent={refreshComponent}/>
+                            <EditPostButton post={post} refreshComponent={refreshComponent} />
                         </>
                     }
                     {!isAuthor && isMod &&
