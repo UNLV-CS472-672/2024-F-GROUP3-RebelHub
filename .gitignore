@@ -9,3 +9,4 @@ venv/
 htmlcov/
 # Django related
 backend/db.sqlite3
+backend/media/*
