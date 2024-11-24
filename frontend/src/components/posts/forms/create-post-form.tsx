@@ -9,9 +9,16 @@ import { getCreatePostUrl, URL_SEGMENTS } from "@/utils/url-segments";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import HubInput from "./create-input-hub";
+import ImageInput from "./ImageInput";
 
 const CreatePostForm: FC = () => {
-    const methods = useForm();
+    const methods = useForm({
+        defaultValues: {
+            title: "",
+            message: "",
+            image: null,
+        }
+    });
     const router = useRouter();
 
     const onSubmit = methods.handleSubmit(async data => {
@@ -26,12 +33,26 @@ const CreatePostForm: FC = () => {
                 throw new Error("There is no hub selected for the post to go.");
             }
 
+            /*
+                Make form data
+            */
+
+            let formData = new FormData();
+
+            if (data["image"] != null && data["image"][0] instanceof File){
+                formData.append("image", data["image"][0], data["image"][0].name);
+            }
+
+            formData.append("title", data["title"]);
+            formData.append("message", data["message"]);
+            formData.append("hub_id", data["hub_id"]);
+
             console.log("Creating new post");
 
-            const response = await api.post(getCreatePostUrl(), {
-                title: data["title"],
-                message: data["message"],
-                hub_id: data["hub_id"],
+            const response = await api.post(getCreatePostUrl(), formData, {
+                headers : {
+                    "Content-Type": "multipart/form-data",
+                },
             });
 
             if (response.status != 201) {
@@ -60,8 +81,9 @@ const CreatePostForm: FC = () => {
                 </div>
                 <div className={styles.createPostContainer}>
                     <CreateInput {...TITLE_VALIDATION} />
-                    <HubInput/>
+                    <HubInput />
                     <CreateInput {...POST_MESSAGE_VALIDATION} />
+                    <ImageInput />
                 
                     <div className={styles.createPostButtonContainer}>
                         <button className={styles.createPostButton} onClick={onSubmit}>
