@@ -7,7 +7,6 @@ from django_resized import ResizedImageField
 # Create your models here.
 
 def get_upload_path(instance, filename):
-    print(instance)
     return f'posts/{instance.author.id}/{filename}'
 
 # Class for creating post, includes author, title, message, and hub

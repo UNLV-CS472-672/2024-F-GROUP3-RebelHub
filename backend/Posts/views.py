@@ -6,13 +6,14 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 # Create your views here
 
 # Able to create and view the post, should only handles POST requests to create a post
 class CreatePost(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostCreateSerializer
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
     
         
 # Delete the post by its ID
@@ -74,7 +75,7 @@ class PostDetail(generics.RetrieveAPIView):
 class PostEdit(generics.UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostEditSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
     permission_classes = [IsAuthenticated]
     lookup_field = "id"
 

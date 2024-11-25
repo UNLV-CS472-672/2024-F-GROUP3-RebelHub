@@ -146,7 +146,6 @@ class PostEditSerializer(serializers.ModelSerializer):
         instance.last_edited = validated_data.get('last_edited', instance.last_edited)
 
         if validated_data.get('image'):
-            instance.image.delete()
             instance.image = validated_data.get('image', instance.image)
         
         instance.save()
