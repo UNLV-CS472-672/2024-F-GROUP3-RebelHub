@@ -98,6 +98,9 @@ class HubUpdateSerializer(serializers.ModelSerializer):
                 for user in instance.pending_members.all():
                     instance.pending_members.remove(user)
                     instance.members.add(user)
+                instance.private_hub = False
+            elif set_private:
+                instance.private_hub = True
             instance.save()
             return instance
         else:
