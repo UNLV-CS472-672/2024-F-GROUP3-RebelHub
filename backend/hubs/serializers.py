@@ -374,5 +374,11 @@ class HubRemoveModSerializer(serializers.ModelSerializer):
         instance.mods.remove(mod_to_kick)
         instance.save()
         return instance
-
-
+    
+# Serializer for hubs with tags
+class FilterHubsSerializer(serializers.ModelSerializer):
+    hub_tag = serializers.StringRelatedField(many=True)
+    hub_events = serializers.StringRelatedField(many=True)
+    class Meta:
+        model = Hub
+        fields = ['id', 'name', 'description', 'owner', 'mods', 'members', 'created_at', 'private_hub', 'hub_tag', 'hub_events']

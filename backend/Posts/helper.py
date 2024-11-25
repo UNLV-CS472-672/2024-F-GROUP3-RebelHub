@@ -1,10 +1,26 @@
 from django.utils import timezone
 from datetime import timedelta
-from rest_framework import generics, filters
-from .models import Post
 from django.db.models import Count
+from Tags.models import Post_Tag
 
-def filter_queryset(self, queryset):
+def filter_queryset(self, queryset, current_hub=None):
+
+    # Filter based on tags. If the current selected tags are X and Y, and post A has tag X, then it is included.
+    tags = self.request.query_params.get('tags', 'none')
+    # If tags parameter in URL field is not specified, then ignore filtering based on tags
+    if tags != 'none':
+        tags_list = tags.split(',')
+        tags_allowed = Post_Tag.objects.filter(hub=current_hub).values_list('name', flat=True)
+
+        # If invalid tag is given, it is not used in the filter
+        for tag in tags_list[:]:
+            if tag not in tags_allowed:
+                tags_list.remove(tag)
+        if tags_list:
+            queryset = queryset.filter(tag__name__in=tags_list)  
+        else:
+            queryset = queryset.none()  
+
     # Gets time_range parameter from api call. If none, then default is a week
     time_range = self.request.query_params.get('time_range', 'none')
     time_range_allowed = ['24_hours', 'week', 'month', 'year', 'all_time', 'none']

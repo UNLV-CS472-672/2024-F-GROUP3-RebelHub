@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 from .models import Post
 from hubs.models import Hub
+from Tags.models import Post_Tag
 
 # To serialise the post which validates data from the front end
 class PostSerializer(serializers.ModelSerializer):
@@ -167,10 +168,10 @@ class PostTagSerializer(serializers.ModelSerializer):
 
         tag = data.get('tag', None) 
         if tag is not None:
-            if isinstance(tag, Tag) and tag.hub != post.hub:
+            if isinstance(tag, Post_Tag) and tag.hub != post.hub:
                 raise PermissionDenied("The tag does not belong to this hub.")
             elif isinstance(tag, int):  
-                tag = Tag.objects.get(pk=tag)
+                tag = Post_Tag.objects.get(pk=tag)
                 if tag.hub != post.hub:
                     raise PermissionDenied("The tag does not belong to this hub.")
         return data
@@ -179,7 +180,7 @@ class PostTagSerializer(serializers.ModelSerializer):
         tag = validated_data.get('tag')
         if tag is not None:
             if isinstance(tag, int):
-                tag = Tags.objects.get(pk=tag)
+                tag = Post_Tag.objects.get(pk=tag)
         instance.tag = tag
         instance.save()
         return instance

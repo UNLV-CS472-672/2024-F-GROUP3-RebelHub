@@ -1,21 +1,21 @@
 from rest_framework import serializers
-from .models import Tags
+from .models import Hub_Tag, Post_Tag
 from hubs.models import Hub
 from rest_framework.exceptions import PermissionDenied
 
-class GlobalTagsSerializer(serializers.ModelSerializer):
+class HubTagsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tags
-        fields = ['id', 'name', 'tagged_hubs', 'isGlobal']
-        read_only_fields = ['id', 'isGlobal']
+        model = Hub_Tag
+        fields = ['id', 'name', 'tagged_hubs']
+        read_only_fields = ['id']
 
-class GlobalTagAssignSerializer(serializers.ModelSerialier):
+class HubTagAssignSerializer(serializers.ModelSerializer):
     hub_id = serializers.IntegerField(write_only=True)
 
     class Meta:
-        model = Tags
-        fields = ['id', 'hub_id', 'isGlobal']
-        read_only_fields = ['id', 'isGlobal']   
+        model = Hub_Tag
+        fields = ['id', 'hub_id']
+        read_only_fields = ['id']   
 
     def validate(self, data):
         request = self.context.get('request')
@@ -25,40 +25,43 @@ class GlobalTagAssignSerializer(serializers.ModelSerialier):
         try:
             hub = Hub.objects.get(id=hub_id)
         except Hub.DoesNotExist:
-            raise serializers.ValidationError("Could Not Assign Global Tag : Hub Not Found")
+            raise serializers.ValidationError("Could Not Assign Hub Tag : Hub Not Found.")
 
         if user != hub.owner or user not in hub.mods.all():
-            raise PermissionDenied("Cound Not Assign Global Tag : Not a hub owner/moderator")
+            raise PermissionDenied("Cound Not Assign Hub Tag : Not a hub owner/moderator.")
 
-        data['hub'] = hub
+        data['hub_for_storing'] = hub
 
-        global_tags_count = Tags.objects.filter(tagged_hubs=hub, isGlobal=True).count()
+        hub_tags_count = Hub_Tag.objects.filter(tagged_hubs=hub).count()
 
-        if global_tags_count >= 3:
-            raise serializers.ValidationError("This hub already has 3 global tags. No more tags can be added.") 
+        if hub_tags_count >= 3:
+            raise serializers.ValidationError("Cannot exceed 3 hub tags for a hub.") 
 
         return data
 
-     def create(self, validated_data):
-        tag = Tags.objects.get(id=validated_data['id'], isGlobal=True)
-        hub = validated_data['hub'] 
+    def create(self, validated_data):
+        try:
+            tag = Hub_Tag.objects.get(id=validated_data['id'])
+        except Hub_Tag.DoesNotExist:
+            raise serializers.ValidationError("Tag is not a hub or the tag cannot be found.")
+        hub = validated_data['hub_for_storing'] 
         tag.tagged_hubs.add(hub) 
 
         return tag
 
 
-class HubTagsSerializer(serializers.ModelSerializer):
+class PostTagsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tags
-        fields = ['id', 'name', 'hub', 'isGlobal']
-        read_only_fields = ['id', 'isGlobal']
+        model = Post_Tag
+        fields = ['id', 'name', 'hub']
+        read_only_fields = ['id']
 
-class HubTagCreateSerializer(serializers.ModelSerializer):
+class PostTagCreateSerializer(serializers.ModelSerializer):
     hub_id = serializers.IntegerField(write_only=True)
     class Meta:
-        model = Tags
-        fields = ['id', 'name', 'hub_id', 'isGlobal']
-        read_only_fields = ['id', 'isGlobal']
+        model = Post_Tag
+        fields = ['id', 'name', 'hub_id']
+        read_only_fields = ['id']
 
     def validate(self, data):
         request = self.context.get('request')
@@ -77,5 +80,5 @@ class HubTagCreateSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        new_tag = Tags.objects.create(**validated_data)
+        new_tag = Post_Tag.objects.create(**validated_data)
         return new_tag 

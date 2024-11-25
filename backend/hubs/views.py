@@ -1,11 +1,13 @@
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import PermissionDenied, NotFound
 from .models import Hub
 from .serializers import *
 from Posts.models import Post
 from Posts.serializers import PostSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from .helper import filter_hub_tag_queryset
 
 # "api/hubs/"
 # returns all the hubs with limited fields.
@@ -204,3 +206,14 @@ class HubKickMember(generics.UpdateAPIView):
     serializer_class = HubKickMemberSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "id"
+
+# "api/hubs/filter/?tags=tag1,tag2,tag3&ordering=top" (example)
+# returns all hubs with specific filters
+class FilterHubs(generics.ListAPIView):
+    serializer_class = FilterHubsSerializer
+    permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    ordering_fields = ['name', 'created_at']
+    def get_queryset(self):
+        queryset = Hub.objects.filter(private_hub=False)
+        return filter_hub_tag_queryset(self, queryset) # Uses filter_hub_tag_queryset function from helper.py to filter and sort hubs
