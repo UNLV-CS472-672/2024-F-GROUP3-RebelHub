@@ -30,7 +30,7 @@ class Profile(models.Model):
         if self.pk:
             old_pfp = Profile.objects.get(pk=self.pk).pfp
 
-            if old_pfp and old_pfp != self.pfp:
+            if old_pfp and old_pfp != self.pfp and old_pfp.name != 'defaultpfp.png':
                 if os.path.isfile(old_pfp.path):
                     os.remove(old_pfp.path)
 
