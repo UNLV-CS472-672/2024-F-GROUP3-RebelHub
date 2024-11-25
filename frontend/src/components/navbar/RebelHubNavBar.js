@@ -5,7 +5,6 @@ import styles from './RebelHubNavBar.module.css';
 
 import AccountButton from '@/components/navbar/AccountButton';
 
-
 const messageIconPath = "/navbar/icons/messageicon.png" // path for the message icon.
 const settingsIconPath = "/navbar/icons/settings.png" // path for the settings icon.
 const logoLightThemePath = "/navbar/logo/logo_light_alt.png" // path for the light theme logo.
@@ -44,7 +43,7 @@ const RebelHubNavBar = () => {
 			<button className={styles.settingsButton} onClick={settingsButtonPressed}>
 				<img src={settingsIconPath} className={styles.settingsIcon}/>
 			</button>
-			<AccountButton username="UNLV Student" darkTheme={darkTheme}/>
+			<AccountButton darkTheme={darkTheme}/>
 		</nav>
 		<div className={styles.extraSpace}> </div>
 		</>
