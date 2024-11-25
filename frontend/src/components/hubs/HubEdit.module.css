@@ -1,0 +1,33 @@
+.editHubName{
+	text-align: center;
+	background-color: transparent;
+	color: white;
+	font-size: 70px;
+	border: 0px;
+	padding: 50px;
+	outline: none;
+}
+
+.editHubName:focus{
+	box-shadow: 0 4px 4px -2px rgba(0,0,0,0.9);
+}
+
+
+.editHubDescription{
+	padding: 20px;
+	color: white;
+	text-align: center;
+	background-color: transparent;
+	border: 0px;
+	outline: none;
+}
+.editHubDescription:focus{
+	border: 1px solid black;
+}
+
+.editViewContainer{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}

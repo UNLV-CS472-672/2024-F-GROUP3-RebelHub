@@ -1,0 +1,31 @@
+.membersList{
+	background-color: rgba(227, 24, 55, 0.9);
+	width: 700px;
+	max-width: 200px;
+	align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	border: 2px black solid;
+	border-radius: 20px;
+}
+
+.membersListHeader{
+	color: black;
+}
+.pendingMembersListHeader{
+	color: black;
+}
+
+.memberLI{
+	list-style-type: none;
+
+}
+
+.memberItemButton{
+	cursor: pointer;
+
+}
+
+
+
