@@ -3,3 +3,19 @@
     height: 100vh; 
     background-color: #0a0a0a;
 }
+
+.mainContent{
+    width: 86.7vw;
+    margin-left: 13.3vw;
+    margin-top: 15.3vh;
+}
+
+.header {
+    background-color: darkred;
+    border: 2px;
+    border-radius: 12px;
+    height: auto;
+    padding: 1.4vw;
+    text-align: center;
+    align-items: center;
+}

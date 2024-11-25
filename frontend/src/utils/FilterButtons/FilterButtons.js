@@ -8,6 +8,8 @@ const FilterButtons = ({posts, setPosts, postsUrl}) => {
     const [sort, setSort] = useState('top'); 
     const [currentTimeButton, setCurrentTimeButton] = useState('week');
     const [currentSortButton, setCurrentSortButton] = useState('top');
+    const allowed_sorts = ['hot', 'top', 'old', 'new', 'random'];
+    const allowed_times = ['24_hours', 'week', 'month', 'year', 'all_time'];
     
     const changeTime = async (newTime) => {
         if(time === newTime) return;
@@ -41,66 +43,24 @@ const FilterButtons = ({posts, setPosts, postsUrl}) => {
 
     return(
         <div className={styles.buttons}>
-            <button
-                className={`${currentSortButton === 'random' ? styles.current : ''}`}
-                onClick={() => changeSort('random')}
-            >
-                Random
-            </button>
-            <button
-                className={`${currentSortButton === 'hot' ? styles.current : ''}`}
-                onClick={() => changeSort('hot')}
-            >
-                Hot
-            </button>
-            <button
-                className={`${currentSortButton === 'top' ? styles.current : ''}`}
-                onClick={() => changeSort('top')}
-            >
-                Top
-            </button>
-            <button
-                className={`${currentSortButton === 'old' ? styles.current : ''}`}
-                onClick={() => changeSort('old')}
-            >
-                Old
-            </button>
-            <button
-                className={`${currentSortButton === 'new' ? styles.current : ''}`}
-                onClick={() => changeSort('new')}
-            >
-                New
-            </button>
-            <button
-                className={`${currentTimeButton === '24_hours' ? styles.current : ''}`}
-                onClick={() => changeTime('24_hours')}
-            >
-                24 Hours
-            </button>
-            <button
-                className={`${currentTimeButton === 'week' ? styles.current : ''}`}
-                onClick={() => changeTime('week')}
-            >
-                Week
-            </button>
-            <button
-                className={`${currentTimeButton === 'month' ? styles.current : ''}`}
-                onClick={() => changeTime('month')}
-            >
-                Month
-            </button>
-            <button
-                className={`${currentTimeButton === 'year' ? styles.current : ''}`}
-                onClick={() => changeTime('year')}
-            >
-                Year
-            </button>
-            <button
-                className={`${currentTimeButton === 'all_time' ? styles.current : ''}`}
-                onClick={() => changeTime('all_time')}
-            >
-                All Time
-            </button>
+            {allowed_sorts.map((current_sort) => (
+                <button
+                    key={current_sort}
+                    className={`${currentSortButton === current_sort ? styles.current : ''}`}
+                    onClick={() => changeSort(current_sort)}
+                >
+                    {current_sort[0].toUpperCase() + current_sort.slice(1)}
+                </button>
+            ))}
+            {allowed_times.map((current_time) => (
+                <button
+                    key={current_time}
+                    className={`${currentTimeButton === current_time ? styles.current : ''}`}
+                    onClick={() => changeTime(current_time)}
+                >
+                    {current_time.split(' ').map(word => word[0].toUpperCase() + word.slice(1)).join(' ')}
+                </button>
+            ))}
         </div>
     );
 }
