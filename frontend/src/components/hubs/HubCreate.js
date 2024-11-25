@@ -52,6 +52,7 @@ const HubCreate = () => {
 			router.push(`/hubs/${id}`);
 		} catch(error){
 			console.log("error creatting hub", error);
+			alert(error.message);
 		}
 	}
 
