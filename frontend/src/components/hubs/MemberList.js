@@ -11,7 +11,7 @@ const MemberItem = ({data, pending, hasPermission, onClickMember, onClickPending
 			<button className={styles.acceptPendingButton} onClick={() => onClickPendingAdd(data.id)}> ADD </button>
 		}
 		{pending &&
-			<button className={styles.declinePendingButton} onClick={() => onClickPendingRemvove(data.id)}> REMOVE </button>
+			<button className={styles.declinePendingButton} onClick={() => onClickPendingRemove(data.id)}> REMOVE </button>
 		}
 		{!pending && 
 		 hasPermission && 

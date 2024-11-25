@@ -126,8 +126,8 @@ const HubPage = ({id}) => {
 		setIsEditing(true);
 		console.log("is editing : ", isEditing);
 	};
-	const acceptEdit = async (name, description) => {
-		const updateInfo = {"name": name, "description": description};
+	const acceptEdit = async (name, description, private_hub) => {
+		const updateInfo = {"name": name, "description": description, "private_hub": private_hub};
 		try{
 			const response = await api.put(getUpdateHubUrl(hubData.id), updateInfo);
 			setIsEditing(false);
@@ -138,8 +138,10 @@ const HubPage = ({id}) => {
 		}
 	};
 	const cancelEdit = () => {
+		console.log("Cancel edit (beg)!! isEditing=", isEditing);
 		setIsEditing(false);
 		setRefreshCount((count) => count+=1);
+		console.log("Cancel edit (end)!! isEditing=", isEditing);
 	};
 
 	const handleSuccess = (data) => {
@@ -168,14 +170,15 @@ const HubPage = ({id}) => {
 							memberList={membersData}
 							isPending={false}
 							hasPermission={(hubOwner || hubMod)}
-							onSuccess={(data) => handleSuccess(data)}
+							onSuccess={handleSuccess}
 						/>
-						{(hubOwner || hubMod) && 
+						{(hubOwner || hubMod) && hubPrivate &&
 							<MemberList 
 								hubId={hubData.id}
 								memberList={pendingMembersData}
 								isPending={true}
 								hasPermission={true} 
+								onSuccess={handleSuccess}
 							/>
 						}
 					</div>
@@ -191,6 +194,7 @@ const HubPage = ({id}) => {
 					hubId={hubData.id}
 					oldName={hubData.name}
 					oldDescription={hubData.description}
+					oldPrivate={hubData.private_hub}
 					onClickAccept={acceptEdit}
 					onClickDecline={cancelEdit}
 				/>
