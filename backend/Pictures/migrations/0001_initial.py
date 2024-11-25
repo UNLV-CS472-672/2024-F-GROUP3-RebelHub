@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             name='Picture',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=Pictures.models.user_diretory_path)),
+                ('image', models.ImageField(upload_to=Pictures.models.user_directory_path)),
                 ('time_created', models.DateTimeField(auto_now_add=True)),
                 ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pictures', to='Posts.post')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pictures', to=settings.AUTH_USER_MODEL)),

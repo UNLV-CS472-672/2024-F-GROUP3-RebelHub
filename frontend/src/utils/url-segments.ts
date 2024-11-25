@@ -200,6 +200,11 @@ export function getPostCountUrl() {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE +  URL_SEGMENTS.POSTS_COUNT;
 }
 
+//"http://localhost:8000/api/posts/<str:username>/"
+export function getUserPostsUrl(username: string){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + username + "/";
+}
+
 // #endregion
 
 // "http://localhost:8000/api/posts/<int:post_id>/comments/"

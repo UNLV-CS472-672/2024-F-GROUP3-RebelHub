@@ -9,6 +9,7 @@ from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from django.contrib.auth.models import User
+from rest_framework.pagination import PageNumberPagination
 # Create your views here
 
 # Able to create and view the post, should only handles POST requests to create a post
@@ -101,3 +102,16 @@ class UserPostCountAPIView(APIView):
         except Exception as e:
             print(f"Error: {e}")
             return JsonResponse({"error": "Internal server error"}, status=500)
+        
+class PostPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 10
+
+class UserPostsView(APIView):
+    def get(self, request, username):
+        posts = Post.objects.filter(author__username=username).order_by('-timestamp')
+        paginator = PostPagination()
+        result_page = paginator.paginate_queryset(posts, request)
+        serializer = PostSerializer(result_page, many=True, context={'request': request})
+        return paginator.get_paginated_response(serializer.data)

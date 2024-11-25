@@ -1,13 +1,15 @@
-"use client";
+'use client';
 import Sidebar from '../../components/sidebar/sidebar';
 import RebelHubNavBar from '../../components/navbar/RebelHubNavBar';
+import UserPosts from '../../components/posts/profile_posts/UserPosts'
+
 import './profile.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProtectedRoute from '../../components/Accounts/ProtectedRoutes'
 import api from '@/utils/api'
-import { getPostCountUrl, getProfileUrl } from '@/utils/url-segments';
-import { useRouter } from 'next/navigation'
+import { getPostCountUrl, getProfileUrl, getUserPostsUrl } from '@/utils/url-segments';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -16,9 +18,12 @@ export default function Profile( { currentPictureUrl, userId }) {
 
   const [profile, setProfile] = useState(null);
   const [postCount, setPostCount] = useState(0);
+  const [posts, setPosts] = useState([]);
+  const [activeTab, setActiveTab] = useState('posts');
+
 
   const editProfileButton = () =>{
-    router.push("/profile/editprofile")
+    router.push('/profile/editprofile')
   }
 
   useEffect(() => {
@@ -55,6 +60,25 @@ export default function Profile( { currentPictureUrl, userId }) {
     fetchPostCount();
   }, []);
 
+  const fetchUserPosts = async () => {
+    try {
+      const response = await api.get(getUserPostsUrl(profile.username));
+
+      if (response.status === 200) {
+        setPosts(response.data); 
+        console.log(response.data)
+      } else {
+        console.log('no posts');
+      }
+    } catch (err) {
+      console.error('Error fetching posts:', err.response.data);
+    }
+  };
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
   if(!profile){
     return (
       <ProtectedRoute>
@@ -84,12 +108,10 @@ export default function Profile( { currentPictureUrl, userId }) {
                 <div className='userDetails'>
                   <div className='sectioncount'>
                     <div className='counter'>
-                      {/* edit later */}
                       <span className='countervalue'>{postCount}</span>
                       <span className='counterlabel'> Posts</span>
                     </div>
                     <div className='counter'>
-                      {/* edit later */}
                       <span className='countervalue'>{profile.hubs_count}</span>
                       <span className='counterlabel'> Hubs</span>
                     </div>
@@ -110,21 +132,28 @@ export default function Profile( { currentPictureUrl, userId }) {
 
               <div className='divider'></div>
               <div className='viewToggle'>
-                <button className='posttabs'
-                //   className={view === 'posts' ? styles.activeButton : styles.button}
-                //   onClick={() => setView('posts')}
+                <button className={`posttabs ${activeTab === 'posts' ? 'activeButton' : ''}`}
+                  onClick={() => handleTabClick('posts')}
                 >
                   Posts
                 </button>
-                <button className='posttabs'
-                //   className={view === 'tagged' ? styles.activeButton : styles.button}
-                //   onClick={() => setView('tagged')}
+                <button className={`posttabs ${activeTab === 'Media' ? 'activeButton' : ''}`}
+                  onClick={()=>handleTabClick('Media')}
                 >
                   Media
                 </button>
               </div>
-
-
+              <div className='viewToggle'>
+                {activeTab === 'posts' ? (
+                  <div className='posts'>
+                    <UserPosts username={profile.username} name={profile.name} />
+                  </div>
+                ) : (
+                  <div className='photos'>
+                    <p>No photos available</p>
+                  </div>
+                )}
+              </div>
             </main>
           </div>
         </div>

@@ -45,6 +45,8 @@
   
   .actionButtons {
     margin: 20px 0; 
+    display:flex;
+    margin-left: 25%;
   }
   
   .actionButton {
@@ -52,7 +54,7 @@
     border: 1px solid #ccc;
     background-color: #000000;
     cursor: pointer;
-    margin-right: 10px;
+    margin-left: 10px;
     transition: background-color 0.2s;
     border-radius: 10%;
     font-weight: bold;
@@ -62,6 +64,8 @@
   .viewToggle {
     display: flex;
     margin-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
     justify-content: center;
   }
   
@@ -81,18 +85,23 @@
     background-color: #e1e1e1; 
   }
   
+
   .posts {
-    margin-top: 20px;
+    width: 800px; 
+    height: 600px; 
+    margin-left: auto; 
+    margin-right: auto;
+    padding: 20px; 
+    overflow-y: auto; 
   }
   
   .postGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 10px;
-  }
-  
-  .profilePicInput {
-    display: none; 
+    height: 100%; 
+    overflow-y: auto; 
+    max-height: 500px; 
   }
   
   .sectioncount{
@@ -118,9 +127,15 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
   }
 
-  .divider{
-    width: 100%;
-    height: 1px; /* Height of the line */
-    background-color: #ffffff; /* Color of the line */
-    margin: 20px 0; /* Spacing above and below the line */
+  .divider {
+    width: 750px; 
+    height: 2px; 
+    background-color: #ffffff; 
+    margin: 20px auto; 
+  }
+
+  .activeButton{
+    background-color:#e1e1e1;
+    color:#333;
+    font-weight: bold;
   }
