@@ -23,18 +23,6 @@
 	color: white;
 	text-align: center;
 }
-.editHubName{
-	text-align: center;
-	background-color: transparent;
-	color: white;
-	font-size: 70px;
-	border: 0px;
-	padding: 50px;
-	outline: none;
-}
-.editHubName:focus{
-	box-shadow: 0 4px 4px -2px rgba(0,0,0,0.9);
-}
 .hubTimestamp{
 	text-align: center;
 	color: white;
@@ -43,17 +31,7 @@
 	text-align: center;
 	color: white;
 }
-.editHubDescription{
-	padding: 20px;
-	color: white;
-	text-align: center;
-	background-color: transparent;
-	border: 0px;
-	outline: none;
-}
-.editHubDescription:focus{
-	border: 1px solid black;
-}
+
 .hubViewDetails{
 	display: flex;
 	justify-content: center;
@@ -76,12 +54,7 @@
 	height: 100vh;
 }
 
-.editViewContainer{
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
+
 
 /* container for holding the posts and members list */
 .hubPageContentContainer{
@@ -99,36 +72,3 @@
 	flex-direction: column;
 	gap: 20px;
 }
-
-.pendingMembersList,
-.membersList{
-	background-color: rgba(227, 24, 55, 0.9);
-	width: 700px;
-	max-width: 200px;
-	align: center;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	border: 2px black solid;
-	border-radius: 20px;
-}
-
-.membersListHeader{
-	color: black;
-}
-.pendingMembersListHeader{
-	color: black;
-}
-
-.memberLI{
-	list-style-type: none;
-
-}
-
-.memberItemButton{
-	cursor: pointer;
-
-}
-
-
-
