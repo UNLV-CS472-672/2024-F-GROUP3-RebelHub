@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from .models import Post
+from Pictures.models import Picture
 from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer, PostEditSerializer, PostCountSerializer
+from Pictures.serializers import PictureSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -114,4 +116,11 @@ class UserPostsView(APIView):
         paginator = PostPagination()
         result_page = paginator.paginate_queryset(posts, request)
         serializer = PostSerializer(result_page, many=True, context={'request': request})
+
+        for post in result_page:
+            pictures = Picture.objects.filter(post=post)
+            picture_serializer = PictureSerializer(pictures, many=True)
+            post_data = next((item for item in serializer.data if item['id'] == post.id), None)
+            if post_data:
+                post_data['pictures'] = picture_serializer.data if pictures.exists() else []
         return paginator.get_paginated_response(serializer.data)

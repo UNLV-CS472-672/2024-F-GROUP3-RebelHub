@@ -7,7 +7,8 @@ def user_directory_path(instance,filename):
     return f'users/{instance.user.id}/pictures/{filename}'
 
 class Picture(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='pictures', null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='picture')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='picture')
     image = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 

@@ -158,21 +158,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',  # Logs at the DEBUG level and above
-            'class': 'logging.FileHandler',
-            'filename': 'logs/django.log',  # Log file location
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],  # Use the 'file' handler defined above
-            'level': 'DEBUG',  # Capture all messages of DEBUG level or higher
-            'propagate': True,  # Allow logs to propagate to other loggers
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',  # Logs at the DEBUG level and above
+#             'class': 'logging.FileHandler',
+#             'filename': 'logs/django.log',  # Log file location
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],  # Use the 'file' handler defined above
+#             'level': 'DEBUG',  # Capture all messages of DEBUG level or higher
+#             'propagate': True,  # Allow logs to propagate to other loggers
+#         },
+#     },
+# }
