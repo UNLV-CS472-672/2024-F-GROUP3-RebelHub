@@ -1,36 +1,34 @@
 'use client';
-import Sidebar from '../../components/sidebar/sidebar';
-import RebelHubNavBar from '../../components/navbar/RebelHubNavBar';
-import UserPosts from '../../components/posts/profile_posts/UserPosts'
-import PictureGallery from '../../components/Picture/Picture'
+import Sidebar from '../../../components/sidebar/sidebar';
+import RebelHubNavBar from '../../../components/navbar/RebelHubNavBar';
+import UserPosts from '../../../components/posts/profile_posts/UserPosts'
+import PictureGallery from '../../../components/Picture/Picture'
 
 import './profile.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProtectedRoute from '../../components/Accounts/ProtectedRoutes'
+import ProtectedRoute from '../../../components/Accounts/ProtectedRoutes'
 import api from '@/utils/api'
-import { getPostCountUrl, getProfileUrl } from '@/utils/url-segments';
-import { useRouter } from 'next/navigation';
+import { getPostCountUrl, getOtherProfileUrl} from '@/utils/url-segments';
 
 
 
-export default function Profile() {
-  const router = useRouter();
+export default function Profile( { params } ) {
+
+  const { username } = params;
 
   const [profile, setProfile] = useState(null);
   const [postCount, setPostCount] = useState(0);
   const [activeTab, setActiveTab] = useState('posts');
 
 
-  const editProfileButton = () =>{
-    router.push('/profile/editprofile')
-  }
+
 
   useEffect(() => {
     const fetchProfile = async () => {
 
       try {
-          const response = await api.get(getProfileUrl())
+          const response = await api.get(getOtherProfileUrl(username))
           if(response.status == 200){
             setProfile(response.data);
           }
@@ -110,11 +108,6 @@ export default function Profile() {
                 
                 </div>
               </div>
-
-              <div className='actionButtons'>
-                <button className='actionButton' onClick={editProfileButton}>Edit Profile</button>
-              </div>
-
 
               <div className='divider'></div>
               <div className='viewToggle'>

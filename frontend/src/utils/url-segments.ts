@@ -315,16 +315,21 @@ export function gotoLoginPage() {
 
 //#region Functions for profile api
 
+//"http//locatlhost:8000/api/profile/username"
+export function getOtherProfileUrl(username : string){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PROFILE_API + username + "/";
+}
 //"http//locatlhost:8000/api/profile/"
 export function getProfileUrl(){
-    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PROFILE_API
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PROFILE_API;
 }
+
 
 // #endregion
 
 
 //#region Functions for Picture api
-
+//"http//locatlhost:8000/api/pictures/username/"
 export function getPicturesUrl(username: string){
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + username + "/";
 }

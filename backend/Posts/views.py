@@ -102,7 +102,6 @@ class UserPostCountAPIView(APIView):
             return Response(serializer.data)
 
         except Exception as e:
-            print(f"Error: {e}")
             return JsonResponse({"error": "Internal server error"}, status=500)
         
 class PostPagination(PageNumberPagination):

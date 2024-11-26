@@ -38,3 +38,19 @@ class ProfileView(APIView):
             return Response(profile_serializer.data)
 
         return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class OtherProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, username):
+        user = User.objects.get(username=username)
+        profile = Profile.objects.get(user=user)
+        hub_count = profile.hubs_count
+        return Response({
+            'username': user.username,
+            'bio': profile.bio,
+            'pfp': profile.pfp.url,
+            'name': profile.name,
+            'hubs_count': hub_count
+        })

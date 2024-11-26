@@ -1,0 +1,141 @@
+.content {
+    margin-left: 250px; 
+    padding: 20px;
+    flex: 1;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+
+  }
+  
+  .header {
+    background-color: #FF2400;
+    padding: 10px;
+    width:100%;
+    top: 0;
+  }
+  
+  .body {
+    margin-top: 20px;
+  }
+  
+  .profileInfo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+  
+  .profileImageLabel {
+    margin-right: 70px;
+  }
+  
+  .profileImage {
+    border-radius: 50%;
+    margin-right: 0px;
+  }
+  
+  .userDetails{
+    margin-top: -20px;
+  }
+
+  .userDetails h2 {
+    margin: 0;
+  }
+  
+  .actionButtons {
+    margin: 20px 0; 
+    display:flex;
+    margin-left: 25%;
+  }
+  
+  .actionButton {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: #000000;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.2s;
+    border-radius: 10%;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .viewToggle {
+    display: flex;
+    margin-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    justify-content: center;
+  }
+  
+  .posttabs {
+    padding: 10px 15px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: background-color 0.2s;
+    font-weight: bold;
+    font-size: 15px;
+    color: White;
+  }
+  
+  .activeButton {
+    background-color: #e1e1e1; 
+  }
+  
+
+  .posts {
+    width: 800px; 
+    height: 600px; 
+    margin-left: auto; 
+    margin-right: auto;
+    padding: 20px; 
+    overflow-y: auto; 
+  }
+  
+  .postGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    height: 100%; 
+    overflow-y: auto; 
+    max-height: 500px; 
+  }
+  
+  .sectioncount{
+    display: flex;
+    margin-bottom: 20px;
+    margin-top: 0;
+  }
+
+  .counter{
+    text-align: center;
+    margin-right: 20px;
+  }
+
+  .countervalue{
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
+
+  .counterlabel{
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
+
+  .divider {
+    width: 750px; 
+    height: 2px; 
+    background-color: #ffffff; 
+    margin: 20px auto; 
+  }
+
+  .activeButton{
+    background-color:#e1e1e1;
+    color:#333;
+    font-weight: bold;
+  }
