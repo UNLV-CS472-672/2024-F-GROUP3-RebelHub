@@ -31,7 +31,6 @@ const HubPage = ({id}) => {
 
 	const [isEditing, setIsEditing] = useState(false);
 
-
 	/*
 	 * Calls the get hub by id so we can store the hub info.
 	 *
@@ -133,7 +132,18 @@ const HubPage = ({id}) => {
 			setIsEditing(false);
 			setRefreshCount((count) => count+=1);
 		} catch (error){
-			alert(error);
+			if(error.response.data.name)
+			{
+				alert("Name: " + error.response.data.name[0]);
+			}
+			else if(error.response.data.description)
+			{
+				alert("Description: " + error.response.data.description[0]);
+			}
+			else
+			{
+				alert("Something went wrong! " + error.message);
+			}
 			console.log("error updating hub");
 		}
 	};
@@ -190,6 +200,7 @@ const HubPage = ({id}) => {
 	return (
 		<div className={styles.pageBG} >
 			{isEditing ? ( 
+				<>
 				<HubEdit
 					hubId={hubData.id}
 					oldName={hubData.name}
@@ -198,6 +209,7 @@ const HubPage = ({id}) => {
 					onClickAccept={acceptEdit}
 					onClickDecline={cancelEdit}
 				/>
+				</>
 				
 			):
 				<div className={styles.hubViewContainer}>
