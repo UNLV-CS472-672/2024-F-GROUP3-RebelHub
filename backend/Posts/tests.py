@@ -644,7 +644,7 @@ class PostTestCase(TestCase):
         post3 = Post.objects.create(title="tacos", message="tacos", hub=hub, author=user)
 
         # Assert that there are three posts in order from newest to oldest
-        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=-timestamp')
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=new')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 3) 
         self.assertEqual(response.data[0]['title'], "tacos")
@@ -652,7 +652,7 @@ class PostTestCase(TestCase):
         self.assertEqual(response.data[2]['title'], "monkeys")
 
         # Assert that there are three posts in order from oldest to newest
-        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=timestamp')
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=old')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 3) 
         self.assertEqual(response.data[0]['title'], "monkeys")
@@ -668,7 +668,7 @@ class PostTestCase(TestCase):
         post3.save()
 
         # New
-        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=-timestamp')
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=new')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 3) 
         self.assertEqual(response.data[0]['title'], "monkeys")
@@ -676,7 +676,7 @@ class PostTestCase(TestCase):
         self.assertEqual(response.data[2]['title'], "rabbit")
 
         #Old
-        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=timestamp')
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=old')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 3) 
         self.assertEqual(response.data[0]['title'], "rabbit")
@@ -719,7 +719,7 @@ class PostTestCase(TestCase):
         Post.objects.create(title="tacos", message="tacos", hub=hub, author=user)
 
         # Assert that there are three posts in order from oldest to newest
-        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=-likes')
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=top')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 3) 
         self.assertEqual(response.data[0]['title'], "monkeys")
@@ -754,7 +754,7 @@ class PostTestCase(TestCase):
         Post.objects.create(title="triangle", message="triangle", hub=hub, author=user)
 
         # All Time check (sorted by oldest)
-        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=timestamp')
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=old')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 5) 
         self.assertEqual(response.data[0]['title'], "monkeys")
@@ -764,7 +764,7 @@ class PostTestCase(TestCase):
         self.assertEqual(response.data[4]['title'], "triangle")
 
         # Year check (sorted by oldest)
-        response = self.client.get(reverse('explore-list') + '?time_range=year&ordering=timestamp')
+        response = self.client.get(reverse('explore-list') + '?time_range=year&ordering=old')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 4) 
         self.assertEqual(response.data[0]['title'], "rabbit")
@@ -773,7 +773,7 @@ class PostTestCase(TestCase):
         self.assertEqual(response.data[3]['title'], "triangle")
 
         # Month check (sorted by oldest)
-        response = self.client.get(reverse('explore-list') + '?time_range=month&ordering=timestamp')
+        response = self.client.get(reverse('explore-list') + '?time_range=month&ordering=old')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 3) 
         self.assertEqual(response.data[0]['title'], "tacos")
@@ -781,14 +781,14 @@ class PostTestCase(TestCase):
         self.assertEqual(response.data[2]['title'], "triangle")
 
         # Week check (sorted by oldest)
-        response = self.client.get(reverse('explore-list') + '?time_range=week&ordering=timestamp')
+        response = self.client.get(reverse('explore-list') + '?time_range=week&ordering=old')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2) 
         self.assertEqual(response.data[0]['title'], "cheese")
         self.assertEqual(response.data[1]['title'], "triangle")
 
         # 24 hour check (sorted by oldest)
-        response = self.client.get(reverse('explore-list') + '?time_range=24_hours&ordering=timestamp')
+        response = self.client.get(reverse('explore-list') + '?time_range=24_hours&ordering=old')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1) 
         self.assertEqual(response.data[0]['title'], "triangle")

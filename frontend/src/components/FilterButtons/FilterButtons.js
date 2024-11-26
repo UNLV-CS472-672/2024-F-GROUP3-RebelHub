@@ -1,7 +1,6 @@
 import styles from "./FilterButtons.module.css";
 import { useState } from "react";
-import api from "../api";
-import set_hot_score from "./set-hot-score.js";
+import api from "@/utils/api";
 
 const FilterButtons = ({posts, setPosts, postsUrl}) => {
     const [time, setTime] = useState('week');
@@ -25,7 +24,7 @@ const FilterButtons = ({posts, setPosts, postsUrl}) => {
     }
 
     // Done so that we can change the sort all in the frontend (without api call)
-    const changeSort = (newSort) => {
+    const changeSort = async (newSort) => {
         if(sort === newSort && newSort != 'random') return;
         setSort(newSort);
         let sortedPosts = [...posts];
@@ -33,10 +32,7 @@ const FilterButtons = ({posts, setPosts, postsUrl}) => {
         else if (newSort === 'old') sortedPosts.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         else if (newSort === 'new') sortedPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         else if (newSort === 'random') sortedPosts.sort(() => Math.random() - 0.5);
-        else if (newSort === 'hot'){
-            set_hot_score(sortedPosts);
-            sortedPosts.sort((a, b) => b.hot_score - a.hot_score);
-        } 
+        else if (newSort === 'hot') sortedPosts.sort((a, b) => b.hot_score - a.hot_score);
         setPosts(sortedPosts); 
         setCurrentSortButton(newSort);
     };

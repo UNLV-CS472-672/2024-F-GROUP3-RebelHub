@@ -80,13 +80,10 @@ class PostDetail(generics.RetrieveAPIView):
 class ExploreList(generics.ListAPIView): 
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['timestamp']  
-    ordering_fields = ['timestamp'] 
     def get_queryset(self):
         user = self.request.user
         
-        queryset = Post.objects.filter(Q(hub__private_hub=False) | Q(hub__in=user.joined_hubs.all())) 
+        queryset = Post.objects.filter(Q(hub__private_hub=False) | Q(hub__in=user.joined_hubs.all())).prefetch_related('comments')
         return filter_queryset(self, queryset) # Uses filter_queryset function from helper.py to filter and sort posts
       
 # Edit a single post by its ID
