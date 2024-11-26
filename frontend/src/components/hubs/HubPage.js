@@ -1,12 +1,13 @@
 "use client"
 import { useState, useEffect, useCallback } from 'react';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './HubPage.module.css';
 import api from '@/utils/api';
 import PostList from '@/components/posts/post-list';
 import MemberList from '@/components/hubs/MemberList';
 import HubEdit from '@/components/hubs/HubEdit';
-import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getRequestJoinHubUrl, getCancelRequestJoinHubUrl, getJoinHubUrl, getUpdateHubUrl} from "@/utils/url-segments";
+import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getRequestJoinHubUrl, getCancelRequestJoinHubUrl, getJoinHubUrl, getUpdateHubUrl, getLeaveHubUrl, getDeleteHubUrl } from "@/utils/url-segments";
 import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
 /*
  * HUBDATA:
@@ -30,6 +31,8 @@ const HubPage = ({id}) => {
 	const [hubPosts, setHubPosts] = useState([]);
 
 	const [isEditing, setIsEditing] = useState(false);
+
+	const router = useRouter();
 
 	/*
 	 * Calls the get hub by id so we can store the hub info.
@@ -187,6 +190,26 @@ const HubPage = ({id}) => {
 		}
 	};
 
+	const handleLeave = async () => {
+		try {
+			const response = await api.put(getLeaveHubUrl(hubData.id));
+			handleSuccess(response.data);
+		} catch (error) {
+			alert(error);
+		}
+	};
+
+	const handleDeleteHub = async () => {
+		try {
+			const response = await api.delete(getDeleteHubUrl(hubData.id));
+			router.push(`/hubs/`);
+		} catch (error) {
+			console.log(error);
+			alert(error);
+		}
+
+	};
+
 	//general info.
 	const hubOwner = hubData.owned;
 	const hubMod = hubData.modding;
@@ -198,7 +221,9 @@ const HubPage = ({id}) => {
 	const HubPageMainContent = () => {
 		return(
 			<div className={styles.parentContentContainer}>
-				{!hubJoined && <button onClick={handleJoin}> JOIN HUB </button>}
+				{hubOwner ? (<button onClick={handleDeleteHub}> DELETE HUB </button>) :
+					    (hubJoined ? (<button onClick={handleLeave}> LEAVE HUB </button>) :
+					     (<button onClick={handleJoin}> JOIN HUB </button>))}
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
 				</div>
@@ -209,7 +234,7 @@ const HubPage = ({id}) => {
 							hubId={hubData.id}
 							memberList={membersData}
 							isPending={false}
-							hasPermission={(hubOwner || hubMod)}
+							hasPermission={(hubMod || hubOwner)}
 							onSuccess={handleSuccess}
 						/>
 						{(hubOwner || hubMod) && hubPrivate &&
