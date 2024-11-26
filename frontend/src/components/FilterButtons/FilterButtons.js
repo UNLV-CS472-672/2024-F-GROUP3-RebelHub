@@ -22,7 +22,7 @@ const FilterButtons = ({posts, setPosts, postsUrl}) => {
     }
 
     // Done so that we can change the sort all in the frontend (without api call)
-    const changeSort = async (newSort) => {
+    const changeSort = (newSort) => {
         if(sort === newSort && newSort != 'random') return;
         setSort(newSort);
         let sortedPosts = [...posts];
