@@ -1,12 +1,12 @@
 .hubCard {
 	border-radius: 12px;
 	background-color: #E31837;
-	width: 50%;
+	width: 100%;
 	height: auto;
 	padding: 20px;
 	box-sizing: border-box;
 	display: flex;
-	flex: 0.75;
+	flex: 0 0 48%;
 	flex-direction: column;
 	justify-content: space-between;
 	position: relative;
