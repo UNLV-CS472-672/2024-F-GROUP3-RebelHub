@@ -26,6 +26,7 @@
 }
 
 .editViewContainer{
+	background-color: rgba(227, 24, 55, 0.9);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
