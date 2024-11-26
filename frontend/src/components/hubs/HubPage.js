@@ -25,8 +25,10 @@ const HubPage = ({id}) => {
 	const [hubData, setHubData] = useState([]);
 	const [refreshCount, setRefreshCount] = useState(0);
 
+	const [hubOwnerId, setHubOwnerId] = useState(-1);
 	const [membersData, setMembersData] = useState([]);
 	const [pendingMembersData, setPendingMembersData] = useState([]);
+	const [moddingMembersData, setModdingMembersData] = useState([]);
 
 	const [hubPosts, setHubPosts] = useState([]);
 
@@ -89,7 +91,7 @@ const HubPage = ({id}) => {
 				}
 				setMembersData(members);
 			}
-		}
+		};
 		const getPendingMembersInfo = async () => {
 			if(hubData.pending_members)
 			{
@@ -107,11 +109,38 @@ const HubPage = ({id}) => {
 				}
 				setPendingMembersData(pendingMembers);
 			}
-		}
+		};
+		const getModdingMembersInfo = async () => {
+			if(hubData.mods)
+			{
+				const moddingMembers = [];
+				for(const UserId of hubData.mods)
+				{
+					try{
+						const response = await api.get(`http://localhost:8000/api/users/${UserId}/info`);
+						moddingMembers.push(response.data);
+						console.log("response: ", response.data);
+					} catch (error) {
+						console.log("error fetching a modding member's info");
+						console.log(error);
+					}
+				}
+				setModdingMembersData(moddingMembers);
+			}
+		};
+		const getHubOwnerId = () => {
+			if(hubData.owner)
+			{
+				setHubOwnerId(hubData.owner);
+			}
+		};
 		getMembersInfo();
 		getPendingMembersInfo();
+		getModdingMembersInfo();
+		getHubOwnerId();
 		console.log(membersData);
 		console.log(pendingMembersData);
+		console.log(moddingMembersData);
      	}, [hubData]);
 
 
@@ -221,31 +250,79 @@ const HubPage = ({id}) => {
 	const HubPageMainContent = () => {
 		return(
 			<div className={styles.parentContentContainer}>
-				{hubOwner ? (<button onClick={handleDeleteHub}> DELETE HUB </button>) :
-					    (hubJoined ? (<button onClick={handleLeave}> LEAVE HUB </button>) :
-					     (<button onClick={handleJoin}> JOIN HUB </button>))}
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
+					{hubOwner ? (<button 
+							className={styles.hubActionButton}
+							style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+							onClick={() => {
+								const isConfirmed = window.confirm("Are you sure you want to delete this hub?");
+								if(isConfirmed)
+								{
+									handleDeleteHub();
+								}
+							}}
+						     > 
+							DELETE HUB 
+						     </button>) :
+					    (hubJoined ? (<button 
+						   		className={styles.hubActionButton}
+						    		style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+						    		onClick={() => {
+									const isConfirmed = window.confirm("Are you sure you want to leave this hub?");
+									if(isConfirmed)
+									{
+										handleLeave();
+									}
+								}}
+						    	  > 
+						    		LEAVE HUB 
+						    	  </button>) :
+					     (<button
+						     className={styles.hubActionButton} 
+						     onClick={handleJoin}
+					      > 
+						     JOIN HUB 
+					      </button>))}
 				</div>
 				<div className={styles.hubPageContentContainer}>
 					<PostList className={styles.postsList} posts={hubPosts}/>
 					<div className={styles.membersListsContainer}>
 						<MemberList 
 							hubId={hubData.id}
-							memberList={membersData}
+							hubOwnerId={hubOwnerId}
+							memberList={(hubOwner || hubMod) ?  (membersData.filter(member => !pendingMembersData.some(pending => pending.id == member.id) &&
+											    !moddingMembersData.some(modding => modding.id == member.id))) 
+											    :
+											    (membersData)}
 							isPending={false}
-							hasPermission={(hubMod || hubOwner)}
+							isModList={false}
+							hasPermission={(hubOwner)}
 							onSuccess={handleSuccess}
 						/>
 						{(hubOwner || hubMod) && hubPrivate &&
 							<MemberList 
 								hubId={hubData.id}
+								hubOwnerId={hubOwnerId}
 								memberList={pendingMembersData}
 								isPending={true}
+								isModList={false}
 								hasPermission={true} 
 								onSuccess={handleSuccess}
 							/>
 						}
+						{(hubOwner || hubMod) &&
+							<MemberList
+								hubId={hubData.id}
+								hubOwnerId={hubOwnerId}
+								memberList={moddingMembersData}
+								isPending={false}
+								isModList={true}
+								hasPermission={(hubOwner)}
+								onSuccess={handleSuccess}
+							/>
+						}
+								
 					</div>
 				</div>
 			</div> 
@@ -256,9 +333,9 @@ const HubPage = ({id}) => {
 		return(
 			<>
 			{hubPending ? 
-				(<button onClick={handleRevokeRequestToJoin}> Take Back Request To Join </button>) 
+				(<button className={styles.hubActionButton} style={{backgroundColor:'rgba(0,0,0,0.9)'}} onClick={handleRevokeRequestToJoin}> Take Back Request To Join </button>) 
 				: 
-				(<button onClick={handleRequestToJoin}> Request To Join </button>)}
+				(<button className={styles.hubActionButton} onClick={handleRequestToJoin}> Request To Join </button>)}
 			</>
 		);
 	}

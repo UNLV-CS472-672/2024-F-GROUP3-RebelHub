@@ -43,11 +43,21 @@
 }
 
 .postTitleContainer{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	text-align: left;
 }
 .postTitle{
 	padding-left: 80px;
 	padding-top: 80px;
+}
+.hubActionButton{
+	border-radius: 20px;
+	height: 50px;
+	cursor: pointer;
+	width: 100px;
+	background-color: rgba(227,24,55,0.9);
 }
 .parentContentContainer{
 	background-color: rgba(0,0,0,0.5);
