@@ -1,0 +1,6 @@
+.postListContainer {
+    background-color: transparent;
+}
+.postListContainer + .postListContainer {
+    margin-top: 10px;
+}

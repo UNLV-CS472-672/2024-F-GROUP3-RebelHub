@@ -5,11 +5,11 @@ import { getPostListUrl } from "@/utils/url-segments";
 import CreatePostButton from "../buttons/create-post-button";
 import PostList from "../post-list";
 
-import styles from "../posts.module.css";
+import styles from "./post-pages.module.css";
 import api from "@/utils/api";
 
 export default function PostsPage() {
-    const [posts, setPosts] = useState(null);
+    const [posts, setPosts] = useState([]);
 
     useEffect(() => {
         const getPosts = async () => {

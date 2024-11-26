@@ -1,0 +1,33 @@
+.editModal {
+    background-color: white;
+    border-radius: 10px;
+    position: absolute;
+    min-width: 400px;
+    max-width: fit-content;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    gap: 10px;
+    padding: 10px;
+    display: grid;
+    grid-template-rows: auto;
+}
+
+.editModalClose {
+    position: absolute;
+    color: black;
+    background-color: transparent;
+    top: 0px; 
+    right: 4px;
+    margin-bottom: 20px;
+}
+
+.editModalOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
