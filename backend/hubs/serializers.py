@@ -13,6 +13,7 @@ class HubSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         user = self.context.get('request').user
         representation['joined'] = user in instance.members.all()
+        representation['pending'] = user in instance.pending_members.all()
         representation['modding'] = user in instance.mods.all()
         representation['owned'] = user == instance.owner
         return representation
@@ -30,6 +31,7 @@ class HubTLSerializer(serializers.ModelSerializer):
 
         user = self.context.get('request').user
         representation['joined'] = user in instance.members.all()
+        representation['pending'] = user in instance.pending_members.all()
         representation['modding'] = user in instance.mods.all()
         representation['owned'] = user == instance.owner
         if instance.private_hub:

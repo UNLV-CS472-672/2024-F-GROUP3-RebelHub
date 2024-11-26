@@ -6,7 +6,7 @@ import api from '@/utils/api';
 import PostList from '@/components/posts/post-list';
 import MemberList from '@/components/hubs/MemberList';
 import HubEdit from '@/components/hubs/HubEdit';
-import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getUpdateHubUrl} from "@/utils/url-segments";
+import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getRequestJoinHubUrl, getCancelRequestJoinHubUrl, getJoinHubUrl, getUpdateHubUrl} from "@/utils/url-segments";
 import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
 /*
  * HUBDATA:
@@ -159,16 +159,46 @@ const HubPage = ({id}) => {
 		setRefreshCount((count) => count+=1);
 	};
 
+	const handleRevokeRequestToJoin = async () => {
+		try {
+			const response = await api.put(getCancelRequestJoinHubUrl(hubData.id));
+			handleSuccess(response.data);
+		} catch(error) {
+			alert(error);
+		}
+
+	};
+
+	const handleRequestToJoin = async () => {
+		try {
+			const response = await api.put(getRequestJoinHubUrl(hubData.id));
+			handleSuccess(response.data);
+		} catch (error) {
+			alert(error);
+		}
+	};
+
+	const handleJoin = async () => {
+		try {
+			const response = await api.put(getJoinHubUrl(hubData.id));
+			handleSuccess(response.data);
+		} catch (error) {
+			alert(error);
+		}
+	};
+
 	//general info.
 	const hubOwner = hubData.owned;
 	const hubMod = hubData.modding;
 	const hubJoined = hubData.joined;
 	const hubPrivate = hubData.private_hub;
+	const hubPending = hubData.pending; //user is waiting to join.
 	const created_date = convertUtcStringToLocalString(hubData.created_at);
 
 	const HubPageMainContent = () => {
 		return(
 			<div className={styles.parentContentContainer}>
+				{!hubJoined && <button onClick={handleJoin}> JOIN HUB </button>}
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
 				</div>
@@ -196,6 +226,17 @@ const HubPage = ({id}) => {
 			</div> 
 		);
 	};
+
+	const HubPagePrivateContent = () => {
+		return(
+			<>
+			{hubPending ? 
+				(<button onClick={handleRevokeRequestToJoin}> Take Back Request To Join </button>) 
+				: 
+				(<button onClick={handleRequestToJoin}> Request To Join </button>)}
+			</>
+		);
+	}
 
 	return (
 		<div className={styles.pageBG} >
@@ -231,7 +272,7 @@ const HubPage = ({id}) => {
 		            appear and any other content a private hub
 			    should display*/}
 			{(hubPrivate && !hubJoined) ? (
-				<p> NOTHING </p>
+				<HubPagePrivateContent/>
 			) : (
 				<HubPageMainContent/>
 			)}
