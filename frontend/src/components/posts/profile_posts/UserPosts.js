@@ -23,13 +23,13 @@ export default function UserPosts({ username, name }) {
         const combinedPosts = [...prevPosts, ...newPosts];
         const uniquePosts = [
           ...new Map(combinedPosts.map((post) => [post.id, post])).values(),
-        ]; // Deduplicate based on post id
+        ]; 
         console.log("Unique posts after deduplication:", uniquePosts);
         return uniquePosts;
       });
 
       if (newPosts.length < 5) {
-        setHasMorePosts(false);  // Disable "Load More" if fewer than 5 posts
+        setHasMorePosts(false);  
       }
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -55,6 +55,12 @@ export default function UserPosts({ username, name }) {
           <div className="post-card" key={post.id}>
             <h3 className="post-title">{post.title}</h3>
             <p className="post-message">{post.message}</p>
+            {post.pictures[0] && (
+            <div className="post-image">
+              <img src={`http://localhost:8000/${post.pictures[0].image}`} alt="Post Image" className="post-image__img" />
+            </div>
+          )}
+
             <div className="post-meta">
               <span className="post-author">{name}</span>
               <span className="post-date">{new Date(post.timestamp).toLocaleString()}</span>

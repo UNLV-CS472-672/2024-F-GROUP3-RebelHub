@@ -87,3 +87,14 @@
 .nomore{
   align-items: center;
 }
+
+.post-image {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.post-image__img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}

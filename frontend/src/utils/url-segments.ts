@@ -62,6 +62,10 @@ export const URL_SEGMENTS = {
     //#region Profile
     PROFILE_API: 'api/profile/',
     // #endregion
+
+    //#region Picture
+    PICTURES_API: 'api/pictures/',
+    // #endregion
 };
 
 // #region Functions to return a URL for an API call (hubs)
@@ -314,6 +318,15 @@ export function gotoLoginPage() {
 //"http//locatlhost:8000/api/profile/"
 export function getProfileUrl(){
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PROFILE_API
+}
+
+// #endregion
+
+
+//#region Functions for Picture api
+
+export function getPicturesUrl(username: string){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + username + "/";
 }
 
 // #endregion

@@ -2,6 +2,7 @@
 import Sidebar from '../../components/sidebar/sidebar';
 import RebelHubNavBar from '../../components/navbar/RebelHubNavBar';
 import UserPosts from '../../components/posts/profile_posts/UserPosts'
+import PictureGallery from '../../components/Picture/Picture'
 
 import './profile.css';
 import { useState, useEffect } from 'react';
@@ -18,7 +19,6 @@ export default function Profile( { currentPictureUrl, userId }) {
 
   const [profile, setProfile] = useState(null);
   const [postCount, setPostCount] = useState(0);
-  const [posts, setPosts] = useState([]);
   const [activeTab, setActiveTab] = useState('posts');
 
 
@@ -60,20 +60,6 @@ export default function Profile( { currentPictureUrl, userId }) {
     fetchPostCount();
   }, []);
 
-  const fetchUserPosts = async () => {
-    try {
-      const response = await api.get(getUserPostsUrl(profile.username));
-
-      if (response.status === 200) {
-        setPosts(response.data); 
-        console.log(response.data)
-      } else {
-        console.log('no posts');
-      }
-    } catch (err) {
-      console.error('Error fetching posts:', err.response.data);
-    }
-  };
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -150,7 +136,7 @@ export default function Profile( { currentPictureUrl, userId }) {
                   </div>
                 ) : (
                   <div className='photos'>
-                    <p>No photos available</p>
+                    <PictureGallery username={profile.username} />
                   </div>
                 )}
               </div>
