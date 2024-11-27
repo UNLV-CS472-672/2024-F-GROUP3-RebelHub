@@ -1,7 +1,7 @@
-"use client"
-
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { getCurrentUserUrl } from '@/utils/url-segments';
+import api from '@/utils/api';
 import styles from './AccountButton.module.css';
 import api from '@/utils/api'
 import { getProfileUrl } from '@/utils/url-segments';
@@ -15,7 +15,7 @@ const avatarIconPath = "/navbar/icons/avatar.png" // path for the avatar icon.
 
 
 const AccountButton = (props) => {
-	const [displayName, setDisplayName] = useState(props.username);
+	const [displayName, setDisplayName] = useState("UNLV STUDENT");
 	const [darkTheme] = useState(props.darkTheme);
 	const router = useRouter();
 	const [pfppath, setpfppath] = useState(null);
@@ -39,6 +39,20 @@ const AccountButton = (props) => {
 
     	fetchProfile();
   	})
+
+	useEffect(() => {
+		const getProfileInfo = async () => {
+			try{
+				const response = await api.get(getCurrentUserUrl());
+				console.log("account success", response);
+				setDisplayName(response.data.username);
+			} catch (error) {
+				console.log("account button error!", error);
+			}
+		}
+
+		getProfileInfo();
+	}, []);
 
 	const accountButtonPressed = () => {
 		console.log("pressed acc")
