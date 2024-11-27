@@ -72,7 +72,7 @@ export default function UserPosts({ username, name }) {
           </div>
         ))
       ) : (
-        <p>No posts available.</p>
+        <p></p>
       )}
 
       {loading && <p>Loading...</p>}
