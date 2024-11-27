@@ -1,6 +1,10 @@
 "use client";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import RebelHubNavBar from '../components/navbar/RebelHubNavBar';
+import ProtectedRoute from '../components/Accounts/ProtectedRoutes'
+
+
 
 const Home = () => {
 	const [dummyHubs, setDummyHubs] = useState([]);
@@ -19,13 +23,17 @@ const Home = () => {
 	}, []);
 
 	return (
-		<main>
-			<h1>Rebel Hubs HOME</h1>
-			<h2>Hub test:</h2>
-			<ul>
-				{dummyHubs.map((hub) => (<li key={hub.id}>{hub.name + hub.description}</li>))}
-			</ul>
-		</main>
+		<ProtectedRoute>
+			<main>
+				<RebelHubNavBar></RebelHubNavBar>
+				<h1>Rebel Hubs HOME</h1>
+				<h2>Hub test:</h2>
+				<ul>
+					{dummyHubs.map((hub) => (<li key={hub.id}>{hub.name + hub.description}</li>))}
+				</ul>
+			</main>
+		</ProtectedRoute>
+		
 	);
 };
 
