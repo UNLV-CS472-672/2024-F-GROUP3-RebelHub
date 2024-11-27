@@ -199,9 +199,9 @@ export function getEditPostUrl(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_EDIT;
 }
 
-// "http://localhost:8000/api/posts/postcount"
-export function getPostCountUrl() {
-    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE +  URL_SEGMENTS.POSTS_COUNT;
+// "http://localhost:8000/api/posts/postcount/<str:username>"
+export function getPostCountUrl(username :string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE +  URL_SEGMENTS.POSTS_COUNT + username + "/";
 }
 
 //"http://localhost:8000/api/posts/<str:username>/"

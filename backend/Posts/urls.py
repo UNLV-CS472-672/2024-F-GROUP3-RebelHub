@@ -20,7 +20,7 @@ urlpatterns = [
     # Endpoint for editing a post by its ID
     path('posts/<int:id>/edit/', PostEdit.as_view(), name='post-edit'),
 
-    path('posts/postcount/', UserPostCountAPIView.as_view(), name='post-count'),
+    path('posts/postcount/<str:username>/', UserPostCountAPIView.as_view(), name='post-count'),
     path('posts/<str:username>/', UserPostsView.as_view(), name='user_posts')
 
 ]

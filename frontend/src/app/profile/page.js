@@ -33,6 +33,15 @@ export default function Profile() {
           const response = await api.get(getProfileUrl())
           if(response.status == 200){
             setProfile(response.data);
+            try {
+                const res = await api.get(getPostCountUrl(response.data.username))
+                if(res.status == 200){
+                  setPostCount(res.data.post_count);
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                setPostCount(0);
+            }
           }
       } catch (error) {
           console.error('Error fetching profile:', error);
@@ -43,22 +52,6 @@ export default function Profile() {
     fetchProfile();
   }, [])
 
-  useEffect(() => {
-    const fetchPostCount = async () => {
-
-      try {
-          const response = await api.get(getPostCountUrl())
-          if(response.status == 200){
-            setPostCount(response.data.post_count);
-          }
-      } catch (error) {
-          console.error('Error fetching profile:', error);
-          setPostCount(0);
-      }
-    };
-
-    fetchPostCount();
-  }, []);
 
 
   const handleTabClick = (tab) => {
