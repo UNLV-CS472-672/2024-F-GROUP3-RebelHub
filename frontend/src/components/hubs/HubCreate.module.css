@@ -1,0 +1,40 @@
+.createContainer {
+	height: 100%;
+	margin: 20px;
+	background-color: #E31837;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	border: 2px solid black;
+}
+
+.createHeader {
+	font-size: 60px;
+	text-align: center;
+}
+
+.createDesc {
+	color: white;
+}
+
+.createNameHeader {
+	padding: 10px;
+}
+.createNameInput {
+}
+
+.createDescHeader {
+	padding: 10px;
+}
+.createDescInput {
+	width: 100%;
+	max-width: 90%;
+	resize: none;
+}
+.createRadioContainer {
+	margin-top: 50px;
+}
+.createSubmitButton {
+	margin-top: 10px;
+}

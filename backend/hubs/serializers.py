@@ -15,6 +15,7 @@ class HubSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         user = self.context.get('request').user
         representation['joined'] = user in instance.members.all()
+        representation['pending'] = user in instance.pending_members.all()
         representation['modding'] = user in instance.mods.all()
         representation['owned'] = user == instance.owner
         return representation
@@ -32,6 +33,7 @@ class HubTLSerializer(serializers.ModelSerializer):
 
         user = self.context.get('request').user
         representation['joined'] = user in instance.members.all()
+        representation['pending'] = user in instance.pending_members.all()
         representation['modding'] = user in instance.mods.all()
         representation['owned'] = user == instance.owner
         if instance.private_hub:
@@ -46,7 +48,7 @@ class HubTLSerializer(serializers.ModelSerializer):
 class HubCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hub
-        fields = ['name', 'description', 'private_hub']
+        fields = ['id', 'name', 'description', 'private_hub']
 
     def create(self, validated_data):
         request = self.context.get('request')
@@ -100,6 +102,9 @@ class HubUpdateSerializer(serializers.ModelSerializer):
                 for user in instance.pending_members.all():
                     instance.pending_members.remove(user)
                     instance.members.add(user)
+                instance.private_hub = False
+            elif set_private:
+                instance.private_hub = True
             instance.save()
             return instance
         else:
