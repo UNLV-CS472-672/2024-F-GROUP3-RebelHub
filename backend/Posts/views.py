@@ -6,7 +6,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
-from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
 from .helper import filter_queryset
 
