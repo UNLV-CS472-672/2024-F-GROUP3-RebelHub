@@ -3,7 +3,6 @@ import { useRouter } from 'next/navigation';
 import { getCurrentUserUrl } from '@/utils/url-segments';
 import api from '@/utils/api';
 import styles from './AccountButton.module.css';
-import api from '@/utils/api'
 import { getProfileUrl } from '@/utils/url-segments';
 
 
