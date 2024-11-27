@@ -2,13 +2,15 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 from .models import Post
 from hubs.models import Hub
+from Comments.serializers import CommentSerializer
 
 # To serialise the post which validates data from the front end
 class PostSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many=True, read_only=True)
     class Meta:
         model = Post
-        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score'] 
-        read_only_fields = ['author', 'likes', 'dislikes']
+        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score', 'comments', 'last_edited'] 
+        read_only_fields = ['author', 'likes', 'dislikes', 'last_edited']
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -112,4 +114,38 @@ class DislikePostSerializer(serializers.ModelSerializer):
         else:
             instance.dislikes.remove(user)
         instance.save()
+        return instance
+
+class PostEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'message', 'last_edited']
+        read_only_fields = ['id']
+
+    def validate(self, data):
+        request = self.context.get('request')
+        user = request.user
+        post = self.instance
+
+        if user != post.author:
+            raise PermissionDenied("User does not have permission to update post")
+
+        # Because of the constraints in the database, these are currently unnecessary
+        if data.get('title') == "" or data.get('title') == None:
+            raise serializers.ValidationError("Post needs to have a title")
+        
+        if data.get('message') == "" or data.get('message') == None:
+            raise serializers.ValidationError("Post needs to have a message")
+        
+        if data.get('last_edited') == None:
+            raise serializers.ValidationError("When editing a post, a last_edited field is required")
+
+        return data
+    
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.message = validated_data.get('message', instance.message)
+        instance.last_edited = validated_data.get('last_edited', instance.last_edited)
+        instance.save()
+
         return instance

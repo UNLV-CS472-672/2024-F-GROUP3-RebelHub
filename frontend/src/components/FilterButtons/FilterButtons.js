@@ -1,10 +1,8 @@
-import styles from "./Explore.module.css";
+import styles from "./FilterButtons.module.css";
 import { useState } from "react";
-import api from "../../utils/api";
-import { getExploreListUrl } from "@/utils/url-segments";
-import { set_hot_score } from "./set-hot-score.js";
+import api from "@/utils/api";
 
-const FilterButtons = ({posts, setPosts}) => {
+const FilterButtons = ({posts, setPosts, postsUrl}) => {
     const [time, setTime] = useState('week');
     const [sort, setSort] = useState('top'); 
     const [currentTimeButton, setCurrentTimeButton] = useState('week');
@@ -14,7 +12,7 @@ const FilterButtons = ({posts, setPosts}) => {
         if(time === newTime) return;
         console.log("Fetching explore page posts...");
         try {
-            const response = await api.get(getExploreListUrl(newTime, sort));
+            const response = await api.get(postsUrl(newTime, sort));
             setTime(newTime);
             setPosts(response.data);
             console.log(response.data);
@@ -32,10 +30,7 @@ const FilterButtons = ({posts, setPosts}) => {
         else if (newSort === 'old') sortedPosts.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         else if (newSort === 'new') sortedPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         else if (newSort === 'random') sortedPosts.sort(() => Math.random() - 0.5);
-        else if (newSort === 'hot'){
-            set_hot_score(sortedPosts);
-            sortedPosts.sort((a, b) => b.hot_score - a.hot_score);
-        } 
+        else if (newSort === 'hot') sortedPosts.sort((a, b) => b.hot_score - a.hot_score);
         setPosts(sortedPosts); 
         setCurrentSortButton(newSort);
     };

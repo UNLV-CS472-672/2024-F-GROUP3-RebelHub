@@ -59,7 +59,7 @@ const convertDateObjectToLocalString = (dateObject) => {
     const day = String(dateObject.getDate()).padStart(2, '0');
     const hours = String(dateObject.getHours()).padStart(2, '0');
     const minutes = String(dateObject.getMinutes()).padStart(2, '0');   
-    return `${date.getFullYear()}-${month}-${day}T${hours}:${minutes}`;
+    return `${dateObject.getFullYear()}-${month}-${day}T${hours}:${minutes}`;
 }
 
 // Converts a date string of UTC timezone into a date string of local timezone

@@ -1,9 +1,15 @@
 "use client";
 
 import { Post } from "@/utils/posts/definitions";
-import styles from "./posts.module.css";
+import styles from "./post-summary-detailed.module.css";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
+import { useEffect, useState } from "react";
+import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
+import DeletePostButton from "./buttons/delete-post-button";
+import EditPostButton from "./buttons/edit-post-button";
 import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
+import  { formatDate } from "@/utils/datetime-conversion";
+import EditedHover from "./others/EditedHover";
 
 interface ComponentProps {
     post: Post;
@@ -18,15 +24,38 @@ interface ComponentProps {
 */
 
 const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
-    if (post == null) {
-        return <>No post.</>;
-    }
+    const [isAuthor, setIsAuthor] = useState(false);
+    const [isMod, setIsMod] = useState(false);
+    const [refresh, setRefresh] = useState(false);
+
+    useEffect(() => {
+        const fetchPrivileges = async () => {
+            const authorPrivileges = await checkAuthorPrivileges(post.author);
+            
+            if(authorPrivileges) {
+                setIsAuthor(authorPrivileges);
+                return;
+            }
+
+            const hubPrivileges = await checkHubPrivileges(post.hub);
+            setIsMod(hubPrivileges);
+        }
+        fetchPrivileges();
+    }, []);
+
+    // Function to refresh the component but not reload the page
+    const refreshComponent = () => {
+        setRefresh(!refresh);
+    };
 
     return (
         <div className={styles.detailedPostContainer}>
             <div className={styles.detailedPostElement}>
                 <div>
-                    <h1>{post.title}</h1>
+                    <h1>
+                        {post.title}
+                    </h1>
+                    <EditedHover editedDate={post.last_edited}/>
                 </div>
                 <br></br>
                 <div>
@@ -36,6 +65,21 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 <div>
                     {post.message}
                 </div>
+                <br></br>
+                <div className={styles.detailedPostButtonList}>
+                    {isAuthor &&
+                        <>
+                            <DeletePostButton post={post} />
+                            <EditPostButton post={post} refreshComponent={refreshComponent}/>
+                        </>
+                    }
+                    {!isAuthor && isMod &&
+                        <>
+                            <DeletePostButton post={post} />
+                            <div></div>
+                        </>
+                    }
+                </div>
             </div>
             <div className={styles.detailedPostFooterContainer}>
                 <div className={styles.detailedPostElement}>
@@ -43,7 +87,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                         Posted
                     </div>
                     <div>
-                        {post.timestamp.toString().slice(0, 10)}
+                        {formatDate(post.timestamp)}
                     </div>
                 </div>
                 <div className={styles.detailedPostElement}>

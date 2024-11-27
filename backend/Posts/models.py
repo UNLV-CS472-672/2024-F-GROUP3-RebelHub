@@ -21,6 +21,8 @@ class Post(models.Model):
 
     # Used for hot sorting
     hot_score = models.FloatField(default=0)
+    # Stores the date of when the post was last edited
+    last_edited = models.DateTimeField(blank=True, null=True)
 
     # Used for the string repersentation and will make the post selectable from like a menu or dropdown list 
     def __str__(self):

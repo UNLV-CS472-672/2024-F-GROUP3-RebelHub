@@ -1,12 +1,11 @@
 from django.shortcuts import render
 from rest_framework import generics, status, filters
 from .models import Post
-from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer
+from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer, PostEditSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
-from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
 from .helper import filter_queryset
 
@@ -80,12 +79,18 @@ class PostDetail(generics.RetrieveAPIView):
 class ExploreList(generics.ListAPIView): 
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['timestamp']  
-    ordering_fields = ['timestamp'] # Do not need to include likes since likes isn't directly used
     def get_queryset(self):
         user = self.request.user
         
-        # Since likes is a ManyToMany field, we need to convert to a numerical value that is the number of likes
-        queryset = Post.objects.filter(Q(hub__private_hub=False) | Q(hub__in=user.joined_hubs.all())) 
-        return filter_queryset(self, queryset)
+        queryset = Post.objects.filter(Q(hub__private_hub=False) | Q(hub__in=user.joined_hubs.all())).prefetch_related('comments')
+        return filter_queryset(self, queryset) # Uses filter_queryset function from helper.py to filter and sort posts
+      
+# Edit a single post by its ID
+class PostEdit(generics.UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostEditSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+    def perform_update(self, serializer):
+        serializer.save()
