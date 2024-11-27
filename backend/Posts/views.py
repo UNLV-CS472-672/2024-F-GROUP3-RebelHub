@@ -111,7 +111,7 @@ class PostPagination(PageNumberPagination):
 
 class UserPostsView(APIView):
     def get(self, request, username):
-        posts = Post.objects.filter(author__username=username).order_by('-timestamp')
+        posts = Post.objects.filter(author__username=username, hub__private_hub=False).order_by('-timestamp')
         paginator = PostPagination()
         result_page = paginator.paginate_queryset(posts, request)
         serializer = PostSerializer(result_page, many=True, context={'request': request})
