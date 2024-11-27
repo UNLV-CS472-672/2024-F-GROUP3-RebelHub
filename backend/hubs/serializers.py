@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Hub
+from Events.models import Event
+from django.utils import timezone
 
 #Serializer for a Hub model with all fields included.
 #This serializer represents a hub
@@ -378,7 +380,15 @@ class HubRemoveModSerializer(serializers.ModelSerializer):
 # Serializer for hubs with tags
 class FilterHubsSerializer(serializers.ModelSerializer):
     hub_tag = serializers.StringRelatedField(many=True)
-    hub_events = serializers.StringRelatedField(many=True)
+    hub_events = serializers.SerializerMethodField() # Used to return event objects
     class Meta:
         model = Hub
         fields = ['id', 'name', 'description', 'owner', 'mods', 'members', 'created_at', 'private_hub', 'hub_tag', 'hub_events']
+
+    def get_hub_events(self, obj):
+        from Events.serializers import EventSerializer  # Imported here in order to avoid circular import issues
+        now = timezone.now()
+
+        # Get only the next 3 upcoming events
+        events = Event.objects.filter(hub=obj, start_time__gte=now).order_by('start_time')[:3]
+        return EventSerializer(events, many=True, context=self.context).data

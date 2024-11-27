@@ -4,8 +4,7 @@ import api from "../../utils/api";
 import { getCreateEventURL } from "@/utils/url-segments";
 import { convertLocalStringToUtcString } from "@/utils/datetime-conversion";
 
-const CreateForm = ({isCreateOpen, onClose, onCreate, hubsModding}) => {
-    if (!isCreateOpen) return null;
+const CreateForm = ({onClose, onCreate, hubsModding}) => {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");

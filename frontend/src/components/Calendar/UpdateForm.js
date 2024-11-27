@@ -4,8 +4,7 @@ import api from "../../utils/api";
 import { getUpdateEventURL } from "@/utils/url-segments";
 import { convertLocalStringToUtcString, convertUtcStringToLocalString } from "@/utils/datetime-conversion";
 
-const UpdateForm = ({ event, isOpen, onClose, onUpdate}) => {
-    if (!isOpen) return null;
+const UpdateForm = ({ event, onClose, onUpdate}) => {
     
     const [title, setTitle] = useState(event.title);
     const [description, setDescription] = useState(event.description);

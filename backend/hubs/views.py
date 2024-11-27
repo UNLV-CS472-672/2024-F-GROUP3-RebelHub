@@ -216,4 +216,5 @@ class FilterHubs(generics.ListAPIView):
     ordering_fields = ['name', 'created_at']
     def get_queryset(self):
         queryset = Hub.objects.filter(private_hub=False)
+        queryset = queryset.prefetch_related('hub_events')
         return filter_hub_tag_queryset(self, queryset) # Uses filter_hub_tag_queryset function from helper.py to filter and sort hubs

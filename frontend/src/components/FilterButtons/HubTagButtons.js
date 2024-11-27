@@ -1,13 +1,12 @@
 import styles from "./FilterButtons.module.css";
 import { useState } from "react";
-import api from "../api";
-import { getFilterHubsUrl } from "@/utils/url-segments";
+import TagList from "./TagList.js"
 
 const HubTagButtons = ({hubs, setHubs, tags, setTags}) => {
     const [sort, setSort] = useState('top'); 
     const [currentSortButton, setCurrentSortButton] = useState('top');
     const allowed_sorts = ['top', 'old', 'new', 'a-z', 'z-a', 'random'];
-    const [currentTags, setCurrentTags] = useState([]);
+    const [showTagList, setShowTagList] = useState(false);
     
     // Done so that we can change the sort all in the frontend (without api call)
     const changeSort = (newSort) => {
@@ -23,46 +22,21 @@ const HubTagButtons = ({hubs, setHubs, tags, setTags}) => {
         setHubs(sortedHubs); 
         setCurrentSortButton(newSort);
     };
-
-    const performTag = async (tag) => {
-        const newTags = currentTags.includes(tag) ? currentTags.filter(current_tag => current_tag !== tag) : [...currentTags, tag];
-        setCurrentTags(newTags);
-        try {
-            let response;
-            if (newTags.length != 0){
-                response = await api.get(getFilterHubsUrl(newTags, sort)); 
-            } else {
-                response = await api.get(getFilterHubsUrl(null, sort));
-            } 
-            setHubs(response.data);
-            console.log(response.data);
-            console.log("Successful fetch");
-        } catch (error) { console.log("Error fetching hubs: ", error); }
-    };
+    
 
     return(
         <div className={styles.buttons}>
             {allowed_sorts.map((current_sort) => (
                 <button
                     key={current_sort}
-                    className={`${currentSortButton === current_sort ? styles.current : ''}`}
+                    className={`${currentSortButton === current_sort ? styles.current : ''} ${styles.sort}`}
                     onClick={() => changeSort(current_sort)}
                 >
-                    {current_sort === 'a-z' || current_sort === 'z-a'
-                    ? current_sort.toUpperCase()
-                    : current_sort[0].toUpperCase() + current_sort.slice(1)}
+                    {current_sort.toUpperCase()}
                 </button>
             ))}
-            {tags.map((current_tag) => (
-                <button
-                    key={current_tag}
-                    className={`${currentTags.includes(current_tag) ? styles.current : ''}`} 
-                    onClick={() => performTag(current_tag)} 
-                >
-                    {current_tag.split(' ').map(word => word[0].toUpperCase() + word.slice(1)).join(' ')}
-                </button>
-            ))}
-            
+            <button className={`${showTagList === true ? styles.current : ''} ${styles['tag-button']}`} onClick={() => setShowTagList(previous => !previous)}>TAGS</button>
+            {showTagList && <TagList tags={tags} setTags={setTags} sort={sort} setHubs={setHubs}/>}
         </div>
     );
 }

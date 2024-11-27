@@ -4,7 +4,7 @@ import styles from "./Clubs.module.css";
 import api from "../../utils/api";
 import { getFilterHubsUrl, getHubTagsUrl } from "@/utils/url-segments";
 import ClubList from "./ClubList.js"
-import HubTagButtons from "../../utils/FilterButtons/HubTagButtons.js";
+import HubTagButtons from "../FilterButtons/HubTagButtons.js";
 
 const Clubs = () => {
     const [hubs, setHubs] = useState([]);

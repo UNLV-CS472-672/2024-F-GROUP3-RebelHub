@@ -6,9 +6,8 @@ import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivil
 import { getHubUrl } from "@/utils/url-segments";
 import { formatDate } from "@/utils/datetime-conversion";
 
-const EventModal = ({ event, isOpen, onClose, onEdit, onDelete}) => {
+const EventModal = ({ event, isOpen, onClose, onEdit = () => {}, onDelete = () => {}, viewOnly = false}) => {
   // Returns null if the modal is blank or it is already open
-  if (!isOpen || !event) return null;
 
   const [currentHub, setCurrentHub] = useState(event.hub ? event.hub : null);
   const [isPrivileged, setIsPrivileged] = useState(false);
@@ -22,35 +21,38 @@ const EventModal = ({ event, isOpen, onClose, onEdit, onDelete}) => {
   // This is necessary because when an event is created in the frontend, hub is stored as the id.
   // And so hub is retrieved as an id, which means we need to get hub object from id. 
   // But after refreshing the browser, the hub will then return as a hub object, so an if condition is needed.
-  useEffect(() => {
-    const fetchHub = async () => {
-      if (event.hub && Number.isInteger(event.hub)) {
-        console.log("Fetching hub from this id: ", event.hub);
-        try {
-          const response = await api.get(getHubUrl(event.hub));
-          setCurrentHub(response.data);
-          console.log("Fetched the following hub from this key: ", event.hub, response.data);
-        } catch (error) {
-          console.log("Error fetching hub: ", error);
+  if(!viewOnly){
+    useEffect(() => {
+      const fetchHub = async () => {
+        if (event.hub && Number.isInteger(event.hub)) {
+          console.log("Fetching hub from this id: ", event.hub);
+          try {
+            const response = await api.get(getHubUrl(event.hub));
+            setCurrentHub(response.data);
+            console.log("Fetched the following hub from this key: ", event.hub, response.data);
+          } catch (error) {
+            console.log("Error fetching hub: ", error);
+          }
+        } 
+      };
+      fetchHub(); 
+    }, []); 
+
+    useEffect(() => {
+      const checkPrivileges = async () => {
+        if (!event.isPersonal) {
+          const hubPrivileged = await checkHubPrivileges(event.hub.id);
+          setIsPrivileged(hubPrivileged);
+        } else {
+          const authorPrivileged = await checkAuthorPrivileges(event.author);
+          setIsPrivileged(authorPrivileged);
         }
-      } 
-    };
-    fetchHub(); 
-  }, []); 
+      };
+      checkPrivileges();
+    }, []);
+  }
 
-  useEffect(() => {
-    const checkPrivileges = async () => {
-      if (!event.isPersonal) {
-        const hubPrivileged = await checkHubPrivileges(event.hub.id);
-        setIsPrivileged(hubPrivileged);
-      } else {
-        const authorPrivileged = await checkAuthorPrivileges(event.author);
-        setIsPrivileged(authorPrivileged);
-      }
-    };
-    checkPrivileges();
-  }, []);
-
+  
   const months = [
     "January",
     "February",
@@ -86,7 +88,7 @@ const EventModal = ({ event, isOpen, onClose, onEdit, onDelete}) => {
         {event.location && (  
           <p className={styles.location}>{"Location: " + event.location}</p>
         )}
-        {currentHub && <p className={styles.hub}>{"Hub: " + currentHub.name}</p>}
+        {currentHub && <p className={styles.hub} style={!event.description ? { marginBottom: "1vh" } : {}}>{"Hub: " + currentHub.name}</p>}
         {event.description && (
           <>
             <hr className={styles["scarlet-line"]}/>
@@ -100,7 +102,7 @@ const EventModal = ({ event, isOpen, onClose, onEdit, onDelete}) => {
       {/* Only shows update and delete buttons if either the event is a personal event (created by current user)
       or the event is part of a hub that the user is either the owner of or a moderator of*/}
       
-      {isPrivileged && 
+      {!viewOnly && isPrivileged && 
         <div className={styles["footer"]}>
           <hr className={styles["bottom-black-line"]} />
           <hr className={styles["bottom-scarlet-line"]} />
