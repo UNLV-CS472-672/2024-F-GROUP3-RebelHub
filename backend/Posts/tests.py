@@ -7,6 +7,8 @@ from .models import Post
 from .views import *
 from hubs.models import Hub
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
 
 # Class to test Post
 class PostTestCase(TestCase):
@@ -623,8 +625,174 @@ class PostTestCase(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED, "Unauthenticated user is deleting post")
         post_exists = Post.objects.filter(id=post.id).exists()
         self.assertTrue(post_exists, "This post was not deleted : unauthenticated user")
+    
+    def test_sort_by_new_and_old_posts(self):
+        user=self.user
+        hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
 
- 
+        # Create post that was made 2 weeks ago.
+        post1 = Post.objects.create(title="monkeys", message="Monkeys", hub=hub, author=user)
+        post1.timestamp = timezone.now() - timedelta(weeks=2)
+        post1.save()
+        
+        # Create post that was made 1 week ago.
+        post2 = Post.objects.create(title="rabbit", message="rabbit", hub=hub, author=user)
+        post2.timestamp = timezone.now() - timedelta(weeks=1)
+        post2.save()
+
+        # Create post that was made now.
+        post3 = Post.objects.create(title="tacos", message="tacos", hub=hub, author=user)
+
+        # Assert that there are three posts in order from newest to oldest
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=new')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3) 
+        self.assertEqual(response.data[0]['title'], "tacos")
+        self.assertEqual(response.data[1]['title'], "rabbit")
+        self.assertEqual(response.data[2]['title'], "monkeys")
+
+        # Assert that there are three posts in order from oldest to newest
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=old')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3) 
+        self.assertEqual(response.data[0]['title'], "monkeys")
+        self.assertEqual(response.data[1]['title'], "rabbit")
+        self.assertEqual(response.data[2]['title'], "tacos")
+
+        # Adjust timestamps of posts and check if the newest and oldest sort is working correctly
+        post1.timestamp = timezone.now()
+        post1.save()
+        post2.timestamp = timezone.now() - timedelta(weeks=2)
+        post2.save()
+        post3.timestamp = timezone.now() - timedelta(weeks=1)
+        post3.save()
+
+        # New
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=new')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3) 
+        self.assertEqual(response.data[0]['title'], "monkeys")
+        self.assertEqual(response.data[1]['title'], "tacos")
+        self.assertEqual(response.data[2]['title'], "rabbit")
+
+        #Old
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=old')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3) 
+        self.assertEqual(response.data[0]['title'], "rabbit")
+        self.assertEqual(response.data[1]['title'], "tacos")
+        self.assertEqual(response.data[2]['title'], "monkeys")
+    
+    def test_sort_by_top_posts(self):
+        user=self.user
+        user2 = User.objects.create_user(username='test user 2', password='testpass')
+        hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
+        hub.members.add(user2)
+
+        # Create post with 2 likes.
+        post1 = Post.objects.create(title="monkeys", message="monkeys", hub=hub, author=user)
+        request = self.factory.put(f"posts/{post1.id}/like/")
+        # Liked by user
+        force_authenticate(request, user=user)
+        view = LikePost.as_view()
+        response = view(request, id=post1.id)
+        self.assertEqual(response.status_code, status.HTTP_200_OK) 
+        self.assertEqual(post1.likes.count(), 1)
+        # Liked by user2
+        force_authenticate(request, user=user2)
+        view = LikePost.as_view()
+        response = view(request, id=post1.id)
+        self.assertEqual(response.status_code, status.HTTP_200_OK) #200 user could like/unlike
+        self.assertEqual(post1.likes.count(), 2)
+
+        # Create post with 1 like.
+        post2 = Post.objects.create(title="rabbit", message="rabbit", hub=hub, author=user)
+        request = self.factory.put(f"posts/{post2.id}/like/")
+        # Liked by user
+        force_authenticate(request, user=user)
+        view = LikePost.as_view()
+        response = view(request, id=post2.id)
+        self.assertEqual(response.status_code, status.HTTP_200_OK) 
+        self.assertEqual(post2.likes.count(), 1)
+
+        # Create post with 0 likes.
+        Post.objects.create(title="tacos", message="tacos", hub=hub, author=user)
+
+        # Assert that there are three posts in order from oldest to newest
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=top')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3) 
+        self.assertEqual(response.data[0]['title'], "monkeys")
+        self.assertEqual(response.data[1]['title'], "rabbit")
+        self.assertEqual(response.data[2]['title'], "tacos")
+
+    def test_sort_by_time_range(self):
+        user=self.user
+        hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
+
+        # Create post that was made 400 days ago. Should appear in all_time.
+        post1 = Post.objects.create(title="monkeys", message="Monkeys", hub=hub, author=user)
+        post1.timestamp = timezone.now() - timedelta(days=400)
+        post1.save()
+        
+        # Create post that was made 350 days ago. Should appear in all_time and year.
+        post2 = Post.objects.create(title="rabbit", message="rabbit", hub=hub, author=user)
+        post2.timestamp = timezone.now() - timedelta(days=350)
+        post2.save()
+
+        # Create post that was made 20 days ago. Should appear in all_time, year, and month.
+        post3 = Post.objects.create(title="tacos", message="tacos", hub=hub, author=user)
+        post3.timestamp = timezone.now() - timedelta(days=20)
+        post3.save()
+
+        # Create post that was made 4 days ago. Should appear in all_time, year, month, and week.
+        post4 = Post.objects.create(title="cheese", message="cheese", hub=hub, author=user)
+        post4.timestamp = timezone.now() - timedelta(days=4)
+        post4.save()
+
+        # Create post that was made 4 hours ago. Should appear in all_time, year, month, week, and 24 hours.
+        Post.objects.create(title="triangle", message="triangle", hub=hub, author=user)
+
+        # All Time check (sorted by oldest)
+        response = self.client.get(reverse('explore-list') + '?time_range=all_time&ordering=old')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 5) 
+        self.assertEqual(response.data[0]['title'], "monkeys")
+        self.assertEqual(response.data[1]['title'], "rabbit")
+        self.assertEqual(response.data[2]['title'], "tacos")
+        self.assertEqual(response.data[3]['title'], "cheese")
+        self.assertEqual(response.data[4]['title'], "triangle")
+
+        # Year check (sorted by oldest)
+        response = self.client.get(reverse('explore-list') + '?time_range=year&ordering=old')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 4) 
+        self.assertEqual(response.data[0]['title'], "rabbit")
+        self.assertEqual(response.data[1]['title'], "tacos")
+        self.assertEqual(response.data[2]['title'], "cheese")
+        self.assertEqual(response.data[3]['title'], "triangle")
+
+        # Month check (sorted by oldest)
+        response = self.client.get(reverse('explore-list') + '?time_range=month&ordering=old')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3) 
+        self.assertEqual(response.data[0]['title'], "tacos")
+        self.assertEqual(response.data[1]['title'], "cheese")
+        self.assertEqual(response.data[2]['title'], "triangle")
+
+        # Week check (sorted by oldest)
+        response = self.client.get(reverse('explore-list') + '?time_range=week&ordering=old')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2) 
+        self.assertEqual(response.data[0]['title'], "cheese")
+        self.assertEqual(response.data[1]['title'], "triangle")
+
+        # 24 hour check (sorted by oldest)
+        response = self.client.get(reverse('explore-list') + '?time_range=24_hours&ordering=old')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1) 
+        self.assertEqual(response.data[0]['title'], "triangle")
+
 """ 
     # Test deleting a post
     def test_deleting_post(self):

@@ -13,9 +13,9 @@ export default function Sidebar() {
                     className='logo'
                 />
             </div>
-            <Link href="/profile" className='link'>Explore</Link>
+            <Link href="/explore" className='link'>Explore</Link>
             <Link href="/profile" className='link'>Hubs</Link>
-            <Link href="/profile" className='link'>Calendar</Link>
+            <Link href="/calendar" className='link'>Calendar</Link>
             <Link href="/profile" className='link'>Post</Link>
         </div>
     )

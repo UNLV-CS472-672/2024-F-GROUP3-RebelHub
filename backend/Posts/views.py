@@ -1,11 +1,14 @@
 from django.shortcuts import render
-from rest_framework import generics, status
+from rest_framework import generics, status, filters
 from .models import Post
 from .serializers import PostSerializer, PostCreateSerializer, LikePostSerializer, DislikePostSerializer, PostEditSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
+from django.db.models import Q
+from .helper import filter_queryset
+
 # Create your views here
 
 # Able to create and view the post, should only handles POST requests to create a post
@@ -69,6 +72,19 @@ class PostDetail(generics.RetrieveAPIView):
             raise NotFound("No Post with this ID was found")
         return qs
 
+# GET a list of posts for the explore page.
+# Explore page includes all posts from public hubs and posts from private hubs that the user has joined
+# Can be filtered by timestamp (past 24 hours, week, month, year, or all time) 
+# and ordered by likes (ascending or descending) or timestamp (new or old)
+class ExploreList(generics.ListAPIView): 
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        user = self.request.user
+        
+        queryset = Post.objects.filter(Q(hub__private_hub=False) | Q(hub__in=user.joined_hubs.all())).prefetch_related('comments')
+        return filter_queryset(self, queryset) # Uses filter_queryset function from helper.py to filter and sort posts
+      
 # Edit a single post by its ID
 class PostEdit(generics.UpdateAPIView):
     queryset = Post.objects.all()

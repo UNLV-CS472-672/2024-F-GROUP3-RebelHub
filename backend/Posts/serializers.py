@@ -2,12 +2,14 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 from .models import Post
 from hubs.models import Hub
+from Comments.serializers import CommentSerializer
 
 # To serialise the post which validates data from the front end
 class PostSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many=True, read_only=True)
     class Meta:
         model = Post
-        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'last_edited'] 
+        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score', 'comments', 'last_edited'] 
         read_only_fields = ['author', 'likes', 'dislikes', 'last_edited']
     
     def to_representation(self, instance):
