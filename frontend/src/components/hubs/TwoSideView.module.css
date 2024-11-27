@@ -1,0 +1,38 @@
+.viewContainer{
+	background-color: black;
+	display: flex;
+	padding: 1%;
+	height: 75vh;
+}
+
+.leftView, .rightView{
+	flex: 1;
+	/*height: 400px;*/
+	overflow-y: auto;
+	
+}
+.leftView{
+	background-color: black;/*#E31837;*/
+}
+
+.rightView{
+	background-color: black;
+}
+
+.leftContent{
+	border-right: 2px solid white;
+	border-top: 2px solid white;
+	border-left: 2px solid white;
+}
+
+.rightContent{
+	border-right: 2px solid white;
+	border-top: 2px solid white;
+}
+
+.oneViewContent{
+	border: 2px solid white;
+}
+
+.toggleButton{
+}
