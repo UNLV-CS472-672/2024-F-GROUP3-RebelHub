@@ -34,8 +34,8 @@ class HubTagAssignSerializer(serializers.ModelSerializer):
 
         hub_tags_count = Hub_Tag.objects.filter(tagged_hubs=hub).count()
 
-        if hub_tags_count >= 3:
-            raise serializers.ValidationError("Cannot exceed 3 hub tags for a hub.") 
+        if hub_tags_count >= 5:
+            raise serializers.ValidationError("Cannot exceed 5 hub tags for a hub.") 
 
         return data
 
