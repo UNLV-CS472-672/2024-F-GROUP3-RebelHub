@@ -45,7 +45,7 @@ export default function Profile( { params } ) {
     const fetchPostCount = async () => {
 
       try {
-          const response = await api.get(getPostCountUrl())
+          const response = await api.get(getPostCountUrl(username))
           if(response.status == 200){
             setPostCount(response.data.post_count);
           }
