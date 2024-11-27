@@ -5,6 +5,7 @@
 	background-color: transparent; /*transparent to blend in with page, but we can do black for now*/
 	width: 100%;
 	position: fixed;
+	z-index: 1000;
 }
 .light{
 	color: black;
