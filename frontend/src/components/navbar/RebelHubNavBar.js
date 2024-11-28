@@ -13,12 +13,14 @@ const logoRebelPath = "/navbar/logo/logo.png" // path for the rebel version logo
 const logoReturnKeyPath = "/navbar/logo/logoreturn.png" // path for the rebel hub return key logo.
 
 const RebelHubNavBar = () => {
+	const router = useRouter();
 
 	const [darkTheme, setDarkTheme] = useState(true);
 
 	const homeButtonPressed = () => {
 		console.log("pressed home button");
 		//router.push("/"); <--- go to the home page/timeline
+		router.push("/")
 	};
 	const messageButtonPressed = () => {
 		console.log("pressed message button");
