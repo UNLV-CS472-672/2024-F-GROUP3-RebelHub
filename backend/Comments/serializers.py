@@ -66,9 +66,7 @@ class LikeCommentSerializer(serializers.ModelSerializer):
     # Check user can like a comment and hasn't already liked it
     def validate(self, data):
         user = self.context.get('request').user
-        if self.instance.comment_reply is not None:
-            raise ValidationError("You can't like a reply.")
-        
+
         data['making_like'] = True
         if self.instance in user.liked_comments.all():
             data['making_like'] = False
@@ -98,8 +96,6 @@ class DislikeCommentSerializer(serializers.ModelSerializer):
     # Check user can dislike a comment and hasn't already disliked
     def validate(self, data):
         user = self.context.get('request').user
-        if self.instance.comment_reply is not None:
-            raise ValidationError("You cannot dislike a reply.")
         
         data['making_dislike'] = True
         if self.instance in user.disliked_comments.all():

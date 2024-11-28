@@ -57,9 +57,7 @@ const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, 
     return (
         <div>
             <div className={styles.container}>
-                <div className={styles.profileBackground}>
-                    <AccountButton username={comment.author} darkTheme={true}/>    
-                </div>
+                <AccountButton username={comment.author} darkTheme={true}/>    
                 <div className={styles.messageContainer}>
                     <div>
                         {comment.message}

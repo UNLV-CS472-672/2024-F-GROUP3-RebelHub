@@ -32,13 +32,6 @@
     color: white;
 }
 
-.profileBackground {
-    background-color: black;
-    border: 10px;
-    border-radius: 10px;
-    align-self: start;
-}
-
 .buttonList {
     display: grid;
     grid-template-columns: auto 1fr;

@@ -96,11 +96,6 @@ class LikeComment(generics.UpdateAPIView):
     def patch(self, request, comment_id):
         comment = get_object_or_404(Comment, id=comment_id)
         
-        # Likes are only for comments and not replies
-        # Note: Likes and dislikes for replies might be implemented later
-        if comment.comment_reply is not None:
-            raise ValidationError("You cannot like a reply.")
-        
         serializer = self.get_serializer(comment, data={}, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()   
@@ -114,10 +109,6 @@ class DislikeComment(generics.UpdateAPIView):
 
     def patch(self, request, comment_id):
         comment = get_object_or_404(Comment, id=comment_id)
-
-        # Dislikes are only for comments and not replies, but might be implemented later
-        if comment.comment_reply is not None:
-            raise ValidationError("You cannot dislike a reply.")
         
         serializer = self.get_serializer(comment, data={}, context={'request': request})
         serializer.is_valid(raise_exception=True)
