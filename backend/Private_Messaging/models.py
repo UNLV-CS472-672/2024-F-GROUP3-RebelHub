@@ -14,8 +14,13 @@ class Conversation(models.Model):
         return str(self.conversation_id)
         
     def add_message(self, user, content):
-        message = Message.objects.create(conversation_id=self,user_id=user,message_content=content)
+        if not user:
+            raise ValueError("User cannot be None or invalid.")
+        if not content:
+            raise ValueError("Message content cannot be empty.")
+        message = Message.objects.create(conversation_id=self, user_id=user, message_content=content)
         return message
+
             
     # Viewing all messages in conversation   
     def fetch_messages(self):
@@ -29,7 +34,7 @@ class Conversation(models.Model):
         if self.participants.count() + len(users) > 2:
             raise ValueError("No more than two participants is allowed.")
         self.participants.add(*users)
-
+        
 class Message(models.Model):
         # Unique ID for each message
         message_id = models.AutoField(primary_key=True)
