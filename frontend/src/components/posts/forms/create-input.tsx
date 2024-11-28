@@ -25,7 +25,6 @@ interface ComponentProps {
     name:           the key associated with the input value when submitting a form to the server
     validation:     a set of values such as "validation: { required: { value: true, message: 'Required', }, }"
     multiline:      boolean that states if the input is supposed to be a multiline
-    startingValue:  an optional input that controls the starting value in the input field
 
     Follow the formatting from utils/posts/create-post-validations.ts to try create a new input.
 */
