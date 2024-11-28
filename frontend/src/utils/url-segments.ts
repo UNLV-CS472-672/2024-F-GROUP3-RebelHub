@@ -29,7 +29,9 @@ export const URL_SEGMENTS = {
     POSTS_DELETE: "/delete/",
     POSTS_LIKE: "/like/",
     POSTS_DISLIKE: "/dislike/",
+    POSTS_EXPLORE: "explore/",
     POSTS_EDIT: "/edit/",
+    POSTS_COUNT: "postcount/",
     // #endregion
 
     // #region Comments
@@ -56,6 +58,14 @@ export const URL_SEGMENTS = {
     EVENTS_CREATE: "create/",
     EVENTS_DELETE: "/delete/",
     EVENTS_UPDATE: "/update/",
+    // #endregion
+
+    //#region Profile
+    PROFILE_API: 'api/profile/',
+    // #endregion
+
+    //#region Picture
+    PICTURES_API: 'api/pictures/',
     // #endregion
 };
 
@@ -185,9 +195,25 @@ export function getDeletePostUrl(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_DELETE;
 }
 
+// "http://localhost:8000/api/posts/explore/"
+// "http://localhost:8000/api/posts/explore/?time_range=week&ordering=hot"
+export function getExploreListUrl(time_range: string, ordering: string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + URL_SEGMENTS.POSTS_EXPLORE + "?time_range=" + time_range + "&ordering=" + ordering; 
+}
+
 // "http://localhost:8000/api/posts/<int:id>/edit/"
 export function getEditPostUrl(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_EDIT;
+}
+
+// "http://localhost:8000/api/posts/postcount/<str:username>"
+export function getPostCountUrl(username :string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE +  URL_SEGMENTS.POSTS_COUNT + username + "/";
+}
+
+//"http://localhost:8000/api/posts/<str:username>/"
+export function getUserPostsUrl(username: string){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + username + "/";
 }
 
 // #endregion
@@ -290,6 +316,29 @@ export function gotoPostListPage() {
 // "http://localhost:3000/users/login/"
 export function gotoLoginPage() {
     return URL_SEGMENTS.FRONTEND + URL_SEGMENTS.USERS_HOME + URL_SEGMENTS.USERS_LOGIN;
+}
+
+// #endregion
+
+//#region Functions for profile api
+
+//"http//locatlhost:8000/api/profile/username"
+export function getOtherProfileUrl(username : string){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PROFILE_API + username + "/";
+}
+//"http//locatlhost:8000/api/profile/"
+export function getProfileUrl(){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PROFILE_API;
+}
+
+
+// #endregion
+
+
+//#region Functions for Picture api
+//"http//locatlhost:8000/api/pictures/username/"
+export function getPicturesUrl(username: string){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + username + "/";
 }
 
 // #endregion
