@@ -9,7 +9,7 @@ class ConversationModelTest(TestCase):
         self.conversation = Conversation.objects.create(creator_id=self.user1)
         self.conversation.participants.add(self.user1, self.user2)
 
-    def test_add_message_with_invalid_user(self):
+    def test_add_message_with_no_other_user(self):
         with self.assertRaises(ValueError):
             self.conversation.add_message(user=None, content="Chat Failed")
             
