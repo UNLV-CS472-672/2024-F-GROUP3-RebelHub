@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'users',
     'hubs',
     'Comments',
+    'Pictures',
     'Private_Messaging',
 ]
 
