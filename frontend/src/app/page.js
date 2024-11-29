@@ -23,7 +23,6 @@ const Home = () => {
 	}, []);
 
 	return (
-		<ProtectedRoute>
 			<main>
 				<RebelHubNavBar></RebelHubNavBar>
 				<h1>Rebel Hubs HOME</h1>
@@ -32,9 +31,14 @@ const Home = () => {
 					{dummyHubs.map((hub) => (<li key={hub.id}>{hub.name + hub.description}</li>))}
 				</ul>
 			</main>
-		</ProtectedRoute>
-		
+
 	);
 };
-
-export default Home;
+function ProtectedHome(){
+	return (
+		<ProtectedRoute>
+			<Home/>
+		</ProtectedRoute>
+	)
+}
+export default ProtectedHome;
