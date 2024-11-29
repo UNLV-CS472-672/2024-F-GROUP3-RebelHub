@@ -23,7 +23,7 @@ const avatarIconPath = "/navbar/icons/avatar.png" // path for the avatar icon.
 
 	username can be a user id or the actual username.
 	If it is an id, the component will try to get the user and profile from the server.
-	If it is a username, the component can go straight to the profile.
+	If it is a string, it will only display the name but not redirect correctly.
 	If username is not supplied, then the current user is used instead.
 
 	noBackground is a boolean that shows the background color for the text.
@@ -39,6 +39,8 @@ const AccountButton = (props) => {
 	// This is the username that can be used to redirect to the user's profile.
 	const [profileName, setProfileName] = useState("");
 
+	const [editProfileLink, setEditProfileLink] = useState(false);
+
 	const [darkTheme] = useState(props.darkTheme);
 	const router = useRouter();
 	const [pfppath, setpfppath] = useState(null);
@@ -51,6 +53,8 @@ const AccountButton = (props) => {
 			if (props.username != null) {
 				if (props.username instanceof String)
 				{
+					// This block should be changed if the string username
+					// needs to be set up.
 					setDisplayName(props.username);
 				}
 				else {
@@ -80,14 +84,15 @@ const AccountButton = (props) => {
 					// username. I think it gets the current user's profile.
 					const response = await api.get(getProfileUrl())
 					if(response.status == 200){
-						setDisplayName(response.data.name)
-						setpfppath(`http://localhost:8000${response.data.pfp}`)
+						setDisplayName(response.data.name);
+						setEditProfileLink(true);
+						setpfppath(`http://localhost:8000${response.data.pfp}`);
 					}
 					
 				} catch (error) {
 					console.error('Error fetching no username profile:', error);
-					setpfppath(avatarIconPath)
-					setDisplayName('some user')
+					setpfppath(avatarIconPath);
+					setDisplayName('some user');
 				}
 			}
 
@@ -100,13 +105,14 @@ const AccountButton = (props) => {
 	useEffect(() => {
 		const getProfileInfo = async () => {
 			try{
-				// This is for calls that do not have a username.
-				// I think its for getting a user's username, but I'm
-				// not sure if its necessary.
-				if (props.username == null) {
+				// Check if the username is the same as the current user.
+				// If it is, then we want the redirect to be to the
+				// edit profile page.
+				if (props.username != null) {
 					const response = await api.get(getCurrentUserUrl());
 					console.log("account success", response);
-					setProfileName(response.data.username);
+
+					setEditProfileLink(response.data.id == props.username);
 				}
 			} catch (error) {
 				console.log("account button error!", error);
@@ -119,7 +125,9 @@ const AccountButton = (props) => {
 	const accountButtonPressed = () => {
 		console.log("pressed acc");
 		// router.push("/"); <--- go to the user's profile page.
-		if (profileName != "" || profileName != null) {
+		if (editProfileLink) {
+			router.push("/profile/");
+		} else if (profileName != "" || profileName != null) {
 			router.push(`/profile/${profileName}/`);
 		} else {
 			alert("Could not get this user's profile.");
