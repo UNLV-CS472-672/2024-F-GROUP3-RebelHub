@@ -5,7 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import CreateInput from "@/components/posts/forms/create-input";
 import { TITLE_VALIDATION, POST_MESSAGE_VALIDATION } from "@/utils/posts/create-post-validations";
 import styles from "./create-post-form.module.css";
-import { getCreatePostUrl, URL_SEGMENTS } from "@/utils/url-segments";
+import { getAddPictureToPostUrl, getCreatePostUrl, URL_SEGMENTS } from "@/utils/url-segments";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import HubInput from "./create-input-hub";
@@ -34,38 +34,54 @@ const CreatePostForm: FC = () => {
             }
 
             /*
-                Make form data
+                Make form data for post
             */
 
-            let formData = new FormData();
-
-            if (data["image"] != null && data["image"][0] instanceof File){
-                formData.append("image", data["image"][0]);
-            }
-
-            formData.append("title", data["title"]);
-            formData.append("message", data["message"]);
-            formData.append("hub_id", data["hub_id"]);
+            const postData = new FormData();
+            
+            postData.append("title", data["title"]);
+            postData.append("message", data["message"]);
+            postData.append("hub_id", data["hub_id"]);
 
             console.log("Creating new post");
 
-            const response = await api.post(getCreatePostUrl(), formData, {
+            const postResponse = await api.post(getCreatePostUrl(), postData, {
                 headers : {
                     "Content-Type": "multipart/form-data",
                 },
             });
 
-            if (response.status != 201) {
+            if (postResponse.status != 201) {
                 throw new Error("Error when creating a post");
+            }
+
+            /*
+                Make form data for picture
+            */
+
+            if (data["image"] != null && data["image"][0] instanceof File){
+                const picData = new FormData();
+
+                picData.append("image", data["image"][0]);
+
+                const picResponse = await api.post(getAddPictureToPostUrl(postResponse.data.id), picData, {
+                    headers : {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+
+                if (picResponse.status != 201) {
+                    throw new Error("Error when creating picture for post");
+                }
             }
 
             methods.reset();
 
             // Try to send the user to the newly created post
-            router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME + response.data.id);
+            router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME + postResponse.data.id);
 
         } catch (error) {
-            alert("There was an error in your post: " + error);
+            alert("There was an error in your form: " + error);
             return null;
         }
     })
