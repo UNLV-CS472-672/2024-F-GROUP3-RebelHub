@@ -5,7 +5,7 @@ import { Post } from "@/utils/posts/definitions";
 import { useState, useEffect } from "react";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
 import EditPostButton from "./buttons/edit-post-button";
-import { getDislikePostUrl, getLikePostUrl, gotoDetailedPostPage } from "@/utils/url-segments";
+import { displayPicture, getDislikePostUrl, getLikePostUrl, gotoDetailedPostPage } from "@/utils/url-segments";
 import Link from "next/link";
 import DeletePostButton from "./buttons/delete-post-button";
 import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivileges";
@@ -54,8 +54,8 @@ const PostSummary: React.FC<ComponentProps> = ({ post }) => {
         <div className={styles.postContainer}>
             <div>
                 <Link href={gotoDetailedPostPage(post.id)}>
-                    {post.image !== null ? (
-                        <img src={post.image} className={styles.postThumbnail}/>
+                    {post.pictures.length > 0 ? (
+                        <img src={displayPicture(post.pictures[0])} className={styles.postThumbnail}/>
                     ) : (
                         <img src={noImagePath} className={styles.postThumbnail}/>
                     )

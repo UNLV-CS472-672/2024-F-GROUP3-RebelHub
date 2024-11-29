@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
 import DeletePostButton from "./buttons/delete-post-button";
 import EditPostButton from "./buttons/edit-post-button";
-import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
+import { displayPicture, getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
 import RecursiveCommentList from "../comments/RecursiveCommentList";
 import CreateCommentButton from "../comments/buttons/CreateCommentButton";
 import  { formatDate } from "@/utils/datetime-conversion";
@@ -62,8 +62,8 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                     <EditedHover editedDate={post.last_edited}/>
                 </div>
                 <div>
-                    {post.image != null &&
-                        <img src={post.image} className={styles.image}/>
+                    {post.pictures.length > 0 &&
+                        <img src={displayPicture(post.pictures[0])} className={styles.image}/>
                     } 
                 </div>
                 <div>
