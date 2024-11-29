@@ -1,4 +1,7 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
+
+from  Posts.models import Post
 from .models import Picture
 
 class PictureSerializer(serializers.ModelSerializer):
@@ -10,3 +13,24 @@ class PictureSerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         return obj.image.url if obj.image else None
+
+class CreatePostPictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Picture
+        fields = ['id', 'image']
+
+    def validate(self, data):
+        request = self.context.get('request')
+        user = request.user
+
+        post_id = self.context.get('post_id')
+        post = Post.objects.get(pk=post_id)
+
+        data['user'] = user
+        data['post'] = post
+
+        return data
+    
+    def create(self, validated_data):
+        new_pic = Picture.objects.create(**validated_data)
+        return new_pic
