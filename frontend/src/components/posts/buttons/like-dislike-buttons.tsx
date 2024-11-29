@@ -5,16 +5,17 @@ import React, { useState } from "react";
 import styles from "./post-buttons.module.css";
 import api from "@/utils/api";
 import clsx from "clsx";
-import { Post } from "@/utils/posts/definitions";
+import { Post, PostComment } from "@/utils/posts/definitions";
 
 interface ComponentProps {
-    postObject: Post;
+    postObject: Post|PostComment;
     likeUrlFunction: (objectId: number) => string;
     dislikeUrlFunction: (objectId: number) => string;
-    containerClassName: string;
+    containerClassName?: string;
+    showButtons?: boolean;
 }
 
-const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunction, dislikeUrlFunction, containerClassName }) => {
+const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunction, dislikeUrlFunction, containerClassName, showButtons=true }) => {
     const [displayedLikes, setLikes] = useState(postObject.likes.length);
     const [displayedDislikes, setDislikes] = useState(postObject.dislikes.length);
     const [postLiked, setPostLiked] = useState(postObject.is_liked);
@@ -47,6 +48,11 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
             
         } catch (error) {
             console.log("Error posting a like: " + error);
+
+            // If the object was deleted before someone tried to vote, reload the page.
+            if (error.status == 404) {
+                window.location.reload();
+            }
         }
     }
 
@@ -77,6 +83,11 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
             
         } catch (error) {
             console.log("Error posting a dislike: " + error);
+
+            // If the object was deleted before someone tried to vote, reload the page.
+            if (error.status == 404) {
+                window.location.reload();
+            }
         }
     }
     
@@ -87,14 +98,19 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
                     {displayedLikes}
                 </div>
                 <div>
-                    <button onClick={handleLike} className={clsx(
-                        [styles.basicButton],
-                        {
-                            [styles.likeButton]: postLiked,
-                        }
-                    )}>
-                        Like
-                    </button>
+                    {showButtons ? (
+                            <button onClick={handleLike} className={clsx(
+                                [styles.basicButton],
+                                {
+                                    [styles.likeButton]: postLiked,
+                                }
+                            )}>
+                                Like
+                            </button>
+                        ) : (
+                            <p>Likes</p>
+                        )
+                    }
                 </div>
             </div>
             <div className={styles.voteContainer}>
@@ -102,14 +118,19 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
                     {displayedDislikes}
                 </div>
                 <div>
-                    <button onClick={handleDislike} className={clsx(
-                        [styles.basicButton],
-                        {
-                            [styles.dislikeButton]: postDisliked,
-                        }
-                    )}>
-                        Dislike
-                    </button>
+                    {showButtons ? (
+                            <button onClick={handleDislike} className={clsx(
+                                [styles.basicButton],
+                                {
+                                    [styles.dislikeButton]: postDisliked,
+                                }
+                            )}>
+                                Dislike
+                            </button>
+                        ) : (
+                            <p>Dislikes</p>
+                        )
+                    }
                 </div>
             </div>
         </div>

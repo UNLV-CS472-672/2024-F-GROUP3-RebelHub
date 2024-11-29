@@ -8,6 +8,8 @@ import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileg
 import DeletePostButton from "./buttons/delete-post-button";
 import EditPostButton from "./buttons/edit-post-button";
 import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
+import RecursiveCommentList from "../comments/RecursiveCommentList";
+import CreateCommentButton from "../comments/buttons/CreateCommentButton";
 import  { formatDate } from "@/utils/datetime-conversion";
 import EditedHover from "./others/EditedHover";
 
@@ -24,6 +26,7 @@ interface ComponentProps {
 */
 
 const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
+    const [showCreateComment, setShowCreateComment] = useState(false);
     const [isAuthor, setIsAuthor] = useState(false);
     const [isMod, setIsMod] = useState(false);
     const [refresh, setRefresh] = useState(false);
@@ -40,6 +43,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
             const hubPrivileges = await checkHubPrivileges(post.hub);
             setIsMod(hubPrivileges);
         }
+
         fetchPrivileges();
     }, []);
 
@@ -92,10 +96,10 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                 </div>
                 <div className={styles.detailedPostElement}>
                     <div>
-                        {post.author}
+                        Author: {post.author}
                     </div>
                     <div>
-                        {post.hub}
+                        Hub: {post.hub}
                     </div>
                 </div>
                 <div className={styles.detailedPostElement}>
@@ -106,11 +110,18 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                         containerClassName={styles.detailedVoteContainer}/>
                 </div>
                 <div className={styles.detailedPostElement}>
-                    [Create Comment]
+                    <CreateCommentButton 
+                        toggleReply={() => setShowCreateComment(!showCreateComment)}
+                        buttonMessage={"Create Comment"}
+                    />
                 </div>
             </div>
             <div>
-                [Comments]
+                <RecursiveCommentList 
+                    post={post} 
+                    showCreateComment={showCreateComment} 
+                    setShowCreateComment={setShowCreateComment}
+                />
             </div>
         </div>
     )

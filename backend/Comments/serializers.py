@@ -13,34 +13,35 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         # comment_reply uses ForeignKey. So all the comment replies will have the same parent comment id. 
         # "replies" will list all replies associated with a specific comment.
-        fields = ['id', 'author', 'post', 'content', 'timestamp', 'likes', 'dislikes', 'replies', 'comment_reply']
+        fields = ['id', 'author', 'post', 'message', 'timestamp', 'likes', 'dislikes', 'replies', 'comment_reply']
         read_only_fields = ['author', 'likes', 'dislikes']
         
-        # Retrieves all replies from chosen comment
-        def get_replies(self, obj):
-            if obj.comment_reply is None:  
-                serializer = self.__class__(obj.replies.all(), many=True)
-                serializer.bind('', self)
-                return serializer.data
-            return None
+    # Retrieves all replies from chosen comment
+    def get_replies(self, obj):
+        if obj.comment_reply is None:  
+            serializer = self.__class__(obj.replies.all(), many=True)
+            serializer.bind('', self)
+            return serializer.data
+        return None
 
-        # When given a validated data, update and return the existing Comment instance.  
-        def to_representation(self, instance):
-            representation = super().to_representation(instance)
-            user = self.context.get('request').user
-            representation['is_author'] = user == instance.author
-            
-            # Check if user has already liked or disliked the comment
-            representation['is_liked'] = user in instance.likes.all()
-            representation['is_disliked'] = user in instance.dislikes.all()
-            return representation
+    # When given a validated data, update and return the existing Comment instance.  
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        user = self.context.get('request').user
+        representation['is_author'] = user == instance.author
+        
+        # Check if user has already liked or disliked the comment
+        representation['is_liked'] = user in instance.likes.all()
+        representation['is_disliked'] = user in instance.dislikes.all()
+        return representation
     
  # Serializer for creating any new comments
 class CommentCreateSerializer(serializers.ModelSerializer):
     post_id = serializers.IntegerField(write_only=True) 
     class Meta:
         model = Comment
-        fields = ['message', 'post_id'] 
+        fields = ['id', 'message', 'post_id', 'author', 'post', 'message', 'timestamp', 'likes', 'dislikes', 'replies', 'comment_reply']
+        read_only_fields = ['id', 'author', 'post', 'timestamp', 'likes', 'dislikes', 'replies', 'comment_reply']
  
     # Validates the post and user permissions to for comment creation
     def validate(self, data):
@@ -54,8 +55,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
     # Create a new Comment instance using validated data
     def create(self, validated_data):
-        user = self.context.get('request').user
-        return Comment.objects.create(author=user, **validated_data)
+        return Comment.objects.create(**validated_data)
 
 # Serializer for liking a comment
 class LikeCommentSerializer(serializers.ModelSerializer):
@@ -66,9 +66,7 @@ class LikeCommentSerializer(serializers.ModelSerializer):
     # Check user can like a comment and hasn't already liked it
     def validate(self, data):
         user = self.context.get('request').user
-        if self.instance.comment_reply is not None:
-            raise ValidationError("You can't like a reply.")
-        
+
         data['making_like'] = True
         if self.instance in user.liked_comments.all():
             data['making_like'] = False
@@ -98,8 +96,6 @@ class DislikeCommentSerializer(serializers.ModelSerializer):
     # Check user can dislike a comment and hasn't already disliked
     def validate(self, data):
         user = self.context.get('request').user
-        if self.instance.comment_reply is not None:
-            raise ValidationError("You cannot dislike a reply.")
         
         data['making_dislike'] = True
         if self.instance in user.disliked_comments.all():
