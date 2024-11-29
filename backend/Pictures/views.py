@@ -6,26 +6,21 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Picture, Post
 from rest_framework.response import Response
-from .serializers import PictureSerializer
-from rest_framework import status
+from .serializers import CreatePostPictureSerializer, PictureSerializer
+from rest_framework import status, generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.pagination import PageNumberPagination
 
 
-class AddPictureToPostView(APIView):
-    def post(self, request, post_id):
-        try:
-            post = Post.objects.get(id=post_id)
-        except Post.DoesNotExist:
-            return Response({"detail": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+class AddPictureToPostView(generics.CreateAPIView):
+    queryset = Picture.objects.all()
+    serializer_class = CreatePostPictureSerializer
+    parser_classes = (MultiPartParser, FormParser)
 
-        picture_serializer = PictureSerializer(data=request.data)
-        if picture_serializer.is_valid():
-            picture = picture_serializer.save(post=post)
-            return Response(PictureSerializer(picture).data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(picture_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['post_id'] = self.kwargs['post_id']
+        return context
 
 
 class PicturePagination(PageNumberPagination):
