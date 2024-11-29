@@ -352,4 +352,14 @@ export function getPicturesUrl(username: string){
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + username + "/";
 }
 
+// "http://localhost:8000/api/pictures/<int:post_id>/"
+export function getAddPictureToPostUrl(postId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + postId + "/";
+}
+
+// "http://localhost:8000{url}"
+export function displayPicture(pictureUrl: string) {
+    return URL_SEGMENTS.BACKEND + pictureUrl;
+}
+
 // #endregion
