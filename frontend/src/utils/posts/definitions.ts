@@ -24,3 +24,17 @@ export type Hub = {
     created_at: Date,
     private_hub: boolean,
 }
+
+export type PostComment = {
+    id: number,
+    post: number,
+    author: number,
+    message: string,
+    timestamp: Date,
+    likes: number[],
+    dislikes: number[],
+    comment_reply: number|null,
+    is_author: boolean,
+    is_disliked: boolean,
+    is_liked: boolean,
+}
