@@ -1,0 +1,50 @@
+.container {
+    display: grid;
+    background-color: darkred;
+    color: white;
+    grid-template-rows: auto 1fr;
+    border: 10px;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: left;
+}
+
+.accountButtonBanner {
+    display: flex;
+    gap: 10px;
+    font-size: small;
+}
+
+.createCommentContainer {
+    display: grid;
+    background-color: darkred;
+    color: white;
+    grid-template-rows: auto;
+    border: 10px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.messageContainer {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 10px;
+}
+
+.voteContainer {
+    display: flex;
+    gap: 40px;
+    color: white;
+}
+
+.buttonList {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+}
+
+.modifyButtons {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 10px;
+}

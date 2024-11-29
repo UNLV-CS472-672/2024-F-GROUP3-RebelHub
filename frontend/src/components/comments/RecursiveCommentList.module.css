@@ -1,0 +1,14 @@
+.listContainer {
+    background-color: transparent;
+}
+.listContainer + .listContainer {
+    margin-top: 10px;
+}
+
+.createComment {
+    margin-bottom: 10px;
+}
+
+.showMoreComments {
+    margin-top: 10px;
+}

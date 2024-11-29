@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
@@ -27,6 +28,8 @@ urlpatterns = [
     path('', include('calendar_app.urls')),
     path('api/', include('users.urls')),
     path('api/', include('hubs.urls')),
+    path('api/', include('Profile.urls')),
+    path('api/', include('Pictures.urls')),
 ]
 
 if settings.DEBUG:

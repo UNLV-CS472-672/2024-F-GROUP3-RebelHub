@@ -1,0 +1,30 @@
+.postsContainer {
+    display: grid;
+    grid-row-start: auto;
+    padding: 1.1vh;
+    background-color: black;
+    color: white;
+}
+
+.header {
+    background-color: darkred;
+    border: 2px;
+    border-radius: 12px;
+    height: auto;
+    padding: 1.4vw;
+    text-align: center;
+    align-items: center;
+}
+
+.mainContent{
+    width: 86.7vw;
+    margin-left: 13.3vw;
+    margin-top: 15.3vh;
+}
+
+.container {
+    display: flex;
+    height: 100vh; 
+    background-color: #0a0a0a;
+}
+

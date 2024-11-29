@@ -1,0 +1,14 @@
+.buttons button{
+    color: black;
+    margin-right: .5vw;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.buttons button:hover{
+    background-color: #f76359;
+}
+
+.current {
+    background-color: #f76359;
+}

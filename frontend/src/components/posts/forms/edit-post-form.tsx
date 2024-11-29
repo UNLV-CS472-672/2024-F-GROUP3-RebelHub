@@ -30,6 +30,12 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
         try {
             console.log("Editing a post");
 
+            // If the post was unchanged and user clicked submit, just close the form
+            if (data["title"] == post.title && data["message"] == post.message) {
+                onClose();
+                return null;
+            }
+
             /*
                 Additional error checking beyond the basic validations can go here.
             */
@@ -78,6 +84,12 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
 
         } catch (error) {
             alert("There was an error in your edit: " + error);
+
+            // If the post was deleted while someone was editing it, reload the page
+            if (error.status == 404) {
+                window.location.reload();
+            }
+
             return null;
         }
     })
@@ -92,10 +104,10 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
                     <h1>Edit Post '{post.title}'</h1>
                 </div>
                 <div className={styles.editPostContainer}>
-                    <CreateInput {...{...TITLE_VALIDATION, 'startingValue': post.title}} />
-                    <CreateInput {...{...POST_MESSAGE_VALIDATION, 'startingValue': post.message}} />
+                    <CreateInput {...TITLE_VALIDATION} />
+                    <CreateInput {...POST_MESSAGE_VALIDATION} />
                     <ImageInput />
-
+                
                     <div className={styles.editPostButtonContainer}>
                         <button className={styles.editConfirm} onClick={onSubmit}>
                             Submit Changes

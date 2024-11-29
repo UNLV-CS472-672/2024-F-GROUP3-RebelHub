@@ -12,22 +12,17 @@ interface ComponentProps {
 }
 
 const DeleteModal: React.FC<ComponentProps> = ({ warningMessage, deleteButtonName, cancelButtonName, id, deleteFunction, onClose }) => {
-    const handleCloseClick = (e) => {
-        e.preventDefault();
-        onClose();
-    };
-
     return (
         <Modal
             isOpen={true}
-            onRequestClose={onClose}
+            onRequestClose={() => onClose()}
             overlayClassName={styles.deleteModalOverlay}
             className={styles.deleteModal}
             ariaHideApp={false}
         >
             <div className={styles.deleteModal}>
                 <div className={styles.deleteModalClose}>
-                    <a href="#" onClick={handleCloseClick}>
+                    <a onClick={() => onClose()}>
                         X
                     </a>
                 </div>
@@ -35,12 +30,8 @@ const DeleteModal: React.FC<ComponentProps> = ({ warningMessage, deleteButtonNam
                     {warningMessage}
                 </div>
                 <div className={styles.deleteModalButtonContainer}>
-                    <div>
-                        <button className={styles.deleteModalConfirm} onClick={() => deleteFunction(id)}>{deleteButtonName}</button>
-                    </div>
-                    <div>
-                        <button className={styles.deleteModalCancel} onClick={onClose}>{cancelButtonName}</button>
-                    </div>
+                    <button className={styles.deleteModalConfirm} onClick={() => deleteFunction(id)}>{deleteButtonName}</button>
+                    <button className={styles.deleteModalCancel} onClick={() => onClose()}>{cancelButtonName}</button>
                 </div>
             </div>    
         </Modal>

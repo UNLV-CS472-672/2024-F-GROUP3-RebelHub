@@ -65,7 +65,7 @@ const DeletePostButton: React.FC<ComponentProps> = ({ post }) => {
                     deleteButtonName="Delete Post"
                     cancelButtonName="Cancel" 
                     id={post.id} 
-                    deleteFunction={deletePost} 
+                    deleteFunction={() => deletePost(post.id)} 
                     onClose={() => setShowModal(false)}
                 />, 
                 document.body

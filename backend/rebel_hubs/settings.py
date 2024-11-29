@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
 
 from pathlib import Path
 from datetime import timedelta
@@ -45,6 +46,8 @@ INSTALLED_APPS = [
     'users',
     'hubs',
     'Comments',
+    'Pictures',
+    'Profile'
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -152,18 +155,24 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Root for media such as images
-# https://docs.djangoproject.com/en/4.2/topics/files/
-
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Default settings for django_resized
-
-DJANGORESIZED_DEFAULT_SIZE = [1000, 1000]
-DJANGORESIZED_DEFAULT_SCALE = None
-DJANGORESIZED_DEFAULT_QUALITY = 100
-DJANGORESIZED_DEFAULT_KEEP_META = True
-DJANGORESIZED_DEFAULT_FORCE_FORMAT = None
-DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'JPEG': ".jpg", 'PNG': ".png"}
-DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',  # Logs at the DEBUG level and above
+#             'class': 'logging.FileHandler',
+#             'filename': 'logs/django.log',  # Log file location
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],  # Use the 'file' handler defined above
+#             'level': 'DEBUG',  # Capture all messages of DEBUG level or higher
+#             'propagate': True,  # Allow logs to propagate to other loggers
+#         },
+#     },
+# }
