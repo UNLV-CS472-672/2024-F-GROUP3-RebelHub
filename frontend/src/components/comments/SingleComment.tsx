@@ -11,6 +11,7 @@ import CreateCommentButton from "./buttons/CreateCommentButton";
 import CreateComment from "./CreateComment";
 import DeleteCommentButton from "./buttons/DeleteCommentButton";
 import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
+import { formatDate } from "@/utils/datetime-conversion";
 
 interface ComponentProps {
     post: Post;
@@ -57,7 +58,12 @@ const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, 
     return (
         <div>
             <div className={styles.container}>
-                <AccountButton username={comment.author} darkTheme={true} noBackground={true}/>    
+                <div className={styles.accountButtonBanner}>
+                    <AccountButton username={comment.author} darkTheme={true} noBackground={true}/>
+                    {comment.author == post.author &&
+                        <p style={{'fontWeight': "bold"}}>(Post Author)</p>
+                    }
+                </div>
                 <div className={styles.messageContainer}>
                     <div>
                         {comment.message}
@@ -75,7 +81,7 @@ const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, 
                             {isAuthor &&  
                                 <>
                                     <DeleteCommentButton comment={comment} parentDelete={parentDelete} />
-                                    <div>[Edit]</div>
+                                    <div></div>
                                 </>
                             }
                             {!isAuthor && isMod &&

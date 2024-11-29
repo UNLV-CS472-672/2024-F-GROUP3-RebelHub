@@ -42,7 +42,7 @@ class CommentList(generics.ListAPIView):
             return Comment.objects.filter(post_id=post_id, comment_reply__isnull=True).annotate(
                 like_count=Count('likes')
             ).order_by('-like_count')
-        return Comment.objects.filter(post_id=post_id, comment_reply__isnull=True).order_by('-timestamp')
+        return Comment.objects.filter(post_id=post_id, comment_reply__isnull=True).order_by('timestamp')
         
 # Get details for a single comment by ID
 class CommentDetail(generics.RetrieveAPIView):
@@ -77,14 +77,14 @@ class CommentDelete(generics.DestroyAPIView):
                     raise PermissionDenied("You do not have permission to delete this.")
         return comment       
        
-# List for all replies from a comment, most recent reply is seen first
+# List for all replies from a comment, oldest reply is seen first
 class CommentReplyList(generics.ListAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         comment_id = self.kwargs['comment_id']
-        return Comment.objects.filter(comment_reply_id=comment_id).order_by('-timestamp')
+        return Comment.objects.filter(comment_reply_id=comment_id).order_by('timestamp')
 
 # Note: Have  to test if the increment works correctly for likes and dislikes        
 # Be able to like or dislike a comment based on the ID
