@@ -128,7 +128,7 @@ class DislikePostSerializer(serializers.ModelSerializer):
 class PostEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'title', 'message', 'last_edited', 'image']
+        fields = ['id', 'title', 'message', 'last_edited']
         read_only_fields = ['id']
 
     def validate(self, data):

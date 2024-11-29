@@ -6,7 +6,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
-from .models import Post, get_upload_path
+from .models import Post
 from .views import *
 from hubs.models import Hub
 from django.contrib.auth.models import User
@@ -15,7 +15,8 @@ from django.utils import timezone
 from datetime import timedelta
 
 # Class to test Posts with images
-class PostImageTestCase(TestCase):
+
+class PostImageTestCase():
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpass')
         self.client = APIClient()
@@ -350,7 +351,7 @@ class PostTestCase(TestCase):
 
         new_data = {'title': "edited title", 'message': "edited message"}
 
-        response = self.edit_user_client.patch(reverse('post-edit', kwargs={'id': post_id}), new_data)
+        response = self.edit_user_client.patch(reverse('post-edit', kwargs={'id': post_id}), new_data, format='json')
         post = Post.objects.get(id=post_id)
 
         # Make sure the patch request did not change the post
