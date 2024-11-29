@@ -1,18 +1,26 @@
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
+from Pictures.serializers import PictureSerializer
 from .models import Post
 from hubs.models import Hub
+from Pictures.models import Picture
 from Comments.serializers import CommentSerializer
 from django.contrib.auth.models import User
 
 # To serialise the post which validates data from the front end
 class PostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
+    pictures = serializers.SerializerMethodField()
+    
     class Meta:
         model = Post
-        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score', 'comments', 'last_edited'] 
+        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score', 'comments', 'last_edited', 'pictures'] 
         read_only_fields = ['author', 'likes', 'dislikes', 'last_edited']
     
+    def get_pictures(self, instance):
+        pics = Picture.objects.filter(post=instance)
+        return [pic.image.url for pic in pics]
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         user = self.context.get('request').user
@@ -30,7 +38,7 @@ class PostCreateSerializer(serializers.ModelSerializer):
     hub_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Post
-        fields = ['id', 'title', 'message', 'hub_id', 'image']
+        fields = ['id', 'title', 'message', 'hub_id']
 
     def validate(self, data):
         request = self.context.get('request')
