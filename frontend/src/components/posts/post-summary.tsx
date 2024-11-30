@@ -55,7 +55,7 @@ const PostSummary: React.FC<ComponentProps> = ({ post }) => {
             <div>
                 <Link href={gotoDetailedPostPage(post.id)}>
                     {post.pictures.length > 0 ? (
-                        <img src={displayPicture(post.pictures[0])} className={styles.postThumbnail}/>
+                        <img src={displayPicture(post.pictures[0][1])} className={styles.postThumbnail}/>
                     ) : (
                         <img src={noImagePath} className={styles.postThumbnail}/>
                     )

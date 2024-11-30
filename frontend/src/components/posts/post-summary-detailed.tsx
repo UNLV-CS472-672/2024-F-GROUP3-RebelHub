@@ -33,6 +33,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
 
     useEffect(() => {
         const fetchPrivileges = async () => {
+            console.log(post.pictures[0])
             const authorPrivileges = await checkAuthorPrivileges(post.author);
             
             if(authorPrivileges) {
@@ -61,9 +62,9 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                     </h1>
                     <EditedHover editedDate={post.last_edited}/>
                 </div>
-                <div>
+                <div className={styles.imageContainer}>
                     {post.pictures.length > 0 &&
-                        <img src={displayPicture(post.pictures[0])} className={styles.image}/>
+                        <img src={displayPicture(post.pictures[0][1])} className={styles.image}/>
                     } 
                 </div>
                 <div>
