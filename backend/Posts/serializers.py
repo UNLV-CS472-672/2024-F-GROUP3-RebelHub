@@ -17,9 +17,9 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score', 'comments', 'last_edited', 'pictures'] 
         read_only_fields = ['author', 'likes', 'dislikes', 'last_edited']
     
-    def get_pictures(self, instance):
-        pics = Picture.objects.filter(post=instance)
-        return [pic.image.url for pic in pics]
+    def get_pictures(self, obj):
+        pics = Picture.objects.filter(post=obj)
+        return [[pic.id, pic.image.url] for pic in pics]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -155,13 +155,11 @@ class PostEditSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get('title', instance.title)
         instance.message = validated_data.get('message', instance.message)
         instance.last_edited = validated_data.get('last_edited', instance.last_edited)
-
-        if validated_data.get('image'):
-            instance.image = validated_data.get('image', instance.image)
         
         instance.save()
 
         return instance
+
 class PostCountSerializer(serializers.ModelSerializer):
     post_count = serializers.SerializerMethodField()
 
