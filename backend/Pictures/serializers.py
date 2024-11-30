@@ -58,9 +58,7 @@ class EditPostPictureSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        image = validated_data.get('image')
-
-        instance.image = image
+        instance.image = validated_data.get('image', instance.image)
         instance.save()
         
         return instance
