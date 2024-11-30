@@ -10,6 +10,7 @@ import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import HubInput from "./create-input-hub";
 import ImageInput from "./ImageInput";
+import bStyles from "@/components/posts/buttons/post-buttons.module.css";
 
 const CreatePostForm: FC = () => {
     const methods = useForm({
@@ -102,7 +103,7 @@ const CreatePostForm: FC = () => {
                     <ImageInput />
                 
                     <div className={styles.createPostButtonContainer}>
-                        <button className={styles.createPostButton} onClick={onSubmit}>
+                        <button className={bStyles.genericConfirm} onClick={onSubmit}>
                             Submit Post
                         </button>
                     </div>

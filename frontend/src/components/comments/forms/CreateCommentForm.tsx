@@ -7,6 +7,7 @@ import { Post, PostComment } from "@/utils/posts/definitions";
 import { getCreateCommentsUrl, getCreateReplyUrl } from "@/utils/url-segments";
 import { FormProvider, useForm } from "react-hook-form";
 import styles from "./CreateCommentForm.module.css";
+import bStyles from "@/components/posts/buttons/post-buttons.module.css";
 
 interface ComponentProps {
     post: Post;
@@ -87,10 +88,10 @@ const CreateCommentForm: React.FC<ComponentProps> = ({ post, onClose, commentRep
                     <CreateInput {...COMMENT_VALIDATION} />
                     
                     <div className={styles.commentButtonContainer}>
-                        <button onClick={onSubmit} className={styles.commentConfirm}>
+                        <button onClick={onSubmit} className={bStyles.genericConfirm}>
                             Create Comment
                         </button>
-                        <button onClick={onClose} className={styles.commentCancel}>
+                        <button onClick={onClose} className={bStyles.genericCancel}>
                             Cancel
                         </button>
                     </div>

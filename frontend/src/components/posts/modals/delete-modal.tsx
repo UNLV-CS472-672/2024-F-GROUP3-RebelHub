@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./delete-modal.module.css";
 import Modal from "react-modal";
+import bStyles from "@/components/posts/buttons/post-buttons.module.css"
 
 interface ComponentProps {
     warningMessage: string,
@@ -30,8 +31,8 @@ const DeleteModal: React.FC<ComponentProps> = ({ warningMessage, deleteButtonNam
                     {warningMessage}
                 </div>
                 <div className={styles.deleteModalButtonContainer}>
-                    <button className={styles.deleteModalConfirm} onClick={() => deleteFunction(id)}>{deleteButtonName}</button>
-                    <button className={styles.deleteModalCancel} onClick={() => onClose()}>{cancelButtonName}</button>
+                    <button className={bStyles.genericConfirm} onClick={() => deleteFunction(id)}>{deleteButtonName}</button>
+                    <button className={bStyles.genericCancel} onClick={() => onClose()}>{cancelButtonName}</button>
                 </div>
             </div>    
         </Modal>
