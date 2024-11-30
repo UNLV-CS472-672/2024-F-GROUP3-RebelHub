@@ -9,7 +9,7 @@
     background-color: rgb(187, 13, 13);
     border: 2px;
     border-radius: 12px;
-    padding: 10px;
+    padding: 4px;
     cursor: pointer;
     height: fit-content;
     width: fit-content;
@@ -24,6 +24,6 @@
 
 .buttonContainer {
     display: grid;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto auto 1fr;
     gap: 10px;
 }

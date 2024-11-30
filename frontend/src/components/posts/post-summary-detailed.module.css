@@ -4,14 +4,11 @@
 }
 
 .detailedPostContainer {
-    background-color: black;
     color: white;
-    display: grid;
-    grid-row: auto;
+    display: flex;
+    flex-direction: column;
     padding: 10px;
     gap: 10px;
-    text-align: center;
-    align-items: center;
 }
 
 .detailedPostFooterContainer {
@@ -28,18 +25,22 @@
     border-radius: 12px;
     padding: 10px;
     gap: 10px;
-    display: grid;
-    grid-template-columns: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .detailedPostButtonList {
-    display: grid;
-    grid-template-columns: 1fr auto auto ;
-    align-items: left;
+    display: flex;
+    align-self: flex-end;
     gap: 10px;
 }
 
 .image {
     max-width: 100%;
     max-height: 100%;
+}
+
+.imageContainer {
+    display: block;
+    align-self: center;
 }
