@@ -68,6 +68,8 @@ export const URL_SEGMENTS = {
 
     //#region Picture
     PICTURES_API: 'api/pictures/',
+    PICTURES_DELETE: "/delete/",
+    PICTURES_EDIT: "/edit/",
     // #endregion
 };
 
@@ -355,6 +357,16 @@ export function getPicturesUrl(username: string){
 // "http://localhost:8000/api/pictures/<int:post_id>/"
 export function getAddPictureToPostUrl(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + postId + "/";
+}
+
+// "http://localhost:8000/api/pictures/<int:pic_id>/edit/"
+export function getEditPictureInPostUrl(picId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + picId + URL_SEGMENTS.PICTURES_EDIT;
+}
+
+// "http://localhost:8000/api/pictures/<int:pic_id>/delete/"
+export function getDeletePictureInPostUrl(picId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + picId + URL_SEGMENTS.PICTURES_DELETE;
 }
 
 // "http://localhost:8000{url}"
