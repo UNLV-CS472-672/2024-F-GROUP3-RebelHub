@@ -1,12 +1,13 @@
 import { FC, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import styles from "./ImageInput.module.css";
+import { displayPicture } from "@/utils/url-segments";
 
 const ImageInput: FC = () => {
     const { register, watch, resetField, setValue } = useFormContext();
 
     const [image] = watch(["image"]);
-    const [preview] = useFilePreview(image);
+    const [preview, setPreview] = useFilePreview(image);
 
     const handleDiscard = () => {
         setValue("image", null);
@@ -35,6 +36,9 @@ const ImageInput: FC = () => {
                 <button  className={styles.labelButton} type="button" onClick={handleReset}>
                     Reset Image
                 </button>
+                <button className={styles.labelButton} type="button" onClick={handleDiscard}>
+                    Remove Image
+                </button>
             </div>
             
             <input
@@ -42,7 +46,6 @@ const ImageInput: FC = () => {
                 id="image"
                 type="file"
                 {...register("image")}
-                accept=".png, .jpg, .jpeg"
             />
 
             <img
@@ -56,10 +59,11 @@ const ImageInput: FC = () => {
 function useFilePreview(file) {
     const [imgSrc, setImgSrc] = useState(null);
   
+    // Tries to create a URL for the input file.
+    // If it fails, then input file is a URL to the backend and can
+    // directly be displayed.
     useEffect(() => {
         try {
-            setImgSrc(new URL(file));
-        } catch (error) {
             if (file && file[0]) {
                 const newUrl = URL.createObjectURL(file[0]);
           
@@ -69,7 +73,9 @@ function useFilePreview(file) {
             } else {
                 setImgSrc(null);
             }
-      }
+        } catch (error) {
+            setImgSrc(displayPicture(file));
+        }
     }, [file]);
   
     return [imgSrc, setImgSrc];
