@@ -3,13 +3,12 @@
 import { FormProvider, useForm } from "react-hook-form";
 import CreateInput from "@/components/posts/forms/create-input";
 import { TITLE_VALIDATION, POST_MESSAGE_VALIDATION } from "@/utils/posts/create-post-validations";
-import { getEditPostUrl } from "@/utils/url-segments";
+import { getAddPictureToPostUrl, getDeletePictureInPostUrl, getEditPictureInPostUrl, getEditPostUrl } from "@/utils/url-segments";
 import styles from "./edit-post-form.module.css";
 import api from "@/utils/api";
 import { Post } from "@/utils/posts/definitions";
-import { register } from "module";
 import ImageInput from "./ImageInput";
-import { headers } from "next/headers";
+import bStyles from "@/components/posts/buttons/post-buttons.module.css"
 
 interface ComponentProps {
     post: Post;
@@ -22,7 +21,7 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
         defaultValues: {
             title: post.title,
             message: post.message,
-            image: post.image,
+            image: (post.pictures.length > 0 ? post.pictures[0][1] : null),
         }
     });
 
@@ -32,8 +31,13 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
 
             // If the post was unchanged and user clicked submit, just close the form
             if (data["title"] == post.title && data["message"] == post.message) {
-                onClose();
-                return null;
+                if (post.pictures.length > 0 && data["image"] == post.pictures[0][1]) {
+                    onClose();
+                    return null;
+                } else if (post.pictures.length == 0 && data["image"] == null) {
+                    onClose();
+                    return null;
+                }
             }
 
             /*
@@ -41,29 +45,74 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
             */
 
             /*
-                Now make the form data object to send to the backend.
+                Make form data for post.
             */
 
-            let formData = new FormData();
-            
-            // If the image was changed in the form, then add the image to the 
-            // form data.
-            if (data["image"] != null && data["image"][0] instanceof File) {
-                formData.append("image", data["image"][0]);
-            }
+            const postData = new FormData();
 
-            formData.append("title", data["title"]);
-            formData.append("message", data["message"]);
-            formData.append("last_edited", new Date().toISOString());
+            postData.append("title", data["title"]);
+            postData.append("message", data["message"]);
+            postData.append("last_edited", new Date().toISOString());
 
-            const response = await api.patch(getEditPostUrl(post.id), formData, {
+            const postResponse = await api.patch(getEditPostUrl(post.id), postData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
 
-            if (response.status != 200) {
+            if (postResponse.status != 200) {
                 throw new Error("Error when editing a post");
+            }
+
+            /*
+                Make form data for picture.
+            */
+
+            // Case where picture doesn't exist and we want to make one
+            if (post.pictures.length <= 0 && data["image"] != null && data["image"][0] instanceof File) {
+                const picData = new FormData();
+
+                picData.append("image", data["image"][0])
+
+                const picResponse = await api.post(getAddPictureToPostUrl(postResponse.data.id), picData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+
+                if (picResponse.status != 201) {
+                    throw new Error("Error when creating a post image");
+                }
+
+                post.pictures[0] = [picResponse.data.id, picResponse.data.image_url];
+            }
+            // Case where picture exists and we want to change it
+            else if (post.pictures.length > 0 && data["image"] != null && data["image"][0] instanceof File) {
+                const picData = new FormData();
+
+                picData.append("image", data["image"][0]);
+
+                const picResponse = await api.patch(getEditPictureInPostUrl(post.pictures[0][0]), picData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+
+                if (picResponse.status != 200) {
+                    throw new Error("Error when editing a post image");
+                }
+
+                post.pictures[0][1] = picResponse.data.image_url;
+            }
+            // Case where picture exists and we want to delete it
+            else if (post.pictures.length > 0 && data["image"] == null) {
+                const picResponse = await api.delete(getDeletePictureInPostUrl(post.pictures[0][0]));
+
+                if (picResponse.status != 204) {
+                    throw new Error("Error when deleting a post image");
+                }
+
+                post.pictures = [];
             }
 
             methods.reset();
@@ -71,10 +120,9 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
             // We need to update the object in case the user tries to edit the post again.
             // If they try to edit the post again and we don't change the client object,
             // then the original title/message will be displayed in the form.
-            post.title = response.data.title;
-            post.message = response.data.message;
-            post.last_edited = response.data.last_edited;
-            post.image = response.data.image;
+            post.title = postResponse.data.title;
+            post.message = postResponse.data.message;
+            post.last_edited = postResponse.data.last_edited;
 
             // Instead of redirecting to a page, just use the function to refresh
             // the component of the post
@@ -109,10 +157,10 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
                     <ImageInput />
                 
                     <div className={styles.editPostButtonContainer}>
-                        <button className={styles.editConfirm} onClick={onSubmit}>
+                        <button className={bStyles.genericConfirm} onClick={onSubmit}>
                             Submit Changes
                         </button>
-                        <button className={styles.editCancel} onClick={onClose}>
+                        <button className={bStyles.genericCancel} onClick={onClose}>
                             Cancel
                         </button>
                     </div>
