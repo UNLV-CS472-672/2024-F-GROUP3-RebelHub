@@ -10,7 +10,7 @@ import CreatePostPage from "@/components/posts/pages/create-post"
 export default function CreatePost() {
     return (
         <ProtectedRoute>
-            <CreatePostPage/>
+            <CreatePostPage />
         </ProtectedRoute>
     );
 }
