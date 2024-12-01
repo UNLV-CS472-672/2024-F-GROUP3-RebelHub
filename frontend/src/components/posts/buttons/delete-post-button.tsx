@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import DeleteModal from "../modals/delete-modal";
 import styles from "./post-buttons.module.css";
-import { getDeletePostUrl, URL_SEGMENTS } from "@/utils/url-segments";
+import { getDeletePostUrl, gotoHubPage, URL_SEGMENTS } from "@/utils/url-segments";
 import api from "@/utils/api";
 import { usePathname, useRouter } from "next/navigation";
 import { Post } from "@/utils/posts/definitions";
@@ -42,7 +42,7 @@ const DeletePostButton: React.FC<ComponentProps> = ({ post }) => {
             */
 
             if (pathname == "/" + URL_SEGMENTS.POSTS_HOME + postId + "/") {
-                router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME);
+                router.push(gotoHubPage(post.hub));
             } else {
                 window.location.reload()
             }
