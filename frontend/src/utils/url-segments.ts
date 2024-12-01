@@ -331,6 +331,11 @@ export function gotoLoginPage() {
     return URL_SEGMENTS.FRONTEND + URL_SEGMENTS.USERS_HOME + URL_SEGMENTS.USERS_LOGIN;
 }
 
+// "http://localhost:3000/hubs/<id>/"
+export function gotoHubPage(hubId: number|string) {
+    return URL_SEGMENTS.FRONTEND + "/hubs/" + hubId + "/";
+}
+
 // #endregion
 
 //#region Functions for profile api
