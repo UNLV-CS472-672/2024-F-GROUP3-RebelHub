@@ -33,7 +33,7 @@ export default function DetailedPostPage({ id, }: { id: number|string }) {
                     // It would probably be a better idea to redirect the user to wherever they were
                     // before visiting the detailed post, but this should be fine for now.
 
-                    router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME);
+                    router.push("/profile/");
                 }
             }
         }
