@@ -5,10 +5,11 @@ import styles from "./post-buttons.module.css"
 import { gotoCreatePostPage } from "@/utils/url-segments";
 
 interface ComponentProps {
-    hubId: number|null;
+    hubId?: number|null;
+    buttonStyle?: string|null;
 }
 
-const CreatePostButton: React.FC<ComponentProps> = ({ hubId=null }) => {
+const CreatePostButton: React.FC<ComponentProps> = ({ hubId=null, buttonStyle=null }) => {
     const addHubId = () => {
         if (hubId != null) {
             localStorage.setItem("hubId", hubId.toString());
@@ -18,7 +19,7 @@ const CreatePostButton: React.FC<ComponentProps> = ({ hubId=null }) => {
     return (
         <div>
             <Link href={gotoCreatePostPage()} onClick={addHubId}>
-                <button className={styles.basicButton} type="button">Create a Post</button>
+                <button className={buttonStyle != null ? buttonStyle : styles.basicButton} type="button">Create a Post</button>
             </Link>
         </div>
     );
