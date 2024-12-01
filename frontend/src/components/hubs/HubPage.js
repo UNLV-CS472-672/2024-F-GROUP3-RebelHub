@@ -9,6 +9,7 @@ import MemberList from '@/components/hubs/MemberList';
 import HubEdit from '@/components/hubs/HubEdit';
 import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getRequestJoinHubUrl, getCancelRequestJoinHubUrl, getJoinHubUrl, getUpdateHubUrl, getLeaveHubUrl, getDeleteHubUrl } from "@/utils/url-segments";
 import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
+import CreatePostButton from '../posts/buttons/create-post-button';
 /*
  * HUBDATA:
  * id
@@ -252,6 +253,7 @@ const HubPage = ({id}) => {
 			<div className={styles.parentContentContainer}>
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
+					<CreatePostButton hubId={id} buttonStyle={styles.hubActionButton}/>
 					{hubOwner ? (<button 
 							className={styles.hubActionButton}
 							style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
