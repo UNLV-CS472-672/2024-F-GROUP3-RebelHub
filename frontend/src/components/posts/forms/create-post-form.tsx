@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import CreateInput from "@/components/posts/forms/create-input";
 import { TITLE_VALIDATION, POST_MESSAGE_VALIDATION } from "@/utils/posts/create-post-validations";
@@ -20,6 +20,7 @@ const CreatePostForm: FC = () => {
             image: null,
         }
     });
+
     const router = useRouter();
 
     const onSubmit = methods.handleSubmit(async data => {
@@ -94,7 +95,7 @@ const CreatePostForm: FC = () => {
                 noValidate
             >
                 <div style={{'textAlign': "center", 'padding': "10px", 'marginBottom': '-10px'}}>
-                    <h1>Create A Post</h1>
+                    <h1>Create a Post</h1>
                 </div>
                 <div className={styles.createPostContainer}>
                     <CreateInput {...TITLE_VALIDATION} />
