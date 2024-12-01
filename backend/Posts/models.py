@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from hubs.models import Hub
-from django_resized import ResizedImageField
 # Note: The "user" is just a placeholder name as it hasn't been made yet. The foreign key will be changed based on the Hub api
 
 # Class for creating post, includes author, title, message, and hub
