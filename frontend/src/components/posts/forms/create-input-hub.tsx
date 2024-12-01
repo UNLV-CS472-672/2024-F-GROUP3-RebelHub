@@ -11,6 +11,8 @@ import { useFormContext } from "react-hook-form";
 // It will instead display a message if there are no hubs found.
 const HubInput: FC = () => {
     const [hubs, setHubs] = useState<Hub[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [defaultHub, setDefaultHub] = useState(false);
     const { register } = useFormContext();
 
     useEffect(() => {
@@ -22,6 +24,12 @@ const HubInput: FC = () => {
                 if(response.status == 200) {
                     console.log("Got hubs list");
                     setHubs(response.data);
+
+                    if (localStorage.getItem("hubId") != null && localStorage.getItem("hubId") in response.data.map((hub: Hub) => hub.id)) {
+                        setDefaultHub(true);
+                    }
+
+                    setLoading(false);
                 }
                 
             } catch (error) {
@@ -43,13 +51,24 @@ const HubInput: FC = () => {
                 {hubs.length > 0 ? (
                     <>
                         <label htmlFor="hub_id">Choose a hub for your post: </label>
-                        <select {...register("hub_id")} id="hub_id" name="hub_id">
+                        {!loading && defaultHub &&
+                            <select {...register("hub_id")} id="hub_id" name="hub_id" defaultValue={localStorage.getItem("hubId")}>
                             {
                                 hubs.map((hub) => (
                                     <option key={hub.id} value={hub.id}>{hub.name}</option>
                                 ))
                             }
-                        </select>
+                            </select>
+                        }
+                        {!loading && !defaultHub &&
+                            <select {...register("hub_id")} id="hub_id" name="hub_id">
+                            {
+                                hubs.map((hub) => (
+                                    <option key={hub.id} value={hub.id}>{hub.name}</option>
+                                ))
+                            }
+                            </select>
+                        }
                     </>
                 ) : (
                     <p>You are not a member in any hub. You cannot make a post.</p>
