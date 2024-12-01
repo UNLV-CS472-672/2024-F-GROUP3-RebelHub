@@ -76,9 +76,15 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                     {post.title}
                 </h1>
                 <div style={{'display': 'flex', 'gap': '10px'}}>
-                    Posted on {formatDate(post.timestamp)}
-                    <EditedHover editedDate={post.last_edited}/>
-                    in
+                    <div>
+                        Posted on {formatDate(post.timestamp)}
+                    </div>
+                    {post.last_edited != null &&
+                        <EditedHover editedDate={post.last_edited}/>
+                    }
+                    <div>
+                        in
+                    </div>
                     <Link href={gotoHubPage(post.hub)}>
                         {hubName != "" ? (
                             <div className={styles.hubLink}>
@@ -92,11 +98,11 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                     </Link>
                 </div>
                 <AccountButton username={post.author} noBackground={true} />
-                <div className={styles.imageContainer}>
-                    {post.pictures.length > 0 &&
+                {post.pictures.length > 0 &&
+                    <div className={styles.imageContainer}>
                         <img src={displayPicture(post.pictures[0][1])} className={styles.image}/>
-                    } 
-                </div>
+                    </div>
+                }
                 <div>
                     {post.message}
                 </div>
