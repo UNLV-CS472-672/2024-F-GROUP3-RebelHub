@@ -19,7 +19,9 @@ const CreatePostButton: React.FC<ComponentProps> = ({ hubId=null, buttonStyle=nu
     return (
         <div>
             <Link href={gotoCreatePostPage()} onClick={addHubId}>
-                <button className={buttonStyle != null ? buttonStyle : styles.basicButton} type="button">Create a Post</button>
+                <button className={buttonStyle != null ? buttonStyle : styles.basicButton} type="button">
+                    CREATE A POST
+                </button>
             </Link>
         </div>
     );
