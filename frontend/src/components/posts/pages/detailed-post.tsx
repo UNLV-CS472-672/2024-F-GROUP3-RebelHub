@@ -3,11 +3,13 @@
 import PostSummary from "@/components/posts/post-summary";
 import { getDetailedPostUrl, URL_SEGMENTS } from "@/utils/url-segments";
 
-import styles from "../posts.module.css";
+import styles from "@/components/posts/pages/post-pages.module.css";
 import { useEffect, useState } from "react";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import PostSummaryDetailed from "../post-summary-detailed";
+import RebelHubNavBar from "@/components/navbar/RebelHubNavBar";
+import Sidebar from "@/components/sidebar/sidebar";
 
 export default function DetailedPostPage({ id, }: { id: number|string }) {
     const [post, setPost] = useState(null);
@@ -44,6 +46,12 @@ export default function DetailedPostPage({ id, }: { id: number|string }) {
     }
 
     return (
-        <PostSummaryDetailed post={post} />
+        <div>
+            <RebelHubNavBar/>
+            <Sidebar/>
+            <div className={styles.margins}>
+                <PostSummaryDetailed post={post} />
+            </div>
+        </div>
     );
 }
