@@ -1,14 +1,12 @@
 .sidebar {
-    width: 13.3vw;
+    width: 120px;
     background-color: transparent;
-    height: 100vh;
     position: fixed;
-    top: 100px;
     left: 0;
     /* box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); */
     display: flex;
     flex-direction: column;
-    padding-top: 20px;
+    margin-top: 39px;
 }
 
 .logo{
