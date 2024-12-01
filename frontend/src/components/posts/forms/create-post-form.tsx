@@ -93,7 +93,7 @@ const CreatePostForm: FC = () => {
                 onSubmit={e => e.preventDefault()}
                 noValidate
             >
-                <div style={{textAlign: "center", marginTop: "10px"}}>
+                <div style={{'textAlign': "center", 'padding': "10px", 'marginBottom': '-10px'}}>
                     <h1>Create A Post</h1>
                 </div>
                 <div className={styles.createPostContainer}>
