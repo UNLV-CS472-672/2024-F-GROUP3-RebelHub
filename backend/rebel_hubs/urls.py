@@ -28,6 +28,8 @@ urlpatterns = [
     path('', include('calendar_app.urls')),
     path('api/', include('users.urls')),
     path('api/', include('hubs.urls')),
+    path('api/', include('Profile.urls')),
+    path('api/', include('Pictures.urls')),
     path('api/', include('Private_Messaging.urls'))
 ]
 
