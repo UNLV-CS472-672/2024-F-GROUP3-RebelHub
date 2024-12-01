@@ -21,3 +21,8 @@
     display: grid;
     grid-template-columns: 1fr 3fr;
 }
+
+.margins {
+    margin-top: 40px;
+    margin-left: 120px;
+}
