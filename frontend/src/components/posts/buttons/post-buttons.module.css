@@ -2,20 +2,43 @@
     background-color: white;
     color:black;
     padding: 1px;
+    cursor: pointer;
 }
 
 .likeButton {
     background-color: green;
     padding: 1px;
+    cursor: pointer;
 }
 
 .dislikeButton {
     background-color: red;
     padding: 1px;
+    cursor: pointer;
 }
 
 .voteContainer {
-    color: white;
     display: grid;
     grid-template-columns: 1fr 1fr;
+}
+
+.genericConfirm {
+    width: 100px;
+    background-color: darkgreen;
+    border-color: black;
+    border-radius: 5px;
+    padding: 3px;
+    color: white;
+    cursor: pointer;
+}
+
+.genericCancel {
+    width: 100px;
+    background-color: darkred;
+    border-color: black;
+    border-radius: 5px;
+    color: white;
+    margin-left: auto;
+    padding: 3px;
+    cursor: pointer;
 }

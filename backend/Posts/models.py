@@ -3,8 +3,6 @@ from django.contrib.auth.models import User
 from hubs.models import Hub
 # Note: The "user" is just a placeholder name as it hasn't been made yet. The foreign key will be changed based on the Hub api
 
-# Create your models here.
-
 # Class for creating post, includes author, title, message, and hub
 class Post(models.Model):
     

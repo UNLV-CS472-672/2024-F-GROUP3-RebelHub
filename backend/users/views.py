@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 from rest_framework import generics
 from .serializers import UserSerializer, UserPublicInfoSerializer
@@ -42,5 +42,4 @@ class UserPublicInfoView(generics.RetrieveAPIView):
     serializer_class = UserPublicInfoSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "id"
-    def get_queryset(self):
-        return User.objects.all()
+    queryset = User.objects.all()

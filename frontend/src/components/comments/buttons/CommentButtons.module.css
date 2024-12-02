@@ -1,0 +1,16 @@
+.basicButton {
+    background-color: white;
+    color:black;
+    padding: 1px;
+    cursor: pointer;
+}
+
+.showMore {
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+    align-items: left;
+    cursor: pointer;
+    text-decoration: underline;
+    color: lightseagreen;
+}

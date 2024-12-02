@@ -41,6 +41,8 @@ export const URL_SEGMENTS = {
     COMMENTS_LIKE: "/like/",
     COMMENTS_DISLIKE: "/dislike/",
     COMMENTS_REPLY: "/reply/",
+    COMMENTS_REPLY_LIST: "/replyList/",
+    COMMENTS_DELETE: "/delete/",
     // #endregion
 
     // #region Users
@@ -66,6 +68,8 @@ export const URL_SEGMENTS = {
 
     //#region Picture
     PICTURES_API: 'api/pictures/',
+    PICTURES_DELETE: "/delete/",
+    PICTURES_EDIT: "/edit/",
     // #endregion
 };
 
@@ -243,9 +247,18 @@ export function getDislikeCommentUrl(commentId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.COMMENTS_API_BASE + commentId + URL_SEGMENTS.COMMENTS_DISLIKE;
 }
 
+// "http://localhost:8000/api/comments/<int:comment_id>/replyList/"
+export function getReplyListUrl(commentId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.COMMENTS_API_BASE + commentId + URL_SEGMENTS.COMMENTS_REPLY_LIST;
+}
+
 // "http://localhost:8000/api/comments/<int:comment_id>/reply/"
-export function getReplyUrl(commentId: number|string) {
+export function getCreateReplyUrl(commentId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.COMMENTS_API_BASE + commentId + URL_SEGMENTS.COMMENTS_REPLY;
+}
+
+export function getDeleteCommentUrl(commentId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.COMMENTS_API_BASE + commentId + URL_SEGMENTS.COMMENTS_DELETE;
 }
 
 // #region Functions to return a URL for an API call (events)
@@ -318,6 +331,11 @@ export function gotoLoginPage() {
     return URL_SEGMENTS.FRONTEND + URL_SEGMENTS.USERS_HOME + URL_SEGMENTS.USERS_LOGIN;
 }
 
+// "http://localhost:3000/hubs/<id>/"
+export function gotoHubPage(hubId: number|string) {
+    return URL_SEGMENTS.FRONTEND + "/hubs/" + hubId + "/";
+}
+
 // #endregion
 
 //#region Functions for profile api
@@ -339,6 +357,26 @@ export function getProfileUrl(){
 //"http//locatlhost:8000/api/pictures/username/"
 export function getPicturesUrl(username: string){
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + username + "/";
+}
+
+// "http://localhost:8000/api/pictures/<int:post_id>/"
+export function getAddPictureToPostUrl(postId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + postId + "/";
+}
+
+// "http://localhost:8000/api/pictures/<int:pic_id>/edit/"
+export function getEditPictureInPostUrl(picId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + picId + URL_SEGMENTS.PICTURES_EDIT;
+}
+
+// "http://localhost:8000/api/pictures/<int:pic_id>/delete/"
+export function getDeletePictureInPostUrl(picId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + picId + URL_SEGMENTS.PICTURES_DELETE;
+}
+
+// "http://localhost:8000{url}"
+export function displayPicture(pictureUrl: string) {
+    return URL_SEGMENTS.BACKEND + pictureUrl;
 }
 
 // #endregion

@@ -7,6 +7,7 @@ from .models import Post
 from .views import *
 from hubs.models import Hub
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 

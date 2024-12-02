@@ -11,6 +11,7 @@ export type Post = {
     is_disliked: boolean,
     is_liked: boolean,
     last_edited: Date|null,
+    pictures: any[]|null,
 }
 
 export type Hub = {
@@ -23,4 +24,18 @@ export type Hub = {
     pending_members: number[],
     created_at: Date,
     private_hub: boolean,
+}
+
+export type PostComment = {
+    id: number,
+    post: number,
+    author: number,
+    message: string,
+    timestamp: Date,
+    likes: number[],
+    dislikes: number[],
+    comment_reply: number|null,
+    is_author: boolean,
+    is_disliked: boolean,
+    is_liked: boolean,
 }
