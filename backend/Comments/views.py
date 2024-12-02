@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from Posts.models import Post
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.db.models import Count
+from .utils import inappropriate_language_filter
 # Create your views here.
  
  # Creating a comment  
