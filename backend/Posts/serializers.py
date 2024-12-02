@@ -6,6 +6,7 @@ from hubs.models import Hub
 from Pictures.models import Picture
 from Comments.serializers import CommentSerializer
 from django.contrib.auth.models import User
+from Posts.filter import inappropriate_language_filter
 
 # To serialise the post which validates data from the front end
 class PostSerializer(serializers.ModelSerializer):
@@ -40,6 +41,11 @@ class PostCreateSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'title', 'message', 'hub_id']
 
+    def validate_message(self, value):
+        if inappropriate_language_filter(value):
+            raise serializers.ValidationError("Your post contains inappropriate language.")
+        return value
+    
     def validate(self, data):
         request = self.context.get('request')
         user = request.user
