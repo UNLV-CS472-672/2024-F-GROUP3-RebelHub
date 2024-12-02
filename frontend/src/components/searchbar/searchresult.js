@@ -1,10 +1,15 @@
 import "./SearchResult.css";
+import {useRouter} from "next/navigation";
 
-export const SearchResult = ({ result }) => {
+export const SearchResult = ({ result,temp }) => {
+  const router=useRouter();
+  const redirect=()=>{
+    router.push(`/hubs/${temp}`);
+  }
   return (
     <div
       className="search-result"
-      onClick={(e) => alert(`You selected ${result}!`)}
+      onClick={redirect}
     >
       {result}
     </div>

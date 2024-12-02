@@ -7,7 +7,7 @@ const SearchResults=({results})=>{
     return (
         <div className="search-result-list">
            {results.map((result, id) => {
-        return <SearchResult result={result.name} key={id} />;
+        return <SearchResult result={result.name} temp={result.id} key={id} />;
       })}
         </div>
     )
