@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from Posts.models import Post
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.db.models import Count
-from .utils import inappropriate_language_filter
+from Comments.filter import inappropriate_language_filter
 # Create your views here.
  
  # Creating a comment  
@@ -127,13 +127,3 @@ class DislikeComment(generics.UpdateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'likes': comment.likes.count(), 'dislikes': comment.dislikes.count()}, status=status.HTTP_200_OK)
-
-# Language Filter for inappropriate language
-def inappropriate_language_filter(message):
-    # Notes: Does not matter if the word is uppercase or lowercase
-    # Also, crap will be used as an example
-    disallowed_words = ["fuck", "bitch", "asshole", "shit","crap"]  
-    for word in disallowed_words:
-        if word in message.lower():
-            return True
-    return False

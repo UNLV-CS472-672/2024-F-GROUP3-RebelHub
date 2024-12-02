@@ -3,6 +3,7 @@ from rest_framework.exceptions import PermissionDenied
 from .models import Comment
 from rest_framework.exceptions import ValidationError
 from Posts.models import Post
+from .filter import inappropriate_language_filter
 
 # To serilize the comment        
 class CommentSerializer(serializers.ModelSerializer):
@@ -35,6 +36,10 @@ class CommentSerializer(serializers.ModelSerializer):
         representation['is_disliked'] = user in instance.dislikes.all()
         return representation
     
+    def validate_message(self, value):
+        if inappropriate_language_filter(value):
+            raise serializers.ValidationError("Inappropriate language is not allowed.")
+        return value
  # Serializer for creating any new comments
 class CommentCreateSerializer(serializers.ModelSerializer):
     post_id = serializers.IntegerField(write_only=True) 

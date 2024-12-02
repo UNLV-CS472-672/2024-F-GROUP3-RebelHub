@@ -9,6 +9,7 @@ from Comments.serializers import CommentSerializer, CommentCreateSerializer, Lik
 from rest_framework.test import APITestCase, APIClient, APIRequestFactory
 from django.urls import reverse
 from rest_framework import status
+from Comments.filter import inappropriate_language_filter
 
 
 # Test cases for Modles.py
