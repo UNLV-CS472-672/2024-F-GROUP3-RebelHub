@@ -35,23 +35,6 @@
     gap: 10px;
 }
 
-.deleteModalConfirm {
-    width: 100px;
-    background-color: darkgreen;
-    border-color: black;
-    border-radius: 5px;
-    color: white;
-}
-
-.deleteModalCancel {
-    width: 100px;
-    background-color: darkred;
-    border-color: black;
-    border-radius: 5px;
-    color: white;
-    margin-left: auto;
-}
-
 .deleteModalOverlay {
     position: fixed;
     top: 0;

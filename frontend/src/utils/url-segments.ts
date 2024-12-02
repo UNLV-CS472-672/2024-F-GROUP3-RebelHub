@@ -68,6 +68,8 @@ export const URL_SEGMENTS = {
 
     //#region Picture
     PICTURES_API: 'api/pictures/',
+    PICTURES_DELETE: "/delete/",
+    PICTURES_EDIT: "/edit/",
     // #endregion
 };
 
@@ -329,6 +331,11 @@ export function gotoLoginPage() {
     return URL_SEGMENTS.FRONTEND + URL_SEGMENTS.USERS_HOME + URL_SEGMENTS.USERS_LOGIN;
 }
 
+// "http://localhost:3000/hubs/<id>/"
+export function gotoHubPage(hubId: number|string) {
+    return URL_SEGMENTS.FRONTEND + "/hubs/" + hubId + "/";
+}
+
 // #endregion
 
 //#region Functions for profile api
@@ -350,6 +357,26 @@ export function getProfileUrl(){
 //"http//locatlhost:8000/api/pictures/username/"
 export function getPicturesUrl(username: string){
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + username + "/";
+}
+
+// "http://localhost:8000/api/pictures/<int:post_id>/"
+export function getAddPictureToPostUrl(postId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + postId + "/";
+}
+
+// "http://localhost:8000/api/pictures/<int:pic_id>/edit/"
+export function getEditPictureInPostUrl(picId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + picId + URL_SEGMENTS.PICTURES_EDIT;
+}
+
+// "http://localhost:8000/api/pictures/<int:pic_id>/delete/"
+export function getDeletePictureInPostUrl(picId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + picId + URL_SEGMENTS.PICTURES_DELETE;
+}
+
+// "http://localhost:8000{url}"
+export function displayPicture(pictureUrl: string) {
+    return URL_SEGMENTS.BACKEND + pictureUrl;
 }
 
 // #endregion

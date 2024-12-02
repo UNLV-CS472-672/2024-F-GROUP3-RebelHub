@@ -7,11 +7,14 @@ import { useEffect, useState } from "react";
 import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
 import DeletePostButton from "./buttons/delete-post-button";
 import EditPostButton from "./buttons/edit-post-button";
-import { getDislikePostUrl, getLikePostUrl } from "@/utils/url-segments";
+import { displayPicture, getDislikePostUrl, getHubUrl, getLikePostUrl, gotoHubPage } from "@/utils/url-segments";
 import RecursiveCommentList from "../comments/RecursiveCommentList";
 import CreateCommentButton from "../comments/buttons/CreateCommentButton";
 import  { formatDate } from "@/utils/datetime-conversion";
 import EditedHover from "./others/EditedHover";
+import AccountButton from "../navbar/AccountButton";
+import Link from "next/link";
+import api from "@/utils/api";
 
 interface ComponentProps {
     post: Post;
@@ -30,6 +33,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
     const [isAuthor, setIsAuthor] = useState(false);
     const [isMod, setIsMod] = useState(false);
     const [refresh, setRefresh] = useState(false);
+    const [hubName, setHubName] = useState("");
 
     useEffect(() => {
         const fetchPrivileges = async () => {
@@ -44,6 +48,19 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
             setIsMod(hubPrivileges);
         }
 
+        const fetchHubName = async () => {
+            try {
+                const response = await api.get(getHubUrl(post.hub));
+            
+                if (response.status == 200) {
+                    setHubName(response.data.name);
+                }
+            } catch (error) {
+                console.log("Failed to get hub info");
+            }
+        }
+
+        fetchHubName();
         fetchPrivileges();
     }, []);
 
@@ -55,65 +72,66 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
     return (
         <div className={styles.detailedPostContainer}>
             <div className={styles.detailedPostElement}>
-                <div>
-                    <h1>
-                        {post.title}
-                    </h1>
-                    <EditedHover editedDate={post.last_edited}/>
+                <h1>
+                    {post.title}
+                </h1>
+                <div style={{'display': 'flex', 'gap': '10px'}}>
+                    <div>
+                        Posted on {formatDate(post.timestamp)}
+                    </div>
+                    {post.last_edited != null &&
+                        <EditedHover editedDate={post.last_edited}/>
+                    }
+                    <div>
+                        in
+                    </div>
+                    <Link href={gotoHubPage(post.hub)}>
+                        {hubName != "" ? (
+                            <div className={styles.hubLink}>
+                                {hubName}
+                            </div>
+                        ) : (
+                            <div className={styles.hubLink}>
+                                Hub {post.hub}
+                            </div>
+                        )} 
+                    </Link>
                 </div>
-                <br></br>
-                <div>
-                    [Full post thumbnail or image]
-                </div>
-                <br></br>
+                <AccountButton username={post.author} noBackground={true} />
+                {post.pictures.length > 0 &&
+                    <div className={styles.imageContainer}>
+                        <img src={displayPicture(post.pictures[0][1])} className={styles.image}/>
+                    </div>
+                }
                 <div>
                     {post.message}
                 </div>
-                <br></br>
                 <div className={styles.detailedPostButtonList}>
+                    <div className={styles.buttonsLeft}>
+                        <LikeDislikeButtons 
+                            postObject={post}
+                            likeUrlFunction={getLikePostUrl} 
+                            dislikeUrlFunction={getDislikePostUrl}
+                            containerClassName={styles.detailedVoteContainer}
+                        />
+                    </div>
+                    <div className={styles.buttonsRight}>
                     {isAuthor &&
                         <>
+                            <EditPostButton post={post} refreshComponent={refreshComponent} />
                             <DeletePostButton post={post} />
-                            <EditPostButton post={post} refreshComponent={refreshComponent}/>
                         </>
                     }
                     {!isAuthor && isMod &&
                         <>
                             <DeletePostButton post={post} />
-                            <div></div>
                         </>
                     }
-                </div>
-            </div>
-            <div className={styles.detailedPostFooterContainer}>
-                <div className={styles.detailedPostElement}>
-                    <div>
-                        Posted
+                        <CreateCommentButton 
+                            toggleReply={() => setShowCreateComment(!showCreateComment)}
+                            buttonMessage={"Create Comment"}
+                        />
                     </div>
-                    <div>
-                        {formatDate(post.timestamp)}
-                    </div>
-                </div>
-                <div className={styles.detailedPostElement}>
-                    <div>
-                        Author: {post.author}
-                    </div>
-                    <div>
-                        Hub: {post.hub}
-                    </div>
-                </div>
-                <div className={styles.detailedPostElement}>
-                    <LikeDislikeButtons 
-                        postObject={post}
-                        likeUrlFunction={getLikePostUrl} 
-                        dislikeUrlFunction={getDislikePostUrl}
-                        containerClassName={styles.detailedVoteContainer}/>
-                </div>
-                <div className={styles.detailedPostElement}>
-                    <CreateCommentButton 
-                        toggleReply={() => setShowCreateComment(!showCreateComment)}
-                        buttonMessage={"Create Comment"}
-                    />
                 </div>
             </div>
             <div>

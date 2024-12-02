@@ -8,19 +8,21 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.db.models import Q
 from .helper import filter_queryset
-
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from rest_framework.pagination import PageNumberPagination
+
 # Create your views here
 
 # Able to create and view the post, should only handles POST requests to create a post
 class CreatePost(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostCreateSerializer
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
     
         
 # Delete the post by its ID
@@ -95,6 +97,7 @@ class ExploreList(generics.ListAPIView):
 class PostEdit(generics.UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostEditSerializer
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
     permission_classes = [IsAuthenticated]
     lookup_field = "id"
 

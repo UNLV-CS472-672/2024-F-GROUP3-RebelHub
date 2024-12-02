@@ -5,7 +5,7 @@ import { Post } from "@/utils/posts/definitions";
 import { useState, useEffect } from "react";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
 import EditPostButton from "./buttons/edit-post-button";
-import { getDislikePostUrl, getLikePostUrl, gotoDetailedPostPage } from "@/utils/url-segments";
+import { displayPicture, getDislikePostUrl, getLikePostUrl, gotoDetailedPostPage } from "@/utils/url-segments";
 import Link from "next/link";
 import DeletePostButton from "./buttons/delete-post-button";
 import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivileges";
@@ -15,6 +15,8 @@ import EditedHover from "./others/EditedHover";
 interface ComponentProps {
     post: Post;
 }
+
+const noImagePath = "/default/No Post Image.png";
 
 /*
     Post Summary
@@ -50,44 +52,51 @@ const PostSummary: React.FC<ComponentProps> = ({ post }) => {
 
     return (
         <div className={styles.postContainer}>
-            <div className={styles.postElementColumn}>
-                <LikeDislikeButtons 
-                    postObject={post} 
-                    likeUrlFunction={getLikePostUrl} 
-                    dislikeUrlFunction={getDislikePostUrl}
-                    containerClassName={styles.summaryVoteContainer}/>
-            </div>
-            <div className={styles.postElementColumn}>
+            <div>
                 <Link href={gotoDetailedPostPage(post.id)}>
-                    <p>Post Thumbnail Placeholder</p>
+                    {post.pictures.length > 0 ? (
+                        <img src={displayPicture(post.pictures[0][1])} className={styles.postThumbnail}/>
+                    ) : (
+                        <img src={noImagePath} className={styles.postThumbnail}/>
+                    )
+                    }
                 </Link>
             </div>
-            <div className={styles.postElementColumn}>
-                <div className={styles.postTitle}>
-                    <div className={styles.postTitleComponent}>
-                        <Link href={gotoDetailedPostPage(post.id)}>
-                            <h2 className={styles.postTitle}>
-                                {post.title}
-                            </h2>
-                        </Link>
+            <div>
+                <div className={styles.textContainer}>
+                    <div className={styles.postTitle}>
+                        <div className={styles.postTitleComponent}>
+                            <Link href={gotoDetailedPostPage(post.id)}>
+                                <h2 className={styles.postTitle}>
+                                    {post.title}
+                                </h2>
+                            </Link>
+                        </div>
+                        <div className={styles.postTitleComponent}>
+                            <EditedHover editedDate={post.last_edited}/>
+                        </div>
                     </div>
-                    <div className={styles.postTitleComponent}>
-                        <EditedHover editedDate={post.last_edited}/>
+                    <div className={styles.postButtonList}>
+                        <LikeDislikeButtons 
+                            postObject={post} 
+                            likeUrlFunction={getLikePostUrl} 
+                            dislikeUrlFunction={getDislikePostUrl}
+                            containerClassName={styles.summaryVoteContainer}
+                        />
+                        <div></div>
+                        {isAuthor &&
+                            <>
+                                <EditPostButton post={post} refreshComponent={refreshComponent}/>
+                                <DeletePostButton post={post} /> 
+                            </>
+                        }
+                        {!isAuthor && isMod &&
+                            <>
+                                <div></div>
+                                <DeletePostButton post={post} />
+                            </>
+                        }
                     </div>
-                </div>
-                <div className={styles.postButtonList}>
-                    {isAuthor &&
-                        <>
-                            <DeletePostButton post={post} />
-                            <EditPostButton post={post} refreshComponent={refreshComponent}/>
-                        </>
-                    }
-                    {!isAuthor && isMod &&
-                        <>
-                            <DeletePostButton post={post} />
-                            <div></div>
-                        </>
-                    }
                 </div>
             </div>
         </div>
