@@ -102,7 +102,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                     <div className={styles.imageContainer}>
                         <img src={displayPicture(post.pictures[0][1])} className={styles.image}/>
                     </div>
-                } 
+                }
                 <div>
                     {post.message}
                 </div>
