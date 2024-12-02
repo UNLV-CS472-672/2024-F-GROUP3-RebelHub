@@ -25,3 +25,6 @@ class UserPublicInfoSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'joined_hubs']
 
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email=serializers.EmailField()
