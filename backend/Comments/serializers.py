@@ -3,7 +3,7 @@ from rest_framework.exceptions import PermissionDenied
 from .models import Comment
 from rest_framework.exceptions import ValidationError
 from Posts.models import Post
-from .filter import inappropriate_language_filter
+from Comments.filter import inappropriate_language_filter
 
 # To serilize the comment        
 class CommentSerializer(serializers.ModelSerializer):
@@ -40,6 +40,7 @@ class CommentSerializer(serializers.ModelSerializer):
         if inappropriate_language_filter(value):
             raise serializers.ValidationError("Inappropriate language is not allowed.")
         return value
+    
  # Serializer for creating any new comments
 class CommentCreateSerializer(serializers.ModelSerializer):
     post_id = serializers.IntegerField(write_only=True) 
@@ -54,10 +55,13 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         comment_reply = data.get('comment_reply')
 
         # Post associated with the given ID
+        if inappropriate_language_filter(data.get('message')):
+            raise ValidationError("Your comment contains inappropriate language and cannot be posted.")
+
         if comment_reply and comment_reply.post != post:
             raise ValidationError("Reply must be linked to a comment under the same post.")
         return data
-
+    
     # Create a new Comment instance using validated data
     def create(self, validated_data):
         return Comment.objects.create(**validated_data)
