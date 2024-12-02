@@ -1,0 +1,16 @@
+.searchBar{
+	color: black;
+	margin-left: 100px;
+	margin-right: 100px;
+	padding: 20px;
+	flex: 2;
+	height: 40px;
+	border: 1px solid black;
+	border-radius: 30px;
+	background-color: white;
+	font-size: 20px;
+}
+.searchBar::placeholder{
+	font-size: 20px;
+	color: gray;
+}
