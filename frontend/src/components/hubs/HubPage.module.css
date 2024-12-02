@@ -6,11 +6,21 @@
 
 	/* i set the height so the whole page is taken up, but we can omit it once we fill it with content*/
 	height: 100vh; 
+
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+}
+
+.hubHeader{
+	background-size: contain;
+	background-position: center;
+	background-repeat: repeat-x;
 }
 
 /* hub view container holds heading, hub name, hub desc, details, owner, timestamp */
 .hubViewContainer{
-	background-color: rgba(227, 24, 55, 0.9);
+	background-color: rgba(0,0,0,0.5);/*rgba(227, 24, 55, 0.9);*/
 	border: 2px solid black;
 	border-radius: 10px;
 }

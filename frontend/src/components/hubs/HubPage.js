@@ -37,6 +37,8 @@ const HubPage = ({id}) => {
 
 	const router = useRouter();
 
+	const [previewImage, setPreviewImage] = useState(null);
+
 	/*
 	 * Calls the get hub by id so we can store the hub info.
 	 *
@@ -158,11 +160,24 @@ const HubPage = ({id}) => {
 		setIsEditing(true);
 		console.log("is editing : ", isEditing);
 	};
-	const acceptEdit = async (name, description, private_hub) => {
-		const updateInfo = {"name": name, "description": description, "private_hub": private_hub};
+	const acceptEdit = async (name, description, private_hub, bg, banner) => {
+		//const updateInfo = {"name": name, "description": description, "private_hub": private_hub};
+		const updateInfo = new FormData();
+		updateInfo.append("name", name);
+		updateInfo.append("description", description);
+		updateInfo.append("private_hub", private_hub);
+		if(bg)
+			updateInfo.append("bg", bg);
+		if(banner)
+			updateInfo.append("banner", banner);
 		try{
-			const response = await api.put(getUpdateHubUrl(hubData.id), updateInfo);
+			const response = await api.put(getUpdateHubUrl(hubData.id), updateInfo, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			});
 			setIsEditing(false);
+			setPreviewImage(null);
 			setRefreshCount((count) => count+=1);
 		} catch (error){
 			if(error.response.data.name)
@@ -183,6 +198,7 @@ const HubPage = ({id}) => {
 	const cancelEdit = () => {
 		console.log("Cancel edit (beg)!! isEditing=", isEditing);
 		setIsEditing(false);
+		setPreviewImage(null);
 		setRefreshCount((count) => count+=1);
 		console.log("Cancel edit (end)!! isEditing=", isEditing);
 	};
@@ -340,10 +356,16 @@ const HubPage = ({id}) => {
 				(<button className={styles.hubActionButton} onClick={handleRequestToJoin}> Request To Join </button>)}
 			</>
 		);
-	}
+	};
+
+	const passData = (data) => {
+		console.log("IMAGE? = ", data);
+		setPreviewImage(data);
+	};
 
 	return (
-		<div className={styles.pageBG} >
+		<>
+		<div className={styles.hubHeader} style={{backgroundImage: `url(${hubData.banner})`}}>
 			{isEditing ? ( 
 				<>
 				<HubEdit
@@ -353,6 +375,7 @@ const HubPage = ({id}) => {
 					oldPrivate={hubData.private_hub}
 					onClickAccept={acceptEdit}
 					onClickDecline={cancelEdit}
+					passData={passData}
 				/>
 				</>
 				
@@ -369,6 +392,9 @@ const HubPage = ({id}) => {
 					</div>
 				</div>
 			}
+		</div>
+		<div className={styles.pageBG} style={{backgroundImage: isEditing ? `url(${previewImage})` : `url(${hubData.bg})`}}>
+			
 					
 			{/* the hubs calander events component can go here */}
 
@@ -382,6 +408,7 @@ const HubPage = ({id}) => {
 			)}
 			
 		</div>
+		</>
 	);
 };
 
