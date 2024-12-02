@@ -7,7 +7,7 @@ import styles from "./post-pages.module.css";
 
 export default function CreatePostPage() {
     return (
-        <div>
+        <div className={styles.body}>
             <RebelHubNavBar/>
             <Sidebar/>
             <div className={styles.margins}>

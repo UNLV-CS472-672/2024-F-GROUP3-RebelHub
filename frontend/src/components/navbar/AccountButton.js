@@ -142,7 +142,7 @@ const AccountButton = (props) => {
 				<p className={`${styles.accountText} ${darkTheme ? styles.dark : styles.light}`}>{displayName}</p>
 			}
 			{props.noBackground &&
-				<p className={styles.accountText}>{displayName}</p>
+				<p className={`${styles.accountText} ${darkTheme ? styles.darkNo : styles.lightNo}`}>{displayName}</p>
 			}
 		</button>
 	);

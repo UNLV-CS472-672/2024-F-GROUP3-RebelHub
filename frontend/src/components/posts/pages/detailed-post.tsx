@@ -46,7 +46,7 @@ export default function DetailedPostPage({ id, }: { id: number|string }) {
     }
 
     return (
-        <div>
+        <div className={styles.body}>
             <RebelHubNavBar/>
             <Sidebar/>
             <div className={styles.margins}>

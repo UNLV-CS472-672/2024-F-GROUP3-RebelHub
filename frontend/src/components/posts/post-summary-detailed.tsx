@@ -97,7 +97,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                         )} 
                     </Link>
                 </div>
-                <AccountButton username={post.author} noBackground={true} />
+                <AccountButton username={post.author} darkTheme={true} noBackground={true} />
                 {post.pictures.length > 0 &&
                     <div className={styles.imageContainer}>
                         <img src={displayPicture(post.pictures[0][1])} className={styles.image}/>

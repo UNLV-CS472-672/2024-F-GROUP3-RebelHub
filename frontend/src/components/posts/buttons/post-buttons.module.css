@@ -27,6 +27,7 @@
     background-color: darkgreen;
     border-color: black;
     border-radius: 5px;
+    padding: 3px;
     color: white;
     cursor: pointer;
 }
@@ -38,5 +39,6 @@
     border-radius: 5px;
     color: white;
     margin-left: auto;
+    padding: 3px;
     cursor: pointer;
 }
