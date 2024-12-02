@@ -20,6 +20,7 @@ class CommentCreate(generics.CreateAPIView):
         comment_reply_id = self.request.data.get('comment_reply_id')
         serializer.save(author=self.request.user, post_id=post_id, comment_reply_id=comment_reply_id)
         
+
 # Creating a reply       
 class CommentReplyCreate(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -114,3 +115,13 @@ class DislikeComment(generics.UpdateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'likes': comment.likes.count(), 'dislikes': comment.dislikes.count()}, status=status.HTTP_200_OK)
+
+# Language Filter for inappropriate language
+def inappropriate_language_filter(message):
+    # Notes: Does not matter if the word is uppercase or lowercase
+    # Also, crap will be used as an example
+    disallowed_words = ["fuck", "bitch", "asshole", "shit","crap"]  
+    for word in disallowed_words:
+        if word in message.lower():
+            return True
+    return False
