@@ -3,13 +3,25 @@
 import Link from "next/link";
 import styles from "./post-buttons.module.css"
 import { gotoCreatePostPage } from "@/utils/url-segments";
-import { FC } from "react";
 
-const CreatePostButton: FC = () => {
+interface ComponentProps {
+    hubId?: number|null;
+    buttonStyle?: string|null;
+}
+
+const CreatePostButton: React.FC<ComponentProps> = ({ hubId=null, buttonStyle=null }) => {
+    const addHubId = () => {
+        if (hubId != null) {
+            localStorage.setItem("hubId", hubId.toString());
+        }
+    }
+
     return (
         <div>
-            <Link href={gotoCreatePostPage()}>
-                <button className={styles.basicButton} type="button">Create a Post</button>
+            <Link href={gotoCreatePostPage()} onClick={addHubId}>
+                <button className={buttonStyle != null ? buttonStyle : styles.basicButton} type="button">
+                    CREATE A POST
+                </button>
             </Link>
         </div>
     );

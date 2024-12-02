@@ -8,12 +8,13 @@ import EditPostButton from "./buttons/edit-post-button";
 import { displayPicture, getDislikePostUrl, getLikePostUrl, gotoDetailedPostPage } from "@/utils/url-segments";
 import Link from "next/link";
 import DeletePostButton from "./buttons/delete-post-button";
-import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivileges";
 import styles from "./post-summary.module.css";
 import EditedHover from "./others/EditedHover";
 
 interface ComponentProps {
     post: Post;
+    userId: number|null;
+    moddedHubs: number[];
 }
 
 const noImagePath = "/default/No Post Image.png";
@@ -26,25 +27,20 @@ const noImagePath = "/default/No Post Image.png";
     post: a post object
 */
 
-const PostSummary: React.FC<ComponentProps> = ({ post }) => {
+const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => {
     const [isAuthor, setIsAuthor] = useState(false);
     const [isMod, setIsMod] = useState(false);
     const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
-        const fetchPrivileges = async () => {
-            const authorPrivileges = await checkAuthorPrivileges(post.author);
-            
-            if(authorPrivileges) {
-                setIsAuthor(authorPrivileges);
-                return;
-            }
-
-            const hubPrivileges = await checkHubPrivileges(post.hub);
-            setIsMod(hubPrivileges);
+        if (userId != null) {
+            setIsAuthor(post.author == userId);
         }
-        fetchPrivileges();
-    }, []);
+    }, [userId]);
+
+    useEffect(() => {
+        setIsMod(moddedHubs.includes(post.hub));
+    }, [moddedHubs]);
 
     const refreshComponent = () => {
         setRefresh(!refresh);

@@ -1,6 +1,5 @@
 .createPostContainer {
     text-align: left;
-    background-color: black;
     border: 2px;
     border-radius: 12px;
     color: white;
@@ -8,6 +7,13 @@
     grid-template-rows: auto auto auto auto;
     padding: 10px;
     gap: 10px;
+}
+
+.title {
+    text-align: center;
+    padding: 10px;
+    margin-bottom: -10px;
+    color: white;
 }
 
 .createPostButtonContainer {

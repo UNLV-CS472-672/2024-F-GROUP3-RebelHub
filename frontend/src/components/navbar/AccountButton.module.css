@@ -7,6 +7,13 @@
 	background-color: black;
 }
 
+.lightNo {
+	color: black;
+}
+.darkNo {
+	color: white;
+}
+
 .accountButton{
 	background: transparent;
 	display: flex;

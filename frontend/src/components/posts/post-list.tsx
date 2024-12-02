@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PostSummary from "./post-summary";
 import { Post } from "@/utils/posts/definitions";
 
 import styles from "./post-list.module.css";
+import { getCurrentUserUrl } from "@/utils/url-segments";
+import api from "@/utils/api";
+import { fetchHubsIDs } from "@/utils/fetchPrivileges";
 
 interface ComponentProps {
     posts: Post[];
@@ -20,8 +23,33 @@ interface ComponentProps {
 */
 
 const PostList: React.FC<ComponentProps> = ({ posts }) => {
+    const [userId, setUserId] = useState(null);
+    const [moddedHubs, setModdedHubs] = useState([]);
+
+    useEffect(() => {
+        const getPrivileges = async () => {
+            try {
+                const response1 = await api.get(getCurrentUserUrl());
+
+                if (response1.status == 200) {
+                    setUserId(response1.data.id);
+                }
+
+                const response2 = await fetchHubsIDs();
+                console.log("hi", response2);
+
+                setModdedHubs(response2);
+
+            } catch (error) {
+                alert("Error while looking for user: " + error);
+            }
+        }
+
+        getPrivileges();
+    }, []);
+
     if (posts == null || posts.length == 0) {
-        return <>No posts in given list.</>;
+        return <>No posts.</>;
     }
 
     return (
@@ -29,7 +57,11 @@ const PostList: React.FC<ComponentProps> = ({ posts }) => {
             {
                 posts.map((post) => (
                     <div key={post.id} className={styles.postListContainer}>
-                        <PostSummary post={post} />
+                        <PostSummary 
+                            post={post} 
+                            userId={userId} 
+                            moddedHubs={moddedHubs}    
+                        />
                     </div>
                 ))
             }

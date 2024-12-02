@@ -19,20 +19,3 @@
     margin-top: 10px;
     color: black;
 }
-
-.editConfirm {
-    width: 100px;
-    background-color: darkgreen;
-    border-color: black;
-    border-radius: 5px;
-    color: white;
-}
-
-.editCancel {
-    width: 100px;
-    background-color: darkred;
-    border-color: black;
-    border-radius: 5px;
-    color: white;
-    margin-left: auto;
-}

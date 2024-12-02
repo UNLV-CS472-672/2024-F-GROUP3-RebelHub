@@ -36,9 +36,6 @@ export default function PostsPage() {
             <CreatePostButton/>
         </div>
         <div className={styles.hubsAndPostsContainer}>
-            <div>
-                Hubs Area Placeholder
-            </div>
             <PostList posts={posts}/>
         </div>
     </div>

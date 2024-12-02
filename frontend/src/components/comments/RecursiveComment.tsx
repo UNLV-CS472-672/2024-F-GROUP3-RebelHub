@@ -14,6 +14,8 @@ interface ComponentProps {
     currentComment: PostComment;
     parentDelete: (del: PostComment) => void;
     repliesToPrint?: number;
+    userId: number|null;
+    moddedHubs: number[];
 }
 
 /*
@@ -34,7 +36,7 @@ interface ComponentProps {
     the replies. The single comment gets passed this function as it is the comment that will be replied to.
 */
 
-const RecursiveComment: React.FC<ComponentProps> = ({ post, currentComment, parentDelete, repliesToPrint=3 }) => {
+const RecursiveComment: React.FC<ComponentProps> = ({ post, currentComment, parentDelete, repliesToPrint=3, userId, moddedHubs }) => {
     const [displayReplies, setDisplayReplies] = useState<PostComment[]>([]);
     const [allReplies, setAllReplies] = useState<PostComment[]>([]);
 
@@ -83,6 +85,8 @@ const RecursiveComment: React.FC<ComponentProps> = ({ post, currentComment, pare
                 post={post} 
                 parentCreate={createReply}
                 parentDelete={parentDelete}
+                userId={userId}
+                moddedHubs={moddedHubs}
             />
             {
                 displayReplies.map((reply) => (
@@ -94,6 +98,8 @@ const RecursiveComment: React.FC<ComponentProps> = ({ post, currentComment, pare
                             currentComment={reply}
                             post={post}
                             parentDelete={deleteReply}
+                            userId={userId}
+                            moddedHubs={moddedHubs}
                         />
                     </div>
                 ))        

@@ -2,12 +2,13 @@
 
 import api from "@/utils/api";
 import { Post, PostComment } from "@/utils/posts/definitions";
-import { getCommentsListUrl } from "@/utils/url-segments";
+import { getCommentsListUrl, getCurrentUserUrl } from "@/utils/url-segments";
 import { useEffect, useState } from "react";
 import RecursiveComment from "./RecursiveComment";
 import styles from "./RecursiveCommentList.module.css";
 import CreateComment from "./CreateComment";
 import ShowMoreButton from "./buttons/ShowMoreButton";
+import { fetchHubsIDs } from "@/utils/fetchPrivileges";
 
 interface ComponentProps {
     post: Post;
@@ -56,6 +57,8 @@ interface ComponentProps {
 const RecursiveCommentList: React.FC<ComponentProps> = ({ post, showCreateComment, setShowCreateComment, commentsToPrint=5 }) => {
     const [allComments, setAllComments] = useState<PostComment[]>([]);
     const [displayComments, setDisplayComments] = useState<PostComment[]>([]);
+    const [userId, setUserId] = useState(null);
+    const [moddedHubs, setModdedHubs] = useState([]);
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -82,6 +85,28 @@ const RecursiveCommentList: React.FC<ComponentProps> = ({ post, showCreateCommen
         }
 
         fetchComments();
+    }, []);
+
+    useEffect(() => {
+        const getPrivileges = async () => {
+            try {
+                const response1 = await api.get(getCurrentUserUrl());
+
+                if (response1.status == 200) {
+                    setUserId(response1.data.id);
+                }
+
+                const response2 = await fetchHubsIDs();
+                console.log("hi", response2);
+
+                setModdedHubs(response2);
+
+            } catch (error) {
+                alert("Error while looking for user: " + error);
+            }
+        }
+
+        getPrivileges();
     }, []);
 
     // Function to add a new comment to the list
@@ -115,6 +140,8 @@ const RecursiveCommentList: React.FC<ComponentProps> = ({ post, showCreateCommen
                             post={post} 
                             currentComment={comment} 
                             parentDelete={deleteComment}
+                            userId={userId}
+                            moddedHubs={moddedHubs}
                         />
                     </div>
                 ))

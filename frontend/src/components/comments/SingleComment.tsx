@@ -19,6 +19,8 @@ interface ComponentProps {
     parentCreate: (create: PostComment) => void;
     parentDelete: (del: PostComment) => void;
     showButtons?: boolean;
+    userId: number|null;
+    moddedHubs: number[];
 }
 
 /*
@@ -34,26 +36,20 @@ interface ComponentProps {
     showButtons: used to show the likes/dislikes buttons or just show some text
 */
 
-const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, parentDelete, showButtons=true }) => {
+const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, parentDelete, showButtons=true, userId, moddedHubs }) => {
     const [showCreateComment, setShowCreateComment] = useState(false);
     const [isAuthor, setIsAuthor] = useState(false);
     const [isMod, setIsMod] = useState(false);
 
     useEffect(() => {
-        const fetchPrivileges = async () => {
-            const authorPrivileges = await checkAuthorPrivileges(comment.author);
-            
-            if(authorPrivileges) {
-                setIsAuthor(authorPrivileges);
-                return;
-            }
-
-            const hubPrivileges = await checkHubPrivileges(post.hub);
-            setIsMod(hubPrivileges);
+        if (userId != null) {
+            setIsAuthor(comment.author == userId);
         }
+    }, [userId]);
 
-        fetchPrivileges();
-    }, []);
+    useEffect(() => {
+        setIsMod(moddedHubs.includes(post.hub));
+    }, [moddedHubs]);
 
     return (
         <div>
