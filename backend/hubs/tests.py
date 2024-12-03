@@ -6,9 +6,72 @@ from rest_framework.test import APITestCase, APIRequestFactory, force_authentica
 from .models import Hub
 from Posts.models import Post
 from .views import HubByID, HubList, HubJoined, HubOwned, HubModerating, HubCreate, HubDelete, HubUpdate, HubAddMember, HubAddPendingMember, HubAddMemberFromPending, HubRemoveMember, HubRemoveMemberFromPending, HubRemovePendingMember, HubAddModerator, HubRemoveModerator, HubKickMember, HubPosts
+from Comments.filter import inappropriate_language_filter
+from rest_framework.test import APIClient
 
 # Create your tests here.
+class HubViewsAdditionalTests(APITestCase):
 
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(username="testuser", password="password")
+        self.other_user = User.objects.create_user(username="otheruser", password="password")
+        self.hub = Hub.objects.create(name="Test Hub", description="A test hub", owner=self.user)
+        self.update_url = f"/api/hubs/{self.hub.id}/update/"
+        self.list_url = "/api/hubs/"
+
+    def test_update_hub_valid_data(self):
+        self.client.force_authenticate(user=self.user)
+        data = { "name": "Updated Hub","description": "Updated description"}
+        response = self.client.put(self.update_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.hub.refresh_from_db()
+        self.assertEqual(self.hub.name, data["name"])
+        self.assertEqual(self.hub.description, data["description"])
+
+    def test_update_hub_unauthenticated(self):
+        data = {"name": "Invalid Update","description": "Should not succeed"}
+        response = self.client.put(self.update_url, data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_hub_list(self):
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["name"], self.hub.name)
+
+    def test_hub_list_private_hub(self):
+        """Test that private hubs are not visible to unauthenticated users."""
+        self.hub.private_hub = True
+        self.hub.save()
+        response = self.client.get(self.list_url)
+        self.assertEqual(len(response.data), 1)
+
+    def test_update_hub_invalid_user(self):
+        self.client.force_authenticate(user=self.other_user)
+        data = {"name": "Invalid Update", "description": "Should not succeed"}
+        response = self.client.put(self.update_url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_hub_list_authenticated_user(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["name"], self.hub.name)
+        
+# Test for filter.py        
+class FilterFunctionTestCase(TestCase):
+    def test_inappropriate_language_filter(self):
+        self.assertTrue(inappropriate_language_filter("Shit post"))
+        self.assertTrue(inappropriate_language_filter("fuck"))
+        self.assertTrue(inappropriate_language_filter("BITCH"))
+        self.assertTrue(inappropriate_language_filter("crap."))
+
+        self.assertFalse(inappropriate_language_filter("Nice, and this is a clean post."))
+        self.assertFalse(inappropriate_language_filter("Nothing bad here."))
+        self.assertFalse(inappropriate_language_filter("What a nice day."))
+        
 class HubAPITests(APITestCase):
 
     def setUp(self):
