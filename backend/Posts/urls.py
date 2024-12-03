@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostList, CreatePost, LikePost, DislikePost, PostDetail, PostDelete, ExploreList, PostEdit, PostTag
+from .views import PostList, CreatePost, LikePost, DislikePost, PostDetail, PostDelete, ExploreList, PostEdit, UserPostCountAPIView, UserPostsView, PostTag
 
 urlpatterns = [
 
@@ -24,4 +24,8 @@ urlpatterns = [
 
     # Endpoint for updating a post tag for a post
     path('posts/<int:id>/tag/', PostTag.as_view(), name='post-tag'),
+
+    path('posts/postcount/<str:username>/', UserPostCountAPIView.as_view(), name='post-count'),
+    path('posts/<str:username>/', UserPostsView.as_view(), name='user_posts')
+
 ]

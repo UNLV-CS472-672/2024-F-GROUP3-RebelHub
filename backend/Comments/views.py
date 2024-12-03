@@ -23,7 +23,7 @@ class CommentCreate(generics.CreateAPIView):
 # Creating a reply       
 class CommentReplyCreate(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = CommentSerializer  
+    serializer_class = CommentCreateSerializer  
     def perform_create(self, serializer):
         comment_id = self.kwargs['comment_id']
         serializer.save(author=self.request.user, comment_reply_id=comment_id)
@@ -42,7 +42,7 @@ class CommentList(generics.ListAPIView):
             return Comment.objects.filter(post_id=post_id, comment_reply__isnull=True).annotate(
                 like_count=Count('likes')
             ).order_by('-like_count')
-        return Comment.objects.filter(post_id=post_id, comment_reply__isnull=True).order_by('-timestamp')
+        return Comment.objects.filter(post_id=post_id, comment_reply__isnull=True).order_by('timestamp')
         
 # Get details for a single comment by ID
 class CommentDetail(generics.RetrieveAPIView):
@@ -57,37 +57,44 @@ class CommentDetail(generics.RetrieveAPIView):
 class CommentDelete(generics.DestroyAPIView):
     queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated]
+    lookup_field = 'comment_id'
+
+    def perform_destroy(self, instance):
+        user = self.request.user
+        if user != instance.author:
+            if user != instance.post.hub.owner:
+                if user not in instance.post.hub.mods.all():
+                    raise PermissionDenied("Could not delete comment: You do not have permission to delete this.")
+        instance.delete()
 
     def get_object(self):
         comment = get_object_or_404(Comment, id=self.kwargs['comment_id'])
         
         # User neeeds to the author of the comment or reply
         if comment.author != self.request.user and comment.post.author != self.request.user:
-            raise PermissionDenied("You do not have permission to delete this.")
+            if self.request.user != comment.post.hub.owner:
+                if self.request.user not in comment.post.hub.mods.all():
+                    raise PermissionDenied("You do not have permission to delete this.")
         return comment       
        
-# List for all replies from a comment, most recent reply is seen first
+# List for all replies from a comment, oldest reply is seen first
 class CommentReplyList(generics.ListAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         comment_id = self.kwargs['comment_id']
-        return Comment.objects.filter(comment_reply_id=comment_id).order_by('-timestamp')
+        return Comment.objects.filter(comment_reply_id=comment_id).order_by('timestamp')
 
 # Note: Have  to test if the increment works correctly for likes and dislikes        
 # Be able to like or dislike a comment based on the ID
-class LikeComment(generics.GenericAPIView):
+class LikeComment(generics.UpdateAPIView):
+    queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = LikeCommentSerializer
 
-    def post(self, request, comment_id):
+    def patch(self, request, comment_id):
         comment = get_object_or_404(Comment, id=comment_id)
-        
-        # Likes are only for comments and not replies
-        # Note: Likes and dislikes for replies might be implemented later
-        if comment.comment_reply is not None:
-            raise ValidationError("You cannot like a reply.")
         
         serializer = self.get_serializer(comment, data={}, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -95,16 +102,13 @@ class LikeComment(generics.GenericAPIView):
         return Response({'likes': comment.likes.count(), 'dislikes': comment.dislikes.count()}, status=status.HTTP_200_OK)
 
 
-class DislikeComment(generics.GenericAPIView):
+class DislikeComment(generics.UpdateAPIView):
+    queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = DislikeCommentSerializer
 
-    def post(self, request, comment_id):
+    def patch(self, request, comment_id):
         comment = get_object_or_404(Comment, id=comment_id)
-
-        # Dislikes are only for comments and not replies, but might be implemented later
-        if comment.comment_reply is not None:
-            raise ValidationError("You cannot dislike a reply.")
         
         serializer = self.get_serializer(comment, data={}, context={'request': request})
         serializer.is_valid(raise_exception=True)

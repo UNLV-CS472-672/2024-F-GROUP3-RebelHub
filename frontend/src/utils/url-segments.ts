@@ -34,6 +34,7 @@ export const URL_SEGMENTS = {
     POSTS_EXPLORE: "explore/",
     POSTS_EDIT: "/edit/",
     POSTS_TAG: "/tag/",
+    POSTS_COUNT: "postcount/",
     // #endregion
 
     // #region Comments
@@ -43,6 +44,8 @@ export const URL_SEGMENTS = {
     COMMENTS_LIKE: "/like/",
     COMMENTS_DISLIKE: "/dislike/",
     COMMENTS_REPLY: "/reply/",
+    COMMENTS_REPLY_LIST: "/replyList/",
+    COMMENTS_DELETE: "/delete/",
     // #endregion
 
     // #region Users
@@ -69,6 +72,16 @@ export const URL_SEGMENTS = {
     TAGS_CREATE: "create/",
     TAGS_DELETE: "/delete/",
     TAGS_LIST: "list/",
+
+    //#region Profile
+    PROFILE_API: 'api/profile/',
+    // #endregion
+
+    //#region Picture
+    PICTURES_API: 'api/pictures/',
+    PICTURES_DELETE: "/delete/",
+    PICTURES_EDIT: "/edit/",
+    // #endregion
 };
 
 // #region Functions to return a URL for an API call (hubs)
@@ -249,6 +262,16 @@ export function getTagPostUrl(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_TAG;
 }
 
+// "http://localhost:8000/api/posts/postcount/<str:username>"
+export function getPostCountUrl(username :string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE +  URL_SEGMENTS.POSTS_COUNT + username + "/";
+}
+
+//"http://localhost:8000/api/posts/<str:username>/"
+export function getUserPostsUrl(username: string){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + username + "/";
+}
+
 // #endregion
 
 // "http://localhost:8000/api/posts/<int:post_id>/comments/"
@@ -276,9 +299,18 @@ export function getDislikeCommentUrl(commentId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.COMMENTS_API_BASE + commentId + URL_SEGMENTS.COMMENTS_DISLIKE;
 }
 
+// "http://localhost:8000/api/comments/<int:comment_id>/replyList/"
+export function getReplyListUrl(commentId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.COMMENTS_API_BASE + commentId + URL_SEGMENTS.COMMENTS_REPLY_LIST;
+}
+
 // "http://localhost:8000/api/comments/<int:comment_id>/reply/"
-export function getReplyUrl(commentId: number|string) {
+export function getCreateReplyUrl(commentId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.COMMENTS_API_BASE + commentId + URL_SEGMENTS.COMMENTS_REPLY;
+}
+
+export function getDeleteCommentUrl(commentId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.COMMENTS_API_BASE + commentId + URL_SEGMENTS.COMMENTS_DELETE;
 }
 
 // #region Functions to return a URL for an API call (events)
@@ -386,6 +418,54 @@ export function gotoPostListPage() {
 // "http://localhost:3000/users/login/"
 export function gotoLoginPage() {
     return URL_SEGMENTS.FRONTEND + URL_SEGMENTS.USERS_HOME + URL_SEGMENTS.USERS_LOGIN;
+}
+
+// "http://localhost:3000/hubs/<id>/"
+export function gotoHubPage(hubId: number|string) {
+    return URL_SEGMENTS.FRONTEND + "/hubs/" + hubId + "/";
+}
+
+// #endregion
+
+//#region Functions for profile api
+
+//"http//locatlhost:8000/api/profile/username"
+export function getOtherProfileUrl(username : string){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PROFILE_API + username + "/";
+}
+//"http//locatlhost:8000/api/profile/"
+export function getProfileUrl(){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PROFILE_API;
+}
+
+
+// #endregion
+
+
+//#region Functions for Picture api
+//"http//locatlhost:8000/api/pictures/username/"
+export function getPicturesUrl(username: string){
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + username + "/";
+}
+
+// "http://localhost:8000/api/pictures/<int:post_id>/"
+export function getAddPictureToPostUrl(postId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + postId + "/";
+}
+
+// "http://localhost:8000/api/pictures/<int:pic_id>/edit/"
+export function getEditPictureInPostUrl(picId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + picId + URL_SEGMENTS.PICTURES_EDIT;
+}
+
+// "http://localhost:8000/api/pictures/<int:pic_id>/delete/"
+export function getDeletePictureInPostUrl(picId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PICTURES_API + picId + URL_SEGMENTS.PICTURES_DELETE;
+}
+
+// "http://localhost:8000{url}"
+export function displayPicture(pictureUrl: string) {
+    return URL_SEGMENTS.BACKEND + pictureUrl;
 }
 
 // #endregion

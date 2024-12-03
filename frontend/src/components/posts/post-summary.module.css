@@ -1,7 +1,6 @@
 .summaryVoteContainer {
-    display: grid;
-    grid-template-rows: auto;
-    gap: 10px;
+    display: flex;
+    gap: 4vw;
 }
 
 .postContainer {
@@ -9,14 +8,23 @@
     color: white;
     border: 2px;
     border-radius: 12px;
-    grid-template-columns: 100px 100px 1fr;
+    grid-template-columns: 100px 1fr;
     gap: 10px;
     background-color: rgb(90, 0, 0);
     padding: 10px;
 }
 
-.postElementColumn {
-    height: auto;
+.textContainer {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 10vh;
+}
+
+.postThumbnail {
+    height: 100%;
+    max-height: 10vh;
+    width: 100%;
+    object-fit: contain;
 }
 
 .postTitle {
@@ -43,7 +51,7 @@
 
 .postButtonList {
     display: grid;
-    grid-template-columns: auto auto 1fr;
-    align-items: left;
+    grid-template-columns: auto 1fr auto auto ;
+    align-items: end;
     gap: 10px;
 }

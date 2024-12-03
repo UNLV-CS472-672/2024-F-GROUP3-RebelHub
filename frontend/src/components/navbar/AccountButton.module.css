@@ -7,6 +7,13 @@
 	background-color: black;
 }
 
+.lightNo {
+	color: black;
+}
+.darkNo {
+	color: white;
+}
+
 .accountButton{
 	background: transparent;
 	display: flex;
@@ -21,9 +28,12 @@
 .avatarIcon{
 	width: 30%;
 	height: 90%;
+	border-radius: 50%;
 }
 
 .accountText{
 	padding-top: 10px;
+	padding-left: 7px;
+	font-weight: bold;
 }
 

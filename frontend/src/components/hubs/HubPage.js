@@ -12,6 +12,7 @@ import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getRequestJoinHubUrl, ge
 import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
 import FilterPostButtons from '@/components/FilterButtons/FilterPostButtons';
 
+import CreatePostButton from '../posts/buttons/create-post-button';
 /*
  * HUBDATA:
  * id
@@ -278,10 +279,45 @@ const HubPage = ({id}) => {
 	const HubPageMainContent = () => {
 		return(
 			<div className={styles.parentContentContainer}>
+				<div className={styles.postTitleContainer}>
+					<h1 className={styles.postTitle}> Latest Posts </h1>
+					{hubOwner ? (<button 
+							className={styles.hubActionButton}
+							style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+							onClick={() => {
+								const isConfirmed = window.confirm("Are you sure you want to delete this hub?");
+								if(isConfirmed)
+								{
+									handleDeleteHub();
+								}
+							}}
+						     > 
+							DELETE HUB 
+						     </button>) :
+					    (hubJoined ? (<button 
+						   		className={styles.hubActionButton}
+						    		style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+						    		onClick={() => {
+									const isConfirmed = window.confirm("Are you sure you want to leave this hub?");
+									if(isConfirmed)
+									{
+										handleLeave();
+									}
+								}}
+						    	  > 
+						    		LEAVE HUB 
+						    	  </button>) :
+					     (<button
+						     className={styles.hubActionButton} 
+						     onClick={handleJoin}
+					      > 
+						     JOIN HUB 
+					      </button>))}
+				</div>
 				<div className={styles.hubPageContentContainer}>
 					<PostList className={styles.postsList} posts={hubPosts}/>
 					<div className={styles.membersListsContainer}>
-						
+						<CreatePostButton hubId={id} buttonStyle={styles.hubActionButton}/>
 						<MemberList 
 							hubId={hubData.id}
 							hubOwnerId={hubOwnerId}

@@ -1,18 +1,27 @@
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
+from Pictures.serializers import PictureSerializer
 from .models import Post
 from hubs.models import Hub
+from Pictures.models import Picture
 from Tags.models import Post_Tag
 from Comments.serializers import CommentSerializer
+from django.contrib.auth.models import User
 
 # To serialise the post which validates data from the front end
 class PostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
+    pictures = serializers.SerializerMethodField()
+    
     class Meta:
         model = Post
-        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score', 'comments', 'last_edited', 'tag'] 
+        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score', 'comments', 'last_edited', 'pictures', 'tag'] 
         read_only_fields = ['author', 'likes', 'dislikes', 'last_edited']
     
+    def get_pictures(self, obj):
+        pics = Picture.objects.filter(post=obj)
+        return [[pic.id, pic.image.url] for pic in pics]
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         user = self.context.get('request').user
@@ -147,6 +156,7 @@ class PostEditSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get('title', instance.title)
         instance.message = validated_data.get('message', instance.message)
         instance.last_edited = validated_data.get('last_edited', instance.last_edited)
+        
         instance.save()
 
         return instance
@@ -186,3 +196,14 @@ class PostTagSerializer(serializers.ModelSerializer):
         instance.tag = tag
         instance.save()
         return instance
+
+
+class PostCountSerializer(serializers.ModelSerializer):
+    post_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'post_count']
+
+    def get_post_count(self, obj):
+        return Post.objects.filter(author=obj).count()

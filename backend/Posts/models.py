@@ -4,8 +4,6 @@ from hubs.models import Hub
 from Tags.models import Post_Tag
 # Note: The "user" is just a placeholder name as it hasn't been made yet. The foreign key will be changed based on the Hub api
 
-# Create your models here.
-
 # Class for creating post, includes author, title, message, and hub
 class Post(models.Model):
     

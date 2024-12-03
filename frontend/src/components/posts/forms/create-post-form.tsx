@@ -1,17 +1,26 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import CreateInput from "@/components/posts/forms/create-input";
 import { TITLE_VALIDATION, POST_MESSAGE_VALIDATION } from "@/utils/posts/create-post-validations";
 import styles from "./create-post-form.module.css";
-import { getCreatePostUrl, URL_SEGMENTS } from "@/utils/url-segments";
+import { getAddPictureToPostUrl, getCreatePostUrl, URL_SEGMENTS } from "@/utils/url-segments";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import HubInput from "./create-input-hub";
+import ImageInput from "./ImageInput";
+import bStyles from "@/components/posts/buttons/post-buttons.module.css";
 
 const CreatePostForm: FC = () => {
-    const methods = useForm();
+    const methods = useForm({
+        defaultValues: {
+            title: "",
+            message: "",
+            image: null,
+        }
+    });
+
     const router = useRouter();
 
     const onSubmit = methods.handleSubmit(async data => {
@@ -26,25 +35,55 @@ const CreatePostForm: FC = () => {
                 throw new Error("There is no hub selected for the post to go.");
             }
 
+            /*
+                Make form data for post
+            */
+
+            const postData = new FormData();
+            
+            postData.append("title", data["title"]);
+            postData.append("message", data["message"]);
+            postData.append("hub_id", data["hub_id"]);
+
             console.log("Creating new post");
 
-            const response = await api.post(getCreatePostUrl(), {
-                title: data["title"],
-                message: data["message"],
-                hub_id: data["hub_id"],
+            const postResponse = await api.post(getCreatePostUrl(), postData, {
+                headers : {
+                    "Content-Type": "multipart/form-data",
+                },
             });
 
-            if (response.status != 201) {
+            if (postResponse.status != 201) {
                 throw new Error("Error when creating a post");
+            }
+
+            /*
+                Make form data for picture
+            */
+
+            if (data["image"] != null && data["image"][0] instanceof File){
+                const picData = new FormData();
+
+                picData.append("image", data["image"][0]);
+
+                const picResponse = await api.post(getAddPictureToPostUrl(postResponse.data.id), picData, {
+                    headers : {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+
+                if (picResponse.status != 201) {
+                    throw new Error("Error when creating picture for post");
+                }
             }
 
             methods.reset();
 
             // Try to send the user to the newly created post
-            router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME + response.data.id);
+            router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME + postResponse.data.id);
 
         } catch (error) {
-            alert("There was an error in your post: " + error);
+            alert("There was an error in your form: " + error);
             return null;
         }
     })
@@ -55,16 +94,17 @@ const CreatePostForm: FC = () => {
                 onSubmit={e => e.preventDefault()}
                 noValidate
             >
-                <div style={{textAlign: "center", marginTop: "10px"}}>
-                    <h1>Create A Post</h1>
+                <div className={styles.title}>
+                    <h1>Create a Post</h1>
                 </div>
                 <div className={styles.createPostContainer}>
                     <CreateInput {...TITLE_VALIDATION} />
-                    <HubInput/>
+                    <HubInput />
                     <CreateInput {...POST_MESSAGE_VALIDATION} />
+                    <ImageInput />
                 
                     <div className={styles.createPostButtonContainer}>
-                        <button className={styles.createPostButton} onClick={onSubmit}>
+                        <button className={bStyles.genericConfirm} onClick={onSubmit}>
                             Submit Post
                         </button>
                     </div>

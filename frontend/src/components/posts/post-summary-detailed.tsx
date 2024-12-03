@@ -7,11 +7,16 @@
     import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
     import DeletePostButton from "./buttons/delete-post-button";
     import EditPostButton from "./buttons/edit-post-button";
-    import { getDislikePostUrl, getLikePostUrl, getPostTagUrl } from "@/utils/url-segments";
-    import  { formatDate } from "@/utils/datetime-conversion";
+    import { displayPicture, getDislikePostUrl, getHubUrl, getLikePostUrl, getPostTagUrl, gotoHubPage } from "@/utils/url-segments";
+    import RecursiveCommentList from "../comments/RecursiveCommentList";
+import CreateCommentButton from "../comments/buttons/CreateCommentButton";
+import  { formatDate } from "@/utils/datetime-conversion";
     import EditedHover from "./others/EditedHover";
     import TagPostButton from "./buttons/tag-post-button";
     import api from "@/utils/api";
+import AccountButton from "../navbar/AccountButton";
+import Link from "next/link";
+import api from "@/utils/api";
 
     interface ComponentProps {
         post: Post;
@@ -26,10 +31,12 @@
     */
 
     const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
-        const [isAuthor, setIsAuthor] = useState(false);
+        const [showCreateComment, setShowCreateComment] = useState(false);
+    const [isAuthor, setIsAuthor] = useState(false);
         const [isMod, setIsMod] = useState(false);
         const [refresh, setRefresh] = useState(false);
         const [postTag, setPostTag] = useState(null);
+    const [hubName, setHubName] = useState("");
 
         useEffect(() => {
             const fetchPrivileges = async () => {
@@ -43,7 +50,21 @@
                 const hubPrivileges = await checkHubPrivileges(post.hub);
                 setIsMod(hubPrivileges);
             }
-            fetchPrivileges();
+    
+        const fetchHubName = async () => {
+            try {
+                const response = await api.get(getHubUrl(post.hub));
+            
+                if (response.status == 200) {
+                    setHubName(response.data.name);
+                }
+            } catch (error) {
+                console.log("Failed to get hub info");
+            }
+        }
+
+        fetchHubName();
+        fetchPrivileges();
 
             const fetchPostTag = async () => {
                 if(post.tag != null){
@@ -59,75 +80,81 @@
             setRefresh(!refresh);
         };
 
-        return (
-            <div className={styles.detailedPostContainer}>
-                <div className={styles.detailedPostElement}>
+    return (
+        <div className={styles.detailedPostContainer}>
+            <div className={styles.detailedPostElement}>
+                {postTag && <h2 style={{backgroundColor:postTag.color}} className={styles.postTag}>{postTag.name}</h2>}
+                <h1>
+                    {post.title}
+                </h1>
+                <div style={{'display': 'flex', 'gap': '10px'}}>
                     <div>
-                        {postTag && <h2 style={{backgroundColor:postTag.color}} className={styles.postTag}>{postTag.name}</h2>}
-                        <h1>
-                            {post.title}
-                        </h1>
+                        Posted on {formatDate(post.timestamp)}
+                    </div>
+                    {post.last_edited != null &&
                         <EditedHover editedDate={post.last_edited}/>
-                    </div>
-                    <br></br>
+                    }
                     <div>
-                        [Full post thumbnail or image]
+                        in
                     </div>
-                    <br></br>
-                    <div>
-                        {post.message}
-                    </div>
-                    <br></br>
-                    <div className={styles.detailedPostButtonList}>
-                        {isAuthor &&
-                            <>
-                                <DeletePostButton post={post} />
-                                <EditPostButton post={post} refreshComponent={refreshComponent}/>
-                                <TagPostButton post={post} setPostTag={setPostTag}/>
-                            </>
-                        }
-                        {!isAuthor && isMod &&
-                            <>
-                                <DeletePostButton post={post} />
-                                <TagPostButton post={post} setPostTag={setPostTag}/>
-                                <div></div>
-                            </>
-                        }
-                    </div>
+                    <Link href={gotoHubPage(post.hub)}>
+                        {hubName != "" ? (
+                            <div className={styles.hubLink}>
+                                {hubName}
+                            </div>
+                        ) : (
+                            <div className={styles.hubLink}>
+                                Hub {post.hub}
+                            </div>
+                        )} 
+                    </Link>
                 </div>
-                <div className={styles.detailedPostFooterContainer}>
-                    <div className={styles.detailedPostElement}>
-                        <div>
-                            Posted
-                        </div>
-                        <div>
-                            {formatDate(post.timestamp)}
-                        </div>
+                <AccountButton username={post.author} darkTheme={true} noBackground={true} />
+                {post.pictures.length > 0 &&
+                    <div className={styles.imageContainer}>
+                        <img src={displayPicture(post.pictures[0][1])} className={styles.image}/>
                     </div>
-                    <div className={styles.detailedPostElement}>
-                        <div>
-                            {post.author}
-                        </div>
-                        <div>
-                            {post.hub}
-                        </div>
-                    </div>
-                    <div className={styles.detailedPostElement}>
+                }
+                <div>
+                    {post.message}
+                </div>
+                <div className={styles.detailedPostButtonList}>
+                    <div className={styles.buttonsLeft}>
                         <LikeDislikeButtons 
                             postObject={post}
                             likeUrlFunction={getLikePostUrl} 
                             dislikeUrlFunction={getDislikePostUrl}
-                            containerClassName={styles.detailedVoteContainer}/>
+                            containerClassName={styles.detailedVoteContainer}
+                        />
                     </div>
-                    <div className={styles.detailedPostElement}>
-                        [Create Comment]
+                    <div className={styles.buttonsRight}>
+                    {isAuthor &&
+                        <>
+                            <EditPostButton post={post} refreshComponent={refreshComponent} />
+                            <DeletePostButton post={post} />
+                        </>
+                    }
+                    {!isAuthor && isMod &&
+                        <>
+                            <DeletePostButton post={post} />
+                        </>
+                    }
+                        <CreateCommentButton 
+                            toggleReply={() => setShowCreateComment(!showCreateComment)}
+                            buttonMessage={"Create Comment"}
+                        />
                     </div>
-                </div>
-                <div>
-                    [Comments]
                 </div>
             </div>
-        )
-    }
+            <div>
+                <RecursiveCommentList 
+                    post={post} 
+                    showCreateComment={showCreateComment} 
+                    setShowCreateComment={setShowCreateComment}
+                />
+            </div>
+        </div>
+    )
+}
 
     export default PostSummaryDetailed;
