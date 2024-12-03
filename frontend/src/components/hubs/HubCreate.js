@@ -99,7 +99,7 @@ const HubCreate = () => {
 							     setNameErrorMessage("");
 						  	     setHubName(text.target.value);} }
 				/>
-				{nameError && <p> {nameErrorMessage} </p> }
+				{nameError && <p style={{ marginTop: '1rem'}}> {nameErrorMessage} </p> }
 				<h2 className={styles.createDescHeader} > Hub Description </h2>
 				<textarea 
 					className={styles.createDescInput}

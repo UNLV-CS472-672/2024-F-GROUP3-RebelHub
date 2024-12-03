@@ -20,7 +20,8 @@ const CreatePostForm: FC = () => {
             image: null,
         }
     });
-
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    
     const router = useRouter();
 
     const onSubmit = methods.handleSubmit(async data => {
@@ -78,12 +79,18 @@ const CreatePostForm: FC = () => {
             }
 
             methods.reset();
-
+            setErrorMessage(null);
             // Try to send the user to the newly created post
             router.push(URL_SEGMENTS.FRONTEND + URL_SEGMENTS.POSTS_HOME + postResponse.data.id);
 
-        } catch (error) {
-            alert("There was an error in your form: " + error);
+        } catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                setErrorMessage(error.response.data.detail || "Inappropriate language detected. Please refrain from using inappropriate language");
+            } else {
+                setErrorMessage("An unexpected error occurred. Please try again.");
+            }
+
+            console.error(error);
             return null;
         }
     })
@@ -98,6 +105,7 @@ const CreatePostForm: FC = () => {
                     <h1>Create a Post</h1>
                 </div>
                 <div className={styles.createPostContainer}>
+                    {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
                     <CreateInput {...TITLE_VALIDATION} />
                     <HubInput />
                     <CreateInput {...POST_MESSAGE_VALIDATION} />
