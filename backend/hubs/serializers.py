@@ -2,9 +2,19 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Hub
 from hubs.filter import inappropriate_language_filter 
+from calendar_app.models import Event
+
+#Serializer used to read events.
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
+
 #Serializer for a Hub model with all fields included.
 #This serializer represents a hub
 class HubSerializer(serializers.ModelSerializer):
+    events = EventSerializer(many=True, read_only=True)
+
     class Meta:
         model = Hub
         fields = '__all__'
