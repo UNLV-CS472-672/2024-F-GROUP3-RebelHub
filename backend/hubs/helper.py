@@ -3,7 +3,6 @@ from django.db.models import Count
 
 def filter_hub_tag_queryset(self, queryset):
 
-    queryset = queryset.prefetch_related('hub_tag')
     tags = self.request.query_params.get('tags', 'none')
     if tags != 'none':
         tags_list = tags.split(',')
@@ -11,7 +10,7 @@ def filter_hub_tag_queryset(self, queryset):
         # If invalid tag is given, it is not used in the filter
         tags_list = [tag for tag in tags_list if tag in tags_allowed]
         if tags_list:
-            queryset = queryset.filter(hub_tag__name__in=tags_list)  
+            queryset = queryset.filter(tags__name__in=tags_list).distinct()
         else:
             queryset = queryset.none()  
 

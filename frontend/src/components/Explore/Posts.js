@@ -1,13 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "./Explore.module.css";
-import api from "../../utils/api";
-import { } from "../../utils/fetchPrivileges";
+import api from "../../utils/api.js";
+import { } from "../../utils/fetchPrivileges.js";
 import { getExploreListUrl } from "@/utils/url-segments";
-import PostList from "../posts/post-list";
-import FilterButtons from "../FilterButtons/FilterButtons.js";
+import PostList from "../posts/post-list.tsx";
+import FilterPostButtons from "../FilterButtons/FilterPostButtons.js";
 
-const Explore = () => {
+const Posts = () => {
     const [posts, setPosts] = useState([]);
 
     // Fetches posts from API
@@ -15,7 +15,7 @@ const Explore = () => {
         console.log("Fetching initial explore page posts...");
         const fetchInitialPosts = async () => {
             try {
-                const response = await api.get(getExploreListUrl('week', 'top')); 
+                const response = await api.get(getExploreListUrl(null, 'week', 'top')); 
                 setPosts(response.data);
                 console.log(response.data);
                 console.log("Successful fetch");
@@ -27,8 +27,8 @@ const Explore = () => {
     return (
         <main className={styles.mainContent}>
             <header className={styles.header}>
-                <h1 style={{ marginBottom: '2vh' }}>Explore</h1>
-                <FilterButtons posts={posts} setPosts={setPosts} postsUrl={getExploreListUrl}/>
+                <h1 style={{ marginBottom: '2vh' }}>Posts</h1>
+                <FilterPostButtons posts={posts} setPosts={setPosts} postsUrl={getExploreListUrl}/>
             </header>
             <section className={styles.postsContainer}>
                 <PostList posts={posts} />
@@ -37,4 +37,4 @@ const Explore = () => {
     );
 };
 
-export default Explore;
+export default Posts;

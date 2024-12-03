@@ -4,7 +4,7 @@ from rest_framework import generics
 from .serializers import *
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import PermissionDenied, NotFound
-from .models import Hub
+from hubs.models import Hub
 
 # Create your views here.
 
@@ -13,7 +13,9 @@ class HubTags(generics.ListAPIView):
     serializer_class = HubTagsSerializer
     permission_classes = [AllowAny]
     def get_queryset(self):
-        return Hub_Tag.objects.all()
+        queryset = Hub_Tag.objects.all()
+        queryset = queryset.order_by('name')
+        return queryset
     
 # GET a single tag by its ID
 class HubTag(generics.RetrieveAPIView):
@@ -28,11 +30,20 @@ class HubTag(generics.RetrieveAPIView):
             return Hub_Tag.objects.get(id=id)
         except Hub_Tag.DoesNotExist:
             raise NotFound("Cannot Find Hub Tag")
-        
-# Assign a hub tag to a hub
-class HubTagAssign(generics.GenericAPIView):
-    serializer_class = HubTagAssignSerializer
-    permission_classes = [IsAuthenticated]
+
+# GET all hub tags for a hub
+class HubTagsForAHub(generics.ListAPIView):
+    serializer_class= HubTagsSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        hub_id = self.kwargs['hub_id']  
+        try:
+            hub = Hub.objects.get(id=hub_id) 
+            return hub.tags.all().order_by('name')
+        except Hub.DoesNotExist:
+            raise NotFound("Cannot find hub")
+
 
 # "api/tags/<hub_id>"
 # returns all the post tags for a hub.
@@ -52,7 +63,9 @@ class PostTags(generics.ListAPIView):
         if this_hub.private_hub and user not in this_hub.members.all():
             raise PermissionDenied("Cannot List Tags: Hub is private")
 
-        return Post_Tag.objects.filter(hub=this_hub)
+        queryset = Post_Tag.objects.filter(hub=this_hub)
+        queryset = queryset.order_by('name')
+        return queryset
     
 # GET a single post tag by its ID
 class PostTag(generics.RetrieveAPIView):

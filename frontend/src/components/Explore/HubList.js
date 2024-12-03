@@ -1,13 +1,11 @@
 "use client";
-import styles from "./ClubList.module.css";
-import { useState, useEffect } from "react";
+import styles from "./HubList.module.css";
+import { useState } from "react";
 import EventModal from "../Calendar/EventModal.js";
 
-const ClubList = ({hubs}) => {
+const HubList = ({hubs}) => {
     const [isModalOpen, setIsModalOpen] = useState(false); // Event modal
-    const [isCreateOpen, setIsCreateOpen] = useState(false); // Create form 
     const [currentEvent, setCurrentEvent] = useState(null); // Holds the event for the current opened modal
-    const [hubsModding, setHubsModding] = useState([]);
     const [showDescription, setShowDescription] = useState([]);
 
     // Function to handle states when a modal is opened
@@ -29,9 +27,7 @@ const ClubList = ({hubs}) => {
     }
 
     if(hubs == null || hubs.length == 0) 
-        return <>There are no clubs.</>;
-    for(let i = 0; i < hubs.length; i++)
-        console.log(hubs[i].hub_tag);
+        return <>There are no hubs.</>;
     
     return (
         <div className={styles["hub-container"]}>
@@ -48,7 +44,7 @@ const ClubList = ({hubs}) => {
                         <hr className={styles["black-line"]}/>
                         <div>
                             <span>Tags: </span>
-                            {hub.hub_tag.map((tag) => (<span className={styles["hub-tags"]}>{tag + " "}</span>))}
+                            {hub.tags.map((tag) => (<span className={styles["hub-tags"]}>{tag.name + " "}</span>))}
                         </div>
                         <span>{"Members: " + hub.members.length}</span>
                         <div>
@@ -68,4 +64,4 @@ const ClubList = ({hubs}) => {
     );
 };
 
-export default ClubList;
+export default HubList;

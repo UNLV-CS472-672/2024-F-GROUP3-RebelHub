@@ -36,7 +36,7 @@
 
 .buttons button:hover,
 .current {
-    background-color: #cfbc0d;
-    border-color: #cfbc0d;
-    color: black;
+    background-color: var(--bgColor,#cfbc0d);
+    border-color: var(--bgColor,#cfbc0d);
+    color:white;
 }

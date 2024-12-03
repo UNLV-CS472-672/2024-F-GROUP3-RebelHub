@@ -110,7 +110,15 @@ const EventModal = ({ event, isOpen, onClose, onEdit = () => {}, onDelete = () =
     
           <div className={styles["crud-buttons"]}>
             <button onClick={updateButtonClick} className={styles["update-button"]}>Update</button>
-            <button onClick={() => onDelete(event)} className={styles["delete-button"]}>Delete</button>
+            <button
+              onClick={() => {
+								const isConfirmed = window.confirm("Are you sure you want to delete this event?");
+								if(isConfirmed)
+								{
+									onDelete(event);
+								}
+							}}
+             className={styles["delete-button"]}>Delete</button>
           </div>
         </div>
       }

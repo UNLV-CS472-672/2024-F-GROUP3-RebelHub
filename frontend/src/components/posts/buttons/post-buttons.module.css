@@ -2,6 +2,8 @@
     background-color: white;
     color:black;
     padding: 1px;
+    user-select: none;
+    cursor: pointer;
 }
 
 .likeButton {

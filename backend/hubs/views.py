@@ -8,6 +8,7 @@ from Posts.models import Post
 from Posts.serializers import PostSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from .helper import filter_hub_tag_queryset
+from Posts.helper import filter_queryset
 
 # "api/hubs/"
 # returns all the hubs with limited fields.
@@ -31,7 +32,8 @@ class HubPosts(generics.ListAPIView):
         user = self.request.user
         if this_hub.private_hub and user not in this_hub.members.all():
             raise PermissionDenied("Cannot List Posts : Hub is private")
-        return Post.objects.filter(hub=this_hub)
+        queryset = Post.objects.filter(hub=this_hub)
+        return filter_queryset(self, queryset, this_hub)
 
 # "api/hubs/joined/"
 # returns all the hubs that a user has joined.
@@ -218,3 +220,12 @@ class FilterHubs(generics.ListAPIView):
         queryset = Hub.objects.filter(private_hub=False)
         queryset = queryset.prefetch_related('hub_events')
         return filter_hub_tag_queryset(self, queryset) # Uses filter_hub_tag_queryset function from helper.py to filter and sort hubs
+
+class HubTagUpdateView(generics.UpdateAPIView):
+    queryset = Hub.objects.all()  
+    serializer_class = HubTagUpdateSerializer  
+    permission_classes = [IsAuthenticated] 
+    lookup_field = "id"
+    
+    def perform_update(self, serializer):
+        serializer.save()

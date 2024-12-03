@@ -32,6 +32,7 @@ class Hub(models.Model):
     pending_members = models.ManyToManyField(User, related_name='requested_hubs', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     private_hub = models.BooleanField(default=False)
+    tags = models.ManyToManyField('Tags.Hub_Tag', related_name='tagged_hubs', blank=True)
 
     
     def save(self, *args, **kwargs):

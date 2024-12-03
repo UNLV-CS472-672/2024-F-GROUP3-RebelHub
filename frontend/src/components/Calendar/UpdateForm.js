@@ -14,15 +14,7 @@ const UpdateForm = ({ event, onClose, onUpdate}) => {
     const [color, setColor] = useState(event.color);
 
     const onSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        // Make PUT request to update the event
-        await api.put(getUpdateEventURL(event.id), { title, description, location, start_time: convertLocalStringToUtcString(startTime), end_time: convertLocalStringToUtcString(endTime) || null, color: color});
-        onUpdate({...event, title, description, location, start_time: startTime, end_time: endTime, color: color || "#eb4f34" });
-        onClose();
-      } catch (error) {
-        console.log("Error updating event: ", error.response.data);
-      }
+      
     }
 
     return (

@@ -24,14 +24,14 @@ def filter_queryset(self, queryset, current_hub=None):
 
     # Gets time_range parameter from api call. If none, then default is a week
     time_range = self.request.query_params.get('time_range', 'none')
-    time_range_allowed = ['24_hours', 'week', 'month', 'year', 'all_time', 'none']
+    time_range_allowed = ['24 hours', 'week', 'month', 'year', 'all time', 'none']
     # If invalid time_range is given, set time_range to a week
     if time_range not in time_range_allowed:
         time_range = 'week'
     now = timezone.now()
-    if time_range == 'none' or time_range == 'all_time':
+    if time_range == 'none' or time_range == 'all time':
         pass
-    elif time_range == '24_hours':
+    elif time_range == '24 hours':
         start_date = now - timedelta(hours=24)
     elif time_range == 'week':
         start_date = now - timedelta(weeks=1)
@@ -39,8 +39,8 @@ def filter_queryset(self, queryset, current_hub=None):
         start_date = now - timedelta(days=30)
     elif time_range == 'year':
         start_date = now - timedelta(days=365)
-    # If time_range is all_time, then the list of posts is not filtered at all. Otherwise, filter it.
-    if time_range != 'all_time' and time_range != 'none':
+    # If time_range is all time, then the list of posts is not filtered at all. Otherwise, filter it.
+    if time_range != 'all time' and time_range != 'none':
         queryset = queryset.filter(timestamp__gte=start_date)
 
     ordering = self.request.query_params.get('ordering', 'none')

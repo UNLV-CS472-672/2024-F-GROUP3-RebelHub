@@ -19,12 +19,22 @@
 .mainContent{
     width: 86.7vw;
     margin-left: 13.3vw;
-    margin-top: 15.3vh;
 }
 
 .container {
-    display: flex;
+    /*display: flex;*/
     height: 100vh; 
     background-color: #0a0a0a;
+}
+
+.switchbutton{
+    height: 5vh;
+    margin-left: 13.3vw;
+    width: 86.7vw;
+    border-radius: 8px;
+    user-select: none;
+    cursor: pointer;
+    background-color: #b41d12;
+    border-color: black;
 }
 
