@@ -5,6 +5,7 @@ from Events.models import Event
 from django.utils import timezone
 from Tags.serializers import HubTagsSerializer
 from Tags.models import Hub_Tag
+from rest_framework.exceptions import PermissionDenied
 
 #Serializer for a Hub model with all fields included.
 #This serializer represents a hub
