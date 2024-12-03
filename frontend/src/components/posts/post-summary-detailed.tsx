@@ -1,22 +1,21 @@
-    "use client";
+"use client";
 
-    import { Post } from "@/utils/posts/definitions";
-    import styles from "./post-summary-detailed.module.css";
-    import LikeDislikeButtons from "./buttons/like-dislike-buttons";
-    import { useEffect, useState } from "react";
-    import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
-    import DeletePostButton from "./buttons/delete-post-button";
-    import EditPostButton from "./buttons/edit-post-button";
-    import { displayPicture, getDislikePostUrl, getHubUrl, getLikePostUrl, getPostTagUrl, gotoHubPage } from "@/utils/url-segments";
-    import RecursiveCommentList from "../comments/RecursiveCommentList";
+import { Post } from "@/utils/posts/definitions";
+import styles from "./post-summary-detailed.module.css";
+import LikeDislikeButtons from "./buttons/like-dislike-buttons";
+import { useEffect, useState } from "react";
+import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
+import DeletePostButton from "./buttons/delete-post-button";
+import EditPostButton from "./buttons/edit-post-button";
+import { displayPicture, getDislikePostUrl, getHubUrl, getLikePostUrl, getPostTagUrl, gotoHubPage } from "@/utils/url-segments";
+import RecursiveCommentList from "../comments/RecursiveCommentList";
 import CreateCommentButton from "../comments/buttons/CreateCommentButton";
 import  { formatDate } from "@/utils/datetime-conversion";
-    import EditedHover from "./others/EditedHover";
-    import TagPostButton from "./buttons/tag-post-button";
-    import api from "@/utils/api";
+import EditedHover from "./others/EditedHover";
+import TagPostButton from "./buttons/tag-post-button";
+import api from "@/utils/api";
 import AccountButton from "../navbar/AccountButton";
 import Link from "next/link";
-import api from "@/utils/api";
 
     interface ComponentProps {
         post: Post;
@@ -132,11 +131,13 @@ import api from "@/utils/api";
                         <>
                             <EditPostButton post={post} refreshComponent={refreshComponent} />
                             <DeletePostButton post={post} />
+                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
                         </>
                     }
                     {!isAuthor && isMod &&
                         <>
                             <DeletePostButton post={post} />
+                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
                         </>
                     }
                         <CreateCommentButton 

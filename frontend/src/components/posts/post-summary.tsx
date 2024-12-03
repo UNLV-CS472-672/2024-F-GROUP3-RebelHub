@@ -102,7 +102,7 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
                             <>
                                 <EditPostButton post={post} refreshComponent={refreshComponent}/>
                                 <DeletePostButton post={post} /> 
-                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
+                                <TagPostButton post={post} refreshComponent={refreshComponent}/>
                             </>
                         }
                         {!isAuthor && isMod &&
