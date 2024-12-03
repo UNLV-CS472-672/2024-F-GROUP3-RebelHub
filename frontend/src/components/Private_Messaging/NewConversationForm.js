@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import api from '@/utils/api';
 import { getNewPMURL } from '@/utils/url-segments';
+import './NewConversationForm.css';
 
-const NewConversationForm = ({ setConversations }) => {
+export default function NewConversationForm({ setConversations }){
   const [recipientId, setRecipientId] = useState('');
 
   const handleCreateConversation = async () => {
@@ -10,7 +11,7 @@ const NewConversationForm = ({ setConversations }) => {
 
     try {
       const response = await api.post(getNewPMURL(), { recipient_id: recipientId });
-      setConversations((prevConversations) => [response.data, ...prevConversations]); // Prepend the new conversation
+      setConversations((prevConversations) => [response.data, ...prevConversations]);
     } catch (error) {
       console.error("Error creating conversation:", error);
       alert("Failed to create conversation.");
@@ -18,7 +19,7 @@ const NewConversationForm = ({ setConversations }) => {
   };
 
   return (
-    <div>
+    <div className='newConversationForm'>
       <input
         type="text"
         placeholder="Enter username"
@@ -29,5 +30,3 @@ const NewConversationForm = ({ setConversations }) => {
     </div>
   );
 };
-
-export default NewConversationForm;

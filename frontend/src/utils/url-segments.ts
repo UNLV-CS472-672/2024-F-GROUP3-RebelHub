@@ -399,7 +399,7 @@ export function getNewPMURL() {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PM_API + URL_SEGMENTS.PM_NEW;
 }
 
-// "http://localhost:8000/api/private-messaging/<int:converstation_id/send"
+// "http://localhost:8000/api/private-messaging/<int:converstation_id/send/"
 export function getPMSendURL(id: number) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PM_API + id + URL_SEGMENTS.PM_SEND;
 }

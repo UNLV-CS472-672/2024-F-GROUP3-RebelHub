@@ -1,11 +1,10 @@
-/* pages/dm.module.css */
 .container {
   display: flex;
   justify-content: center;
   flex-direction: column;
   padding: 20px;
   background-color: #000;
-  padding-top: 150px;
+  padding-top: 100px;
 }
 
 .header {
@@ -15,24 +14,45 @@
   color: #fff;
 }
 
+.UserInfo{
+  display:flex;
+  height: 50px;
+  padding-bottom:5px;
+  align-items: center;
+  gap: 10px;
+}
+
+.convopfp{
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+
 .content {
   display: flex;
   justify-content: space-between;
+  margin-left: 10%;
   max-width: 80%;
+  flex-wrap: nowrap;
 }
 
 .dmsidebar {
   width: 30%;
-  padding: 20px;
-  background-color: #6A737B;
+  padding: 0px 20px;
+  background-color: transparent;
   border-radius: 8px;
-  margin-left: 250px;
+  margin-left: 50px;
+  margin-right: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  margin-top: -50px;
 }
 
 .conversationList {
   list-style: none;
   padding-left: 0;
+  font-weight: bold;
+  padding: 5px 0px;
 }
 
 .conversationItem {
@@ -45,6 +65,7 @@
 
 .conversationItem:hover {
   background-color: #f0f0f0;
+  color: #000;
 }
 
 .selected {
@@ -53,26 +74,42 @@
 }
 
 .messagesContainer {
-  width: 100%;
+  width: 80%;
   padding: 20px;
-  background-color: #6A737B;
+  background-color: transparent;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .messageList {
+  width: 100%;
   max-height: 400px;
   overflow-y: scroll;
   margin-bottom: 20px;
+  padding: 5px;
 }
 
 .message {
   margin-bottom: 15px;
   font-size: 1rem;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.message:not(.self) {
+  text-align: left;  
+}
+.message.self{
+  text-align: right; 
 }
 
 .timestamp {
   font-size: 0.8rem;
+  padding:1px;
+  padding-top:2px;
   color: #fff;
 }
 

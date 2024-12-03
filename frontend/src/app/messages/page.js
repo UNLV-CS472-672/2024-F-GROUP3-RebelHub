@@ -1,16 +1,12 @@
 "use client"
-import { useEffect, useState } from 'react';
-import ConversationList from '../../components/Private_Messaging/conversationList';
-import MessageList from '../../components/Private_Messaging/MessageList';
-import SendMessage from '../../components/Private_Messaging/SendMessage';
-import Modal from '../../components/Private_Messaging/Modal';
+import { useEffect, useState, useRef } from 'react';
 import Sidebar from '../../components/sidebar/sidebar';
 import RebelHubNavBar from '../../components/navbar/RebelHubNavBar';
 import ProtectedRoute from '../../components/Accounts/ProtectedRoutes';
 import NewConversationForm from '../../components/Private_Messaging/NewConversationForm';
 
 import api from '@/utils/api';
-import { getPMListURL, getNewPMURL, getPMSendURL, getConverstationMessagesURL } from '@/utils/url-segments';
+import { getPMListURL, getCurrentUserUrl, getPMSendURL, getConverstationMessagesURL, getOtherProfileUrl } from '@/utils/url-segments';
 import './page.css';
 
 export default function PMessages(){
@@ -18,41 +14,74 @@ export default function PMessages(){
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [selectedConversation, setSelectedConversation] = useState(null);
+  const [User, setUser] = useState([]);
+  const [convoimage, setConvoImage] = useState(null);
+  const [prefName, setprefName] = useState(null);
 
-  useEffect(() => {
-    const fetchPMs = async () => { 
+  const msgEndRef = useRef(null);
+
+  useEffect(()=>{
+    const fetchUser = async() =>{
       try{
-      const response = await api.get(getPMListURL());
-      console.log(response.status)
-      if(response.status == 200){
-        console.log(response.data);
-        setConversations(response.data);
+        const response = await api.get(getCurrentUserUrl());
+        if(response.status == 200){
+          setUser(response.data);
+        }
       }
-    }
-    catch(error){
-      console.error("Error fetching conversations:", error);
-    }
-    }
-    fetchPMs();
+      catch(error){
+        console.log(error);
+      }
+      
+    };
+    fetchUser();
+  }, [])
+    
+
+
+  const fetchConvos = async () => { 
+      try{
+        const response = await api.get(getPMListURL());
+        if(response.status == 200){
+          setConversations(response.data);
+        }
+      }
+      catch(error){
+        console.error("Error fetching conversations:", error);
+      }
+  }
+  
+  useEffect(() => {
+    
+    fetchConvos();
   }, []);
 
-  useEffect(() => {
-    const fetchConverstations = async () => {
-    console.log(selectedConversation);
+
+  const fetchConvoMsg = async () => {
     if (selectedConversation) {
       try{
         const response = await api.get(getConverstationMessagesURL(selectedConversation.conversation_id));
         if(response.status == 200){
-          console.log(response.data);
           setMessages(response.data);
+          const otherUser = selectedConversation.participants[0] !== User.username ? selectedConversation.participants[0] : selectedConversation.participants[1];
+          try{
+            const res2 = await api.get(getOtherProfileUrl(otherUser));
+            if(res2.status == 200){
+              setConvoImage(`http://localhost:8000/${res2.data.pfp}`);
+              setprefName(res2.data.name);
+            }
+          } catch(error){
+            console.error("Error fetching messages:", error);
+          }
         }
       }
-      catch{
+      catch(error){
         console.error("Error fetching messages:", error);
       }
     }
     }
-    fetchConverstations();
+
+  useEffect(() => {
+    fetchConvoMsg();
   }, [selectedConversation]);
 
   const sendMessage = async () => {
@@ -61,83 +90,90 @@ export default function PMessages(){
     try {
       await api.post(getPMSendURL(selectedConversation.conversation_id), { message_content: newMessage})
       setNewMessage('');
-      // Refetch messages
-      const response = api.get(getConverstationMessagesURL(selectedConversation.conversation_id));
-        if(response.status == 200){
-          console.log(response.data);
-          setMessages(response.data);
-        }
-      } catch (error) {
-      console.error("Error sending message:", error);
+      await fetchConvos();
+      await fetchConvoMsg();
+    }
+    catch(error){
+
     }
   };
 
+  useEffect(() => {
+    if (msgEndRef.current) {
+      msgEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
   return (
-    <div>
-    <RebelHubNavBar/>
-    <Sidebar></Sidebar>
-    <div className={'container'}>
-      <h1 className={'header'}>Direct Messages</h1>
+    <ProtectedRoute>
+      <div>
+      <RebelHubNavBar/>
+      <Sidebar />
+      <div className={'container'}>
+        <h1 className={'header'}>Direct Messages</h1>
 
-      
+        
 
-      <div className={'content'}>     
-        <div className={'dmsidebar'}>
-          <NewConversationForm setConversations={setConversations} />
-          <h2>Conversations</h2>
-          <ul className={'conversationList'}>
-            {conversations.map((conversation) => (
-              <li
-                key={conversation.conversation_id}
-                className={`${'conversationItem'} ${selectedConversation?.conversation_id === conversation.conversation_id ? 'selected' : ''}`}
-                onClick={() => setSelectedConversation(conversation)}
-              >
-                {conversation.participants.map((user) => user).join(', ')}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className={'messagesContainer'}>
-          {selectedConversation ? (
-            <>
-              <h2>
-                Conversation with {selectedConversation.participants.map((user) => user).join(', ')}
-              </h2>
-              <div className={'messageList'}>
-                {messages.map((message) => (
-                  <div key={message.message_id} className={'message'}>
-                    {console.log(message)}
-                    <strong>{message.UserName}:</strong> {message.MessageContent}
-                    <div className={'timestamp'}>
-                      {new Date(message.MessageTimestamp).toLocaleString()}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className={'messageInput'}>
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type a message"
-                  className={'input'}
-                />
-                <button
-                  onClick={sendMessage}
-                  className={'sendButton'}
+        <div className={'content'}>     
+          <div className={'dmsidebar'}>
+            
+            <NewConversationForm setConversations={setConversations} />
+            <h2>Conversations</h2>
+            <ul className={'conversationList'}>
+              {conversations.map((conversation) => (
+                <li
+                  key={conversation.conversation_id}
+                  className={`${'conversationItem'} ${selectedConversation?.conversation_id === conversation.conversation_id ? 'selected' : ''}`}
+                  onClick={() => setSelectedConversation(conversation)}
                 >
-                  Send
-                </button>
-              </div>
-            </>
-          ) : (
-            <p>Select a conversation to view messages.</p>
-          )}
+                  {conversation.participants.filter(user => user !== User.username).map((user) => user).join(', ')}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className={'messagesContainer'}>
+            {selectedConversation ? (
+              <>
+                <h2 className='UserInfo'>
+                  <img src = {convoimage} className='convopfp'/>
+                  {`${prefName} (${selectedConversation.participants.filter(user => user !== User.username).map(user => user).join(', ')})`}
+                </h2>
+                <div className={'messageList'}>
+                  {messages.map((message) => (
+                    <div key={message.MessageID} className={`message ${message.UserName === User.username ? 'self' : ''}`}>
+                      <strong>{message.UserName === User.username ? '' : prefName}{message.UserName === User.username ? '' : ':'}</strong> {message.MessageContent}
+                      <div className={'timestamp'}>
+                        {new Date(message.MessageTimestamp).toLocaleString()}
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={msgEndRef}/>
+                </div>
+
+                <div className={'messageInput'}>
+                  <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Type a message"
+                    className={'input'}
+                  />
+                  <button
+                    onClick={sendMessage}
+                    className={'sendButton'}
+                  >
+                    Send
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p>Select a conversation to view messages.</p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 };

@@ -6,6 +6,7 @@ from .serializers import ConversationSerializer
 from django.contrib.auth.models import User
 from .models import Message
 from .serializers import MessageSerializer
+from django.db.models import Max
 
 class CreateConversation(APIView):
     def post(self, request):
@@ -48,7 +49,9 @@ class ConversationList(APIView):
     def get(self, request):
         user = request.user
         # Conversation list based on what last conversation had
-        conversations = Conversation.objects.filter(participants=user).order_by('-timestamp')
+        conversations = Conversation.objects.filter(participants=user)
+        conversations = conversations.annotate(latest_message_timestamp=Max('messages__message_timestamp'))
+        conversations = conversations.order_by('-latest_message_timestamp')
         serializer = ConversationSerializer(conversations, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     

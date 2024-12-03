@@ -1,0 +1,58 @@
+.newConversationForm {
+    padding: 5px 10px; 
+    background-color: #333;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;  
+    align-items: center;  
+    height: 45px;  
+    margin-bottom: 10px;
+  }
+  
+  .newConversationForm input {
+    width: 70%;  
+    padding: 8px 12px;  
+    margin-right: 8px; 
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    background-color: #f7f7f7;
+    transition: border-color 0.3s ease;
+    height: 100%;  
+  }
+  
+  .newConversationForm input:focus {
+    border-color: #A03123;
+    outline: none;
+  }
+  
+  .newConversationForm button {
+    padding: 8px 15px;  
+    background-color: #A03123;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 28%;  
+    height: 100%;  
+    display: flex;
+    justify-content: center;  
+    align-items: center;  
+    font-size:small;
+  }
+  
+  .newConversationForm button:hover {
+    background-color: #E31837;
+  }
+  
+  .newConversationForm button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
