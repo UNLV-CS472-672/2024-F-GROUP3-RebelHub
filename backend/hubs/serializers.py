@@ -5,10 +5,20 @@ from Events.models import Event
 from django.utils import timezone
 from Tags.serializers import HubTagsSerializer
 from Tags.models import Hub_Tag
+from hubs.filter import inappropriate_language_filter 
+from calendar_app.models import Event
+
+#Serializer used to read events.
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
 
 #Serializer for a Hub model with all fields included.
 #This serializer represents a hub
 class HubSerializer(serializers.ModelSerializer):
+    events = EventSerializer(many=True, read_only=True)
+
     class Meta:
         model = Hub
         fields = '__all__'
@@ -52,6 +62,16 @@ class HubCreateSerializer(serializers.ModelSerializer):
         model = Hub
         fields = ['id', 'name', 'description', 'private_hub']
 
+    def validate_name(self, value):
+        if inappropriate_language_filter(value):
+            raise serializers.ValidationError("Inappropriate language is not allowed in the hub name.")
+        return value
+
+    def validate_description(self, value):
+        if inappropriate_language_filter(value):
+            raise serializers.ValidationError("Inappropriate language is not allowed in the hub description.")
+        return value
+    
     def create(self, validated_data):
         request = self.context.get('request')
         user = request.user
@@ -65,8 +85,7 @@ class HubCreateSerializer(serializers.ModelSerializer):
 class HubUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hub
-        fields = ['name', 'description', 'private_hub', 'tags'] 
-
+        fields = ['name', 'description', 'private_hub', 'tags', 'bg', 'banner'] 
     def validate(self, data):
         request = self.context.get('request')
         user = request.user
@@ -100,6 +119,8 @@ class HubUpdateSerializer(serializers.ModelSerializer):
         if instance.owner == user or user in instance.mods.all():
             instance.name = validated_data.get('name', instance.name)
             instance.description = validated_data.get('description', instance.description)
+            instance.bg = validated_data.get('bg', instance.bg)
+            instance.banner = validated_data.get('banner', instance.banner)
             if set_public:
                 for user in instance.pending_members.all():
                     instance.pending_members.remove(user)

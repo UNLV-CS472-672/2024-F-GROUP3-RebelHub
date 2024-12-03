@@ -5,12 +5,30 @@ import TagList from '../FilterButtons/TagList.js';
 import { getHubTagsUrl, getHubTagsForAHubUrl } from "@/utils/url-segments";
 import api from "@/utils/api";
 
-const HubEdit = ({hubId, oldName, oldDescription, oldPrivate, onClickAccept, onClickDecline}) => {
+const HubEdit = ({hubId, oldName, oldDescription, oldPrivate, onClickAccept, onClickDecline, passData, passBanner}) => {
 	//start initail state as the old name/description in case
 	//you only wanna update one or the other.
 	const [hubName, setHubName] = useState(oldName);
 	const [hubDescription, setHubDescription] = useState(oldDescription);
 	const [hubPrivate, setHubPrivate] = useState(oldPrivate);
+	const [image, setImage] = useState(null);
+	const [bannerImage, setBannerImage] = useState(null);
+
+	useEffect (() => {
+		if(image){
+			const imageUrl = URL.createObjectURL(image);
+			passData(imageUrl);
+			return () => URL.revokeObjectURL(imageUrl);
+		}
+	}, [image]);
+
+	useEffect (() => {
+		if(bannerImage){
+			const bannerUrl = URL.createObjectURL(bannerImage);
+			passBanner(bannerUrl);
+			return () => URL.revokeObjectURL(bannerUrl);
+		}
+	}, [bannerImage]);
 
 	const [showTagList, setShowTagList] = useState(false);
 	const [tags, setTags] = useState([]);
@@ -61,8 +79,24 @@ const HubEdit = ({hubId, oldName, oldDescription, oldPrivate, onClickAccept, onC
 				<input type="radio" id="toggle-public" checked={!hubPrivate} onChange={() => setHubPrivate(false)}/>
 				Public
 			</label>
+			<label>
+				Set Hub Background
+				<input
+					type="file"
+					id="image"
+					onChange={(e) => setImage(e.target.files[0])}
+				/>
+			</label>
+			<label>
+				Set Hub Banner
+				<input
+					type="file"
+					id="banner-image"
+					onChange={(e) => setBannerImage(e.target.files[0])}
+				/>
+			</label>
 
-			<button className={styles.acceptEditBtn} onClick={() =>onClickAccept(hubName, hubDescription, hubPrivate, filteredTags)}> Accept </button>
+			<button className={styles.acceptEditBtn} onClick={() =>onClickAccept(hubName, hubDescription, hubPrivate, filteredTags, image, bannerImage)}> Accept </button>
 			<button className={styles.cancelEditBtn} onClick={() =>onClickDecline()}> Cancel </button>
 		</div>
 	);

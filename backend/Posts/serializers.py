@@ -7,6 +7,7 @@ from Pictures.models import Picture
 from Tags.models import Post_Tag
 from Comments.serializers import CommentSerializer
 from django.contrib.auth.models import User
+from Posts.filter import inappropriate_language_filter
 
 # To serialise the post which validates data from the front end
 class PostSerializer(serializers.ModelSerializer):
@@ -41,10 +42,17 @@ class PostCreateSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'title', 'message', 'hub_id']
 
+    
     def validate(self, data):
         request = self.context.get('request')
         user = request.user
         hub_id = data.get('hub_id')
+        
+        if inappropriate_language_filter(data.get('title', '')):
+            raise serializers.ValidationError("Your post title contains inappropriate language.")
+        if inappropriate_language_filter(data.get('message', '')):
+            raise serializers.ValidationError("Your post message contains inappropriate language.")
+
         try:
             hub = Hub.objects.get(id=hub_id)
         except Hub.DoesNotExist:
@@ -136,7 +144,12 @@ class PostEditSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         user = request.user
         post = self.instance
-
+        
+        if inappropriate_language_filter(data.get('title', '')):
+            raise serializers.ValidationError("Inappropriate language in the title.")
+        if inappropriate_language_filter(data.get('message', '')):
+            raise serializers.ValidationError("Inappropriate language in the message.")
+        
         if user != post.author:
             raise PermissionDenied("User does not have permission to update post")
 

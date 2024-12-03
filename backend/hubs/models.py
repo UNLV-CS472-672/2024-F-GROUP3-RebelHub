@@ -33,6 +33,8 @@ class Hub(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     private_hub = models.BooleanField(default=False)
     tags = models.ManyToManyField('Tags.Hub_Tag', related_name='tagged_hubs', blank=True)
+    bg = models.ImageField(upload_to="hub_backgrounds/", null=True, blank=True)
+    banner = models.ImageField(upload_to="hub_banners/", null=True, blank=True)
 
     
     def save(self, *args, **kwargs):
