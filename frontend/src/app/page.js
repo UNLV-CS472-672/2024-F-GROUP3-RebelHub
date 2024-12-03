@@ -46,14 +46,16 @@ const Home = () => {
 
 			<main>
 				<RebelHubNavBar></RebelHubNavBar>
-				<div className="background">
-					<Sidebar/>
-					<PostList className={styles.postsList} posts={hubPosts}/>
+
+					<Sidebar className="sidebar"/>
+					<div className="posts-container">
+						<PostList className={styles.postsList} posts={hubPosts}/>
+					</div>
 
 
 
 
-				</div>
+
 			</main>
 
 	);

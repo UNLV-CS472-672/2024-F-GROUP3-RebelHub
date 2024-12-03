@@ -1,4 +1,8 @@
-.background{
+.posts-container{
     background-color: black;
     height: 300vh;
+    margin-left:13.3vw;
+}
+body{
+    background-color: black;
 }
