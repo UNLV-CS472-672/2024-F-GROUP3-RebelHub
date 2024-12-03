@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import React from 'react';
 import styles from './HubEdit.module.css';
 
-const HubEdit = ({hubId, oldName, oldDescription, oldPrivate, onClickAccept, onClickDecline, passData}) => {
+const HubEdit = ({hubId, oldName, oldDescription, oldPrivate, onClickAccept, onClickDecline, passData, passBanner}) => {
 	//start initail state as the old name/description in case
 	//you only wanna update one or the other.
 	const [hubName, setHubName] = useState(oldName);
@@ -22,6 +22,7 @@ const HubEdit = ({hubId, oldName, oldDescription, oldPrivate, onClickAccept, onC
 	useEffect (() => {
 		if(bannerImage){
 			const bannerUrl = URL.createObjectURL(bannerImage);
+			passBanner(bannerUrl);
 			return () => URL.revokeObjectURL(bannerUrl);
 		}
 	}, [bannerImage]);
@@ -51,16 +52,22 @@ const HubEdit = ({hubId, oldName, oldDescription, oldPrivate, onClickAccept, onC
 				<input type="radio" id="toggle-public" checked={!hubPrivate} onChange={() => setHubPrivate(false)}/>
 				Public
 			</label>
-			<input
-				type="file"
-				id="image"
-				onChange={(e) => setImage(e.target.files[0])}
-			/>
-			<input
-				type="file"
-				id="banner-image"
-				onChange={(e) => setBannerImage(e.target.files[0])}
-			/>
+			<label>
+				Set Hub Background
+				<input
+					type="file"
+					id="image"
+					onChange={(e) => setImage(e.target.files[0])}
+				/>
+			</label>
+			<label>
+				Set Hub Banner
+				<input
+					type="file"
+					id="banner-image"
+					onChange={(e) => setBannerImage(e.target.files[0])}
+				/>
+			</label>
 
 			<button className={styles.acceptEditBtn} onClick={() =>onClickAccept(hubName, hubDescription, hubPrivate, image, bannerImage)}> Accept </button>
 			<button className={styles.cancelEditBtn} onClick={() =>onClickDecline()}> Cancel </button>
