@@ -8,6 +8,7 @@ import { getCreateCommentsUrl, getCreateReplyUrl } from "@/utils/url-segments";
 import { FormProvider, useForm } from "react-hook-form";
 import styles from "./CreateCommentForm.module.css";
 import bStyles from "@/components/posts/buttons/post-buttons.module.css";
+import { useState } from "react";
 
 interface ComponentProps {
     post: Post;
@@ -29,6 +30,7 @@ interface ComponentProps {
 
 const CreateCommentForm: React.FC<ComponentProps> = ({ post, onClose, commentReply=null, parentCreate }) => {
     const methods = useForm();
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const onSubmit = methods.handleSubmit(async data => {
         try {
@@ -60,13 +62,20 @@ const CreateCommentForm: React.FC<ComponentProps> = ({ post, onClose, commentRep
             }
 
             methods.reset();
-
+            setErrorMessage(null);
             // Use function to add comment to the hooks
             parentCreate(response.data);
             onClose();
 
-        } catch (error) {
-            alert("There was an error in your comment: " + error);
+        } catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                // Check for backend error messages
+                setErrorMessage(error.response.data.detail || "Inappropriate language detected.");
+            } else {
+                setErrorMessage("An unexpected error occurred. Please try again.");
+            }
+
+            
             console.log(error);
 
             //If the comment's reply/post was deleted, reload the page
@@ -85,6 +94,8 @@ const CreateCommentForm: React.FC<ComponentProps> = ({ post, onClose, commentRep
                 noValidate
             >
                 <div className={styles.commentInputContainer}>
+                    {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
+                    
                     <CreateInput {...COMMENT_VALIDATION} />
                     
                     <div className={styles.commentButtonContainer}>
