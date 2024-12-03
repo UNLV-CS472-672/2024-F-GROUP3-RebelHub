@@ -6,7 +6,6 @@ from .models import Hub
 from .serializers import *
 from Posts.models import Post
 from Posts.serializers import PostSerializer
-from django_filters.rest_framework import DjangoFilterBackend
 from .helper import filter_hub_tag_queryset
 from Posts.helper import filter_queryset
 
@@ -214,8 +213,6 @@ class HubKickMember(generics.UpdateAPIView):
 class FilterHubs(generics.ListAPIView):
     serializer_class = FilterHubsSerializer
     permission_classes = [AllowAny]
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    ordering_fields = ['name', 'created_at']
     def get_queryset(self):
         queryset = Hub.objects.filter(private_hub=False)
         queryset = queryset.prefetch_related('hub_events')
