@@ -1,5 +1,5 @@
 .body {
-    background-color: rgb(126, 126, 126);
+    background-color: black;
     min-height: 100vh;
 }
 
@@ -30,6 +30,4 @@
 .margins {
     margin-top: 40px;
     margin-left: 13.3vw;
-    background-color: rgb(83, 83, 83);
-    min-height: 85.8vh;
 }
