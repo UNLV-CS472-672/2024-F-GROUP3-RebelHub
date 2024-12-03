@@ -7,6 +7,8 @@ import api from '@/utils/api';
 import PostList from '@/components/posts/post-list';
 import MemberList from '@/components/hubs/MemberList';
 import HubEdit from '@/components/hubs/HubEdit';
+import HubEvent from '@/components/hubs/HubEvent';
+import AccountButton from '@/components/navbar/AccountButton';
 import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getRequestJoinHubUrl, getCancelRequestJoinHubUrl, getJoinHubUrl, getUpdateHubUrl, getLeaveHubUrl, getDeleteHubUrl } from "@/utils/url-segments";
 import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
 import CreatePostButton from '../posts/buttons/create-post-button';
@@ -27,6 +29,7 @@ const HubPage = ({id}) => {
 	const [refreshCount, setRefreshCount] = useState(0);
 
 	const [hubOwnerId, setHubOwnerId] = useState(-1);
+	const [hubOwnerUsername, setHubOwnerUsername] = useState("");
 	const [membersData, setMembersData] = useState([]);
 	const [pendingMembersData, setPendingMembersData] = useState([]);
 	const [moddingMembersData, setModdingMembersData] = useState([]);
@@ -38,6 +41,7 @@ const HubPage = ({id}) => {
 	const router = useRouter();
 
 	const [previewImage, setPreviewImage] = useState(null);
+	const [previewBanner, setPreviewBanner] = useState(null);
 
 	/*
 	 * Calls the get hub by id so we can store the hub info.
@@ -86,7 +90,6 @@ const HubPage = ({id}) => {
 				    try {
 					const response = await api.get(`http://localhost:8000/api/users/${UserId}/info`);
 					members.push(response.data);
-					console.log("response:", response.data);
 				    } catch (error) {
 					console.log("error fetching a member's info");
 					console.log(error);
@@ -104,7 +107,6 @@ const HubPage = ({id}) => {
 					try{
 						const response = await api.get(`http://localhost:8000/api/users/${UserId}/info`);
 						pendingMembers.push(response.data);
-						console.log("response: ", response.data);
 					} catch (error) {
 						console.log("error fetching a pending member's info");
 						console.log(error);
@@ -122,7 +124,6 @@ const HubPage = ({id}) => {
 					try{
 						const response = await api.get(`http://localhost:8000/api/users/${UserId}/info`);
 						moddingMembers.push(response.data);
-						console.log("response: ", response.data);
 					} catch (error) {
 						console.log("error fetching a modding member's info");
 						console.log(error);
@@ -131,19 +132,23 @@ const HubPage = ({id}) => {
 				setModdingMembersData(moddingMembers);
 			}
 		};
-		const getHubOwnerId = () => {
+		const getHubOwnerId = async () => {
 			if(hubData.owner)
 			{
 				setHubOwnerId(hubData.owner);
+				try{
+					const response = await api.get(`http://localhost:8000/api/users/${hubData.owner}/info`);
+					setHubOwnerUsername(response.data.username);
+				} catch (error) {
+					console.log("error fetching owner username", error);
+				}
 			}
 		};
+
 		getMembersInfo();
 		getPendingMembersInfo();
 		getModdingMembersInfo();
 		getHubOwnerId();
-		console.log(membersData);
-		console.log(pendingMembersData);
-		console.log(moddingMembersData);
      	}, [hubData]);
 
 
@@ -158,7 +163,6 @@ const HubPage = ({id}) => {
 	 */
 	const editButtonPress = () => {
 		setIsEditing(true);
-		console.log("is editing : ", isEditing);
 	};
 	const acceptEdit = async (name, description, private_hub, bg, banner) => {
 		//const updateInfo = {"name": name, "description": description, "private_hub": private_hub};
@@ -178,6 +182,7 @@ const HubPage = ({id}) => {
 			});
 			setIsEditing(false);
 			setPreviewImage(null);
+			setPreviewBanner(null);
 			setRefreshCount((count) => count+=1);
 		} catch (error){
 			if(error.response.data.name)
@@ -196,11 +201,10 @@ const HubPage = ({id}) => {
 		}
 	};
 	const cancelEdit = () => {
-		console.log("Cancel edit (beg)!! isEditing=", isEditing);
 		setIsEditing(false);
 		setPreviewImage(null);
+		setPreviewBanner(null);
 		setRefreshCount((count) => count+=1);
-		console.log("Cancel edit (end)!! isEditing=", isEditing);
 	};
 
 	const handleSuccess = (data) => {
@@ -267,10 +271,17 @@ const HubPage = ({id}) => {
 	const HubPageMainContent = () => {
 		return(
 			<div className={styles.parentContentContainer}>
+				<div className={styles.eventContainer}>
+					<h1 className={styles.eventSectionTitle}> Latest Events </h1>
+					<HubEvent data={hubData.events} />
+				</div>
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
-					<CreatePostButton hubId={id} buttonStyle={styles.hubActionButton}/>
-					{hubOwner ? (<button 
+					{hubOwner ? 
+						(
+						<div className={styles.hubButtonContainer}>
+						<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
+						<button 
 							className={styles.hubActionButton}
 							style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
 							onClick={() => {
@@ -280,22 +291,31 @@ const HubPage = ({id}) => {
 									handleDeleteHub();
 								}
 							}}
-						     > 
+						> 
 							DELETE HUB 
-						     </button>) :
-					    (hubJoined ? (<button 
-						   		className={styles.hubActionButton}
-						    		style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
-						    		onClick={() => {
+					     	</button>
+						</div>
+					) :
+					    (hubJoined ? (
+
+						<div className={styles.hubButtonContainer}>
+							<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
+							<button 
+								className={styles.hubActionButton}
+								style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+								onClick={() => {
 									const isConfirmed = window.confirm("Are you sure you want to leave this hub?");
 									if(isConfirmed)
 									{
 										handleLeave();
 									}
 								}}
-						    	  > 
-						    		LEAVE HUB 
-						    	  </button>) :
+							  > 
+								LEAVE HUB 
+							  </button>
+						</div>
+					 ) :
+
 					     (<button
 						     className={styles.hubActionButton} 
 						     onClick={handleJoin}
@@ -359,13 +379,15 @@ const HubPage = ({id}) => {
 	};
 
 	const passData = (data) => {
-		console.log("IMAGE? = ", data);
 		setPreviewImage(data);
+	};
+	const passBanner = (data) => {
+		setPreviewBanner(data);
 	};
 
 	return (
 		<>
-		<div className={styles.hubHeader} style={{backgroundImage: `url(${hubData.banner})`}}>
+		<div className={styles.hubHeader} style={{backgroundImage: isEditing && previewBanner ? `url(${previewBanner})` : `url(${hubData.banner})`, backgroundColor: hubData.banner ? "transparent" : "rgba(227,24,55,0.7)"}}>
 			{isEditing ? ( 
 				<>
 				<HubEdit
@@ -376,6 +398,7 @@ const HubPage = ({id}) => {
 					onClickAccept={acceptEdit}
 					onClickDecline={cancelEdit}
 					passData={passData}
+					passBanner={passBanner}
 				/>
 				</>
 				
@@ -383,17 +406,32 @@ const HubPage = ({id}) => {
 				<div className={styles.hubViewContainer}>
 					<div className={styles.hubViewHeading}>
 						<h1 className={styles.hubName}> {hubData.name} </h1><br/>
-						{hubOwner && <button className={styles.updateHubInfoBtn} onClick={() => editButtonPress()}> Edit </button> }
+						<p className={styles.hubDescription}>{hubData.description} </p>
+						{hubOwner && <button className={styles.hubActionButton} onClick={() => editButtonPress()}> Edit </button> }
 					</div>
-					<p className={styles.hubDescription}>{hubData.description} </p>
 					<div className={styles.hubViewDetails}>
-						<p className={styles.hubOwner}> Owned By: {hubData.owner} </p>
-						<p className={styles.hubTimestamp}> Created At: {created_date.slice(0, created_date.length-6)} </p>
+						<div 
+							style={{
+								backgroundColor: 'rgba(227,24,55,0.7)', padding: '10px', color: 'white', display:'flex',
+									borderRadius: '10px'
+							}}
+						>
+							<p> Owner: </p>
+							<AccountButton username={hubOwnerId} noBackground={true} />
+						</div>
+						<div 
+							style={{
+								backgroundColor: 'transparent', padding: '10px', color: 'white', display:'flex',
+									borderRadius: '10px', justifyContent: 'center', paddingBottom: '0px'
+							}}
+						>
+							<p className={styles.hubTimestamp}> Created At: {created_date.slice(0, created_date.length-6)} </p>
+						</div>
 					</div>
 				</div>
 			}
 		</div>
-		<div className={styles.pageBG} style={{backgroundImage: isEditing ? `url(${previewImage})` : `url(${hubData.bg})`}}>
+		<div className={styles.pageBG} style={{backgroundImage: isEditing && previewImage ? `url(${previewImage})` : `url(${hubData.bg})`}}>
 			
 					
 			{/* the hubs calander events component can go here */}
