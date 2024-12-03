@@ -30,6 +30,7 @@
 .switchbutton{
     height: 5vh;
     margin-left: 13.3vw;
+    margin-top: 4vh;
     width: 86.7vw;
     border-radius: 8px;
     user-select: none;
