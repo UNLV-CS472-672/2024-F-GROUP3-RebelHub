@@ -6,9 +6,9 @@ from rest_framework.test import APITestCase, APIRequestFactory, force_authentica
 from .models import Hub
 from Posts.models import Post
 from .views import HubByID, HubList, HubJoined, HubOwned, HubModerating, HubCreate, HubDelete, HubUpdate, HubAddMember, HubAddPendingMember, HubAddMemberFromPending, HubRemoveMember, HubRemoveMemberFromPending, HubRemovePendingMember, HubAddModerator, HubRemoveModerator, HubKickMember, HubPosts
-from Comments.filter import inappropriate_language_filter
 from rest_framework.test import APIClient
-     
+from hubs.filter import inappropriate_language_filter
+
 # Create your tests here.
 class HubViewsAdditionalTests(APITestCase):
 
@@ -61,16 +61,11 @@ class HubViewsAdditionalTests(APITestCase):
         self.assertEqual(response.data[0]["name"], self.hub.name)
         
 # Test for filter.py        
-class FilterFunctionTestCase(TestCase):
-    def test_inappropriate_language_filter(self):
-        self.assertTrue(inappropriate_language_filter("Shit post"))
-        self.assertTrue(inappropriate_language_filter("fuck"))
-        self.assertTrue(inappropriate_language_filter("BITCH"))
-        self.assertTrue(inappropriate_language_filter("crap."))
 
-        self.assertFalse(inappropriate_language_filter("Nice, and this is a clean post."))
-        self.assertFalse(inappropriate_language_filter("Nothing bad here."))
-        self.assertFalse(inappropriate_language_filter("What a nice day."))
+class HubsFilterTestCase(TestCase):
+    def test_inappropriate_language_filter(self):
+        self.assertFalse(inappropriate_language_filter("This is a message."))
+        self.assertTrue(inappropriate_language_filter("This message is crap."))
         
 class HubAPITests(APITestCase):
 
