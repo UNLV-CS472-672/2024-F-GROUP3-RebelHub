@@ -16,45 +16,31 @@ const Home = () => {
 	const [hubPosts, setHubPosts] = useState([]);
 	const[ids,setIds]=useState([]);
 
-	const allHubsJoined = async () => {
+	const allHubsJoinedPosts = async () => {
     try {
-      const response = await api.get(getJoinedHubsUrl());
-      if (response.data.length > 0) {
-        const hubIds = response.data.map(hub => hub.id); // Map to get all IDs
-        setIds(hubIds); // Set the array of IDs
-        console.log("Joined hubs IDs:", hubIds);
-      }
-    } catch (error) {
-      console.log("Error fetching joined hubs:", error);
-    }
-  }
-	const getPostsHub = async (hubId) => {
-    try {
-      const response = await api.get(getPostsHubUrl(hubId));
-      if (response.status === 200) {
-        // Use functional setState to append posts to previous posts
-        setHubPosts(prevPosts => [
-          ...prevPosts,
-          ...response.data, // Append new posts to the existing posts
-        ]);
-        console.log("Fetched posts for hub:", hubId, response.data);
-      }
-    } catch (error) {
-      console.log("Error fetching post info:", error);
-    }
-  };
-	useEffect(() => {
-    allHubsJoined();
-  }, []);
+		const response = await api.get(getJoinedHubsUrl());
+			const hubIds = response.data.map(hub => hub.id);
+			// Map to get all IDs
+			if (hubIds.length > 0) {
+			const postRequests = hubIds.map(id => api.get(getPostsHubUrl(id)));
 
-  // Run getPostsHub whenever the 'id' state changes
-  useEffect(() => {
-    if (ids.length > 0) {
-      ids.forEach(id => {
-        getPostsHub(id); // Fetch posts for each hub ID
-      });
-    }
-  }, [ids]);
+        // Wait for all API calls to finish using Promise.all
+        const postResponses = await Promise.all(postRequests);
+
+        // Extract the posts from the responses and flatten the array
+        const allPosts = postResponses.map(response => response.data).flat();
+
+        // Set the posts to the state
+        setHubPosts(allPosts);
+				console.log(allPosts);
+			}
+		}catch(error){
+		alert(error)
+		}
+	}
+	useEffect(() => {
+	allHubsJoinedPosts();
+	}, []);
 
 	return (
 
