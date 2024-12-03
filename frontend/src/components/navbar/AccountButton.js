@@ -100,7 +100,7 @@ const AccountButton = (props) => {
 		};
 
     	fetchProfile();
-  	}, []);
+  	}, [props]);
 
 	useEffect(() => {
 		const getProfileInfo = async () => {
@@ -120,12 +120,12 @@ const AccountButton = (props) => {
 		}
 
 		getProfileInfo();
-	}, []);
+	}, [props]);
 
 	const accountButtonPressed = () => {
 		console.log("pressed acc");
 		// router.push("/"); <--- go to the user's profile page.
-		if (editProfileLink) {
+		if (editProfileLink === true) {
 			router.push("/profile/");
 		} else if (profileName != "" || profileName != null) {
 			router.push(`/profile/${profileName}/`);
@@ -135,14 +135,22 @@ const AccountButton = (props) => {
 		
 	};
 
+	const shortDisplayName = (name) => {
+		if(name.length > 10)
+		{
+			return name.substring(0,7) + "...";
+		}
+		return name;
+	};
+
 	return(
 		<button className={styles.accountButton} onClick={accountButtonPressed}> 
 			<img src={pfppath} className={styles.avatarIcon}/>
 			{!props.noBackground &&
-				<p className={`${styles.accountText} ${darkTheme ? styles.dark : styles.light}`}>{displayName}</p>
+				<p className={`${styles.accountText} ${darkTheme ? styles.dark : styles.light}`}>{shortDisplayName(displayName)}</p>
 			}
 			{props.noBackground &&
-				<p className={`${styles.accountText} ${darkTheme ? styles.darkNo : styles.lightNo}`}>{displayName}</p>
+				<p className={`${styles.accountText} ${darkTheme ? styles.darkNo : styles.lightNo}`}>{shortDisplayName(displayName)}</p>
 			}
 		</button>
 	);

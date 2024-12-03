@@ -32,6 +32,8 @@ class Hub(models.Model):
     pending_members = models.ManyToManyField(User, related_name='requested_hubs', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     private_hub = models.BooleanField(default=False)
+    bg = models.ImageField(upload_to="hub_backgrounds/", null=True, blank=True)
+    banner = models.ImageField(upload_to="hub_banners/", null=True, blank=True)
 
     
     def save(self, *args, **kwargs):

@@ -2,13 +2,15 @@
 import { getAcceptoinHubUrl, getDeclineJoinHubUrl, getKickHubUrl, getModsAddHubUrl, getModsRemoveHubUrl} from "@/utils/url-segments";
 import styles from './MemberList.module.css';
 import api from '@/utils/api';
-
+import AccountButton from '@/components/navbar/AccountButton';
+//<div className={styles.memberName}>
+//				<button className={styles.memberItemButton} onClick={() => onClickMember(data.id)} >{data.username} </button>
+//			</div>
 const MemberItem = ({data, ownerId, pending, modList, hasPermission, onClickMember, onClickPendingAdd, onClickPendingRemove, onClickKick, onClickModAdd, onClickModRemove}) => {
 	return (
 		<div className={styles.memberItem}>
-			<div className={styles.memberName}>
-				<button className={styles.memberItemButton} onClick={() => onClickMember(data.id)} >{data.username} </button>
-			</div>
+			
+			<AccountButton username={data.id} noBackground={true} />
 			<div className={styles.memberActions}>
 				{pending && 
 					<button className={styles.acceptPendingButton} onClick={() => onClickPendingAdd(data.id)}> ADD </button>

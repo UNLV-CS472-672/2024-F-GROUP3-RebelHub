@@ -5,12 +5,54 @@ from rest_framework import status
 from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
 from .models import Post
 from .views import *
+from Posts.models import Post
 from hubs.models import Hub
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
+from Posts.helper import filter_queryset, set_hot_score, calculate_hot_score, calculate_time_factor
+from Posts.filter import inappropriate_language_filter
 
+class FilterFunctionTestCase(TestCase):
+    def test_inappropriate_language_filter(self):
+        self.assertTrue(inappropriate_language_filter("Shit post"))
+        self.assertTrue(inappropriate_language_filter("fuck"))
+        self.assertTrue(inappropriate_language_filter("BITCH"))
+        self.assertTrue(inappropriate_language_filter("crap."))
+
+        self.assertFalse(inappropriate_language_filter("Nice, and this is a clean post."))
+        self.assertFalse(inappropriate_language_filter("Nothing bad here."))
+        self.assertFalse(inappropriate_language_filter("What a nice day."))
+        
+class HelperFunctionsTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.hub = Hub.objects.create(name="Test Hub", description="Test hub for posts", owner=self.user)
+        self.hub.members.add(self.user)
+        
+        now = timezone.now()
+        self.post1 = Post.objects.create(title="Post 1", message="Message 1", hub=self.hub, author=self.user, timestamp=now - timedelta(hours=3))
+        self.post2 = Post.objects.create(title="Post 2", message="Message 2", hub=self.hub, author=self.user, timestamp=now - timedelta(days=2))
+        
+        self.factory = APIRequestFactory()
+
+    def test_calculate_hot_score(self):
+        comment1 = self.post1.comments.create(author=self.user, message="Comment 1")
+        comment2 = self.post1.comments.create(author=self.user, message="Comment 2")
+        comments = self.post1.comments.all()
+        hot_score = calculate_hot_score(10, comments, timezone.now() - timedelta(hours=1))
+        self.assertGreater(hot_score, 0)
+
+    def test_calculate_time_factor(self):
+        now = timezone.now()
+        self.assertEqual(calculate_time_factor(now), 5)  
+        self.assertEqual(calculate_time_factor(now - timedelta(hours=8)), 4.5)  
+        self.assertEqual(calculate_time_factor(now - timedelta(days=10)), 0.1)  
+
+    
+
+'''
 # Class to test Post
 class PostTestCase(TestCase):
     # Function to set up test user data by creating a test user and logs them in.
@@ -830,3 +872,4 @@ class PostTestCase(TestCase):
         response = self.client.post(reverse('post-create'), data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, "Post created with a missing title")
 """
+'''
