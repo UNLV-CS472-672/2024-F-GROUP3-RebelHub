@@ -2,9 +2,19 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Hub
 from hubs.filter import inappropriate_language_filter 
+from calendar_app.models import Event
+
+#Serializer used to read events.
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
+
 #Serializer for a Hub model with all fields included.
 #This serializer represents a hub
 class HubSerializer(serializers.ModelSerializer):
+    events = EventSerializer(many=True, read_only=True)
+
     class Meta:
         model = Hub
         fields = '__all__'
@@ -71,7 +81,7 @@ class HubCreateSerializer(serializers.ModelSerializer):
 class HubUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hub
-        fields = ['name', 'description', 'private_hub'] 
+        fields = ['name', 'description', 'private_hub', 'bg', 'banner'] 
 
     def validate(self, data):
         request = self.context.get('request')
@@ -106,6 +116,8 @@ class HubUpdateSerializer(serializers.ModelSerializer):
         if instance.owner == user or user in instance.mods.all():
             instance.name = validated_data.get('name', instance.name)
             instance.description = validated_data.get('description', instance.description)
+            instance.bg = validated_data.get('bg', instance.bg)
+            instance.banner = validated_data.get('banner', instance.banner)
             if set_public:
                 for user in instance.pending_members.all():
                     instance.pending_members.remove(user)
