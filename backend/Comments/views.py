@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from Posts.models import Post
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.db.models import Count
+from Comments.filter import inappropriate_language_filter
 # Create your views here.
  
  # Creating a comment  
@@ -20,12 +21,24 @@ class CommentCreate(generics.CreateAPIView):
         comment_reply_id = self.request.data.get('comment_reply_id')
         serializer.save(author=self.request.user, post_id=post_id, comment_reply_id=comment_reply_id)
         
+        message = serializer.validated_data.get('message', '')
+        if inappropriate_language_filter(message):
+            raise ValidationError("Any inappropriate language is not allowed.")
+
+        serializer.save(author=self.request.user, post_id=post_id, comment_reply_id=comment_reply_id)
+        
 # Creating a reply       
 class CommentReplyCreate(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentCreateSerializer  
     def perform_create(self, serializer):
         comment_id = self.kwargs['comment_id']
+        serializer.save(author=self.request.user, comment_reply_id=comment_id)
+        
+        message = serializer.validated_data.get('message', '')
+        if inappropriate_language_filter(message):
+            raise ValidationError("Any inappropriate language is not allowed.")
+
         serializer.save(author=self.request.user, comment_reply_id=comment_id)
         
 # Using to timestamp to order the comments or can order by most likes

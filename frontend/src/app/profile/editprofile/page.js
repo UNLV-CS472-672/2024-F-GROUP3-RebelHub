@@ -19,14 +19,13 @@ export default function ProfileEdit(){
     const [profilePic, setProfilePicture] = useState(null);
     const [currpfp, setCurrPfp] = useState(null)
     const [loading, setLoading] = useState(true);
-
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         const fetchProfile = async () => {
-    
           try {
-              const response = await api.get(getProfileUrl())
-              if(response.status == 200){
+              const response = await api.get(getProfileUrl());
+              if (response.status == 200) {
                 setName(response.data.name);
                 setBio(response.data.bio);
                 setCurrPfp(`http://localhost:8000${response.data.pfp}`);
@@ -54,9 +53,11 @@ export default function ProfileEdit(){
           setProfilePicture(file);
         }
     };
-    
+
     const handleSave = async () => {
         setLoading(true);
+        setErrorMessage(""); // Reset error message on save attempt
+
         const formData = new FormData();
         formData.append('name', name);
         formData.append('bio', bio);
@@ -69,13 +70,23 @@ export default function ProfileEdit(){
           const response = await api.put(getProfileUrl(), formData);
     
           console.log('Profile updated successfully:', response.data);
-          setProfilePicture(response.data.pfp); 
-          router.push('/profile'); 
+          setProfilePicture(response.data.pfp);
+          router.push('/profile');
           router.refresh();
         } catch (error) {
-          console.log(profilePic);
+          console.error('Error updating profile:', error.response?.data);
 
-          console.error('Error updating profile:', error.response.data);
+          if (error.response?.status === 400) {
+              if (error.response.data?.name) {
+                  setErrorMessage(`Name Error: ${error.response.data.name[0]}`);
+              } else if (error.response.data?.bio) {
+                  setErrorMessage(`Bio Error: ${error.response.data.bio[0]}`);
+              } else {
+                  setErrorMessage("Inappropriate language detected in name or bio.");
+              }
+          } else {
+              setErrorMessage("An unexpected error occurred. Please try again.");
+          }
         } finally {
           setLoading(false);
         }
@@ -85,51 +96,55 @@ export default function ProfileEdit(){
         <ProtectedRoute>
             <div>
                 <RebelHubNavBar />
-                <div style = {{ display:'flex' }}>
-                    <Sidebar/>
+                  <div style={{ display: 'flex' }}>
+                    <Sidebar />
                     <div className="container">
                         <form onSubmit={(e) => e.preventDefault()}>
-                        <div className="profile">
-                            <div className="profile-pic">
+                            <div className="profile">
+                                <div className="profile-pic">
                                 <img src={currpfp} alt="Profile" />
-                                <input 
-                                    type="file" 
-                                    accept="image/*" 
+                                <input
+                                    type="file"
+                                    accept="image/*"
                                     onChange={handleImageChange}
-                                    className="change-pic" 
+                                    className="change-pic"
                                 />
-                            </div>
-                            <div className="profile-info">
-                                <h2>Edit Profile</h2>
+                              </div>
+                              <div className="profile-info">
+                                  <h2>Edit Profile</h2>
+                                  {errorMessage && (
+                                      <p className="error-message" style={{ marginBottom: '1rem'}}>
+                                          {errorMessage}
+                                      </p>
+                                  )} 
                                     <div className="input-group">
                                         <label>Name</label>
-                                        <input 
-                                            type={"text"} 
-                                            id={"name"} 
+                                        <input
+                                            type={"text"}
+                                            id={"name"}
                                             name="name"
-                                            value={name} 
-                                            onChange={handleInputChange} 
+                                            value={name}
+                                            onChange={handleInputChange}
                                         />
                                     </div>
                                     <div className="input-group">
                                         <label>Bio</label>
-                                        <textarea 
+                                        <textarea
                                             name="bio"
-                                            id={"bio"} 
-                                            value={bio} 
+                                            id={"bio"}
+                                            value={bio}
                                             onChange={handleInputChange}
                                         />
                                     </div>
                                     <div className="input-group">
                                         <button onClick={handleSave}>Save Changes</button>
                                     </div>
-                            </div>
+                                </div>
                           </div>
-                          </form>
+                      </form>
                   </div>
               </div>
           </div>
-        </ProtectedRoute>
-        
-    );
+      </ProtectedRoute>
+  );
 };

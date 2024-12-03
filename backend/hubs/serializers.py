@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Hub
-
+from hubs.filter import inappropriate_language_filter 
 #Serializer for a Hub model with all fields included.
 #This serializer represents a hub
 class HubSerializer(serializers.ModelSerializer):
@@ -48,6 +48,16 @@ class HubCreateSerializer(serializers.ModelSerializer):
         model = Hub
         fields = ['id', 'name', 'description', 'private_hub']
 
+    def validate_name(self, value):
+        if inappropriate_language_filter(value):
+            raise serializers.ValidationError("Inappropriate language is not allowed in the hub name.")
+        return value
+
+    def validate_description(self, value):
+        if inappropriate_language_filter(value):
+            raise serializers.ValidationError("Inappropriate language is not allowed in the hub description.")
+        return value
+    
     def create(self, validated_data):
         request = self.context.get('request')
         user = request.user
