@@ -5,11 +5,53 @@ from rest_framework import status
 from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
 from .models import Post
 from .views import *
+from Posts.models import Post
 from hubs.models import Hub
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
+from Posts.helper import filter_queryset, set_hot_score, calculate_hot_score, calculate_time_factor
+from Posts.filter import inappropriate_language_filter
+
+class FilterFunctionTestCase(TestCase):
+    def test_inappropriate_language_filter(self):
+        self.assertTrue(inappropriate_language_filter("Shit post"))
+        self.assertTrue(inappropriate_language_filter("fuck"))
+        self.assertTrue(inappropriate_language_filter("BITCH"))
+        self.assertTrue(inappropriate_language_filter("crap."))
+
+        self.assertFalse(inappropriate_language_filter("Nice, and this is a clean post."))
+        self.assertFalse(inappropriate_language_filter("Nothing bad here."))
+        self.assertFalse(inappropriate_language_filter("What a nice day."))
+        
+class HelperFunctionsTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.hub = Hub.objects.create(name="Test Hub", description="Test hub for posts", owner=self.user)
+        self.hub.members.add(self.user)
+        
+        now = timezone.now()
+        self.post1 = Post.objects.create(title="Post 1", message="Message 1", hub=self.hub, author=self.user, timestamp=now - timedelta(hours=3))
+        self.post2 = Post.objects.create(title="Post 2", message="Message 2", hub=self.hub, author=self.user, timestamp=now - timedelta(days=2))
+        
+        self.factory = APIRequestFactory()
+
+    def test_calculate_hot_score(self):
+        comment1 = self.post1.comments.create(author=self.user, message="Comment 1")
+        comment2 = self.post1.comments.create(author=self.user, message="Comment 2")
+        comments = self.post1.comments.all()
+        hot_score = calculate_hot_score(10, comments, timezone.now() - timedelta(hours=1))
+        self.assertGreater(hot_score, 0)
+
+    def test_calculate_time_factor(self):
+        now = timezone.now()
+        self.assertEqual(calculate_time_factor(now), 5)  
+        self.assertEqual(calculate_time_factor(now - timedelta(hours=8)), 4.5)  
+        self.assertEqual(calculate_time_factor(now - timedelta(days=10)), 0.1)  
+
+    
+
 
 # Class to test Post
 class PostTestCase(TestCase):
@@ -793,40 +835,3 @@ class PostTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1) 
         self.assertEqual(response.data[0]['title'], "triangle")
-
-""" 
-    # Test deleting a post
-    def test_deleting_post(self):
-        url = reverse('post-delete', kwargs={'post_id': self.post1.pk})
-        response = self.client.delete(url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Post.objects.filter(id=self.post1.pk).exists())
-        
-    # Test liking a post
-    def test_liking_post(self):
-        url = reverse('like-post', kwargs={'post_id': self.post1.pk})
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK, "Failed to like this post")
-        self.post1.refresh_from_db()
-        self.assertEqual(self.post1.likes, 1)
-
-    # Test disliking a post
-    def test_disliking_post(self):
-        url = reverse('dislike-post', kwargs={'post_id': self.post1.pk})
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK, "Failed to dislike this post")
-        self.post1.refresh_from_db()
-        self.assertEqual(self.post1.dislikes, 1)
-
-    # Test liking an invalid post (not found)
-    def test_liking_invalid_post(self):
-        url = reverse('like-post', kwargs={'post_id': 999999})  
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND, "Liking an invalid post")
-
-   # Test creating a post with missing fields such as a title
-    def test_create_post_missing_fields(self):
-        data = {'message': 'This post needs a title', 'hub': 'General'}
-        response = self.client.post(reverse('post-create'), data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, "Post created with a missing title")
-"""
