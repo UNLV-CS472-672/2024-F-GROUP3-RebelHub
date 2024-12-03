@@ -1,0 +1,105 @@
+/* pages/dm.module.css */
+.container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+  background-color: #000;
+  padding-top: 150px;
+}
+
+.header {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  max-width: 80%;
+}
+
+.dmsidebar {
+  width: 30%;
+  padding: 20px;
+  background-color: #6A737B;
+  border-radius: 8px;
+  margin-left: 250px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.conversationList {
+  list-style: none;
+  padding-left: 0;
+}
+
+.conversationItem {
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.conversationItem:hover {
+  background-color: #f0f0f0;
+}
+
+.selected {
+  background-color: #B10202;
+  color: white;
+}
+
+.messagesContainer {
+  width: 100%;
+  padding: 20px;
+  background-color: #6A737B;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.messageList {
+  max-height: 400px;
+  overflow-y: scroll;
+  margin-bottom: 20px;
+}
+
+.message {
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.timestamp {
+  font-size: 0.8rem;
+  color: #fff;
+}
+
+.messageInput {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.input {
+  width: 85%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.sendButton {
+  padding: 10px 20px;
+  background-color: #A03123;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sendButton:hover {
+  background-color: #E31837;
+}

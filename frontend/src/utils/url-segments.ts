@@ -71,6 +71,16 @@ export const URL_SEGMENTS = {
     PICTURES_DELETE: "/delete/",
     PICTURES_EDIT: "/edit/",
     // #endregion
+
+    //#region Private Messaging
+    PM_API: 'api/private-messaging/',
+    PM_NEW: 'new/',
+    PM_SEND: '/send/',
+    PM_LIST: 'list/',
+    PM_MSG: '/messages/',
+
+    //#endregion
+
 };
 
 // #region Functions to return a URL for an API call (hubs)
@@ -380,3 +390,28 @@ export function displayPicture(pictureUrl: string) {
 }
 
 // #endregion
+
+
+//#region Functions for private messaging
+
+// "http://localhost:8000/api/private-messaging/new/"
+export function getNewPMURL() {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PM_API + URL_SEGMENTS.PM_NEW;
+}
+
+// "http://localhost:8000/api/private-messaging/<int:converstation_id/send"
+export function getPMSendURL(id: number) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PM_API + id + URL_SEGMENTS.PM_SEND;
+}
+
+// "http://localhost:8000/api/private-messaging/list/"
+export function getPMListURL() {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PM_API + URL_SEGMENTS.PM_LIST;
+}
+
+// "http://localhost:8000/api/private-messaging/<int:converstation_id>/messages/"
+export function getConverstationMessagesURL(id: number) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.PM_API + id + URL_SEGMENTS.PM_MSG;
+}
+
+//#endregion
