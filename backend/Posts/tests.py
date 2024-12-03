@@ -52,7 +52,7 @@ class HelperFunctionsTestCase(TestCase):
 
     
 
-'''
+
 # Class to test Post
 class PostTestCase(TestCase):
     # Function to set up test user data by creating a test user and logs them in.
@@ -835,41 +835,3 @@ class PostTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1) 
         self.assertEqual(response.data[0]['title'], "triangle")
-
-""" 
-    # Test deleting a post
-    def test_deleting_post(self):
-        url = reverse('post-delete', kwargs={'post_id': self.post1.pk})
-        response = self.client.delete(url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Post.objects.filter(id=self.post1.pk).exists())
-        
-    # Test liking a post
-    def test_liking_post(self):
-        url = reverse('like-post', kwargs={'post_id': self.post1.pk})
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK, "Failed to like this post")
-        self.post1.refresh_from_db()
-        self.assertEqual(self.post1.likes, 1)
-
-    # Test disliking a post
-    def test_disliking_post(self):
-        url = reverse('dislike-post', kwargs={'post_id': self.post1.pk})
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK, "Failed to dislike this post")
-        self.post1.refresh_from_db()
-        self.assertEqual(self.post1.dislikes, 1)
-
-    # Test liking an invalid post (not found)
-    def test_liking_invalid_post(self):
-        url = reverse('like-post', kwargs={'post_id': 999999})  
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND, "Liking an invalid post")
-
-   # Test creating a post with missing fields such as a title
-    def test_create_post_missing_fields(self):
-        data = {'message': 'This post needs a title', 'hub': 'General'}
-        response = self.client.post(reverse('post-create'), data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, "Post created with a missing title")
-"""
-'''
