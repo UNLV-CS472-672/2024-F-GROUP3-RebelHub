@@ -2,7 +2,16 @@
     display: flex;
     gap: 4vw;
 }
+.usernameContainer{
+margin-left:1.3vw;
+}
+.hubNameContainer{
+position:absolute;
+    top:0;
+    right:5vw;
+    z-index: 10;  /* Ensure it stays on top of other elements */
 
+}
 .postContainer {
     display: grid;
     color: white;
@@ -12,12 +21,15 @@
     gap: 10px;
     background-color: rgb(90, 0, 0);
     padding: 10px;
+
+
 }
 
 .textContainer {
     display: grid;
     grid-template-rows: auto 1fr;
     min-height: 10vh;
+    position:relative;
 }
 
 .postThumbnail {
@@ -42,4 +54,5 @@
     grid-template-columns: auto 1fr auto auto ;
     align-items: end;
     gap: 10px;
+    z-index:1;
 }

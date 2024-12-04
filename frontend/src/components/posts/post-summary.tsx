@@ -5,11 +5,18 @@ import { Post } from "@/utils/posts/definitions";
 import { useState, useEffect } from "react";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
 import EditPostButton from "./buttons/edit-post-button";
-import { displayPicture, getDislikePostUrl, getLikePostUrl, gotoDetailedPostPage } from "@/utils/url-segments";
+import {
+    displayPicture,
+    getCurrentUserUrl,
+    getDislikePostUrl,
+    getLikePostUrl,
+    gotoDetailedPostPage
+} from "@/utils/url-segments";
 import Link from "next/link";
 import DeletePostButton from "./buttons/delete-post-button";
 import styles from "./post-summary.module.css";
 import EditedHover from "./others/EditedHover";
+import api from "@/utils/api";
 
 interface ComponentProps {
     post: Post;
@@ -31,11 +38,38 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
     const [isAuthor, setIsAuthor] = useState(false);
     const [isMod, setIsMod] = useState(false);
     const [refresh, setRefresh] = useState(false);
-
+    const[username,setUsername]=useState("");
+    const[hubName,setHubName]=useState("");
     useEffect(() => {
         if (userId != null) {
+            console.log(userId);
             setIsAuthor(post.author == userId);
+            const getUsername =async()=>{
+                try{
+                const response=await api.get(`api/users/${post.author}/info/`);
+                console.log(response.data.username)
+                setUsername(response.data.username)
+
+            } catch(error){
+                alert(error)
+            }
+            }
+            const getHubName=async()=> {
+                try {
+                const response = await api.get(`api/hubs/${post.hub}`);
+                console.log(response.data);
+                setHubName(response.data.name)
+            }catch(error)
+            {
+                alert(error)
+            }
+
+            }
+            getUsername();
+            getHubName();
+            console.log(username)
         }
+
     }, [userId]);
 
     useEffect(() => {
@@ -48,6 +82,7 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
 
     return (
         <div className={styles.postContainer}>
+
             <div>
                 <Link href={gotoDetailedPostPage(post.id)}>
                     {post.pictures.length > 0 ? (
@@ -57,9 +92,16 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
                     )
                     }
                 </Link>
+                <div className={styles.usernameContainer}>
+                    {username}
+                </div>
+
             </div>
             <div>
                 <div className={styles.textContainer}>
+                    <div className={styles.hubNameContainer}>
+                        h/{hubName}
+                    </div>
                     <div className={styles.postTitle}>
                         <div className={styles.postTitleComponent}>
                             <Link href={gotoDetailedPostPage(post.id)}>
@@ -71,25 +113,27 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
                         <div className={styles.postTitleComponent}>
                             <EditedHover editedDate={post.last_edited}/>
                         </div>
+
                     </div>
                     <div className={styles.postButtonList}>
-                        <LikeDislikeButtons 
-                            postObject={post} 
-                            likeUrlFunction={getLikePostUrl} 
+                        <LikeDislikeButtons
+                            postObject={post}
+                            likeUrlFunction={getLikePostUrl}
                             dislikeUrlFunction={getDislikePostUrl}
                             containerClassName={styles.summaryVoteContainer}
                         />
                         <div></div>
                         {isAuthor &&
                             <>
+
                                 <EditPostButton post={post} refreshComponent={refreshComponent}/>
-                                <DeletePostButton post={post} /> 
+                                <DeletePostButton post={post}/>
                             </>
                         }
                         {!isAuthor && isMod &&
                             <>
                                 <div></div>
-                                <DeletePostButton post={post} />
+                                <DeletePostButton post={post}/>
                             </>
                         }
                     </div>
