@@ -6,6 +6,7 @@
     overflow: hidden; 
     margin-left: 13.3vw;
     margin-top: 2vh;
+    background-color: white;
 }
 
 /* Header Section */
@@ -98,7 +99,7 @@
     user-select: none;
     text-align: right;
     padding-bottom: clamp(3px, .8vh, .8vh); 
-    color: snow;
+    color: black;
 }
 
 .event {
@@ -123,7 +124,7 @@
     display: flex;
     padding: 0.4%; 
     align-items: center;
-    color: snow;
+    color: black;
     cursor: pointer;
     user-select: none;
     width: 200px;

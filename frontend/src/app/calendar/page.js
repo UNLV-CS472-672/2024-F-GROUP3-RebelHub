@@ -9,7 +9,7 @@ const CalendarPage = () => {
 		<ProtectedRoute>
 			<div>
 				<RebelHubNavBar/>
-				<div style={{display:'flex', backgroundColor: 'black'}}>
+				<div style={{display:'flex'	}}>
 					<SideBar/>
 					<Calendar/>
 				</div>
