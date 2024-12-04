@@ -69,9 +69,7 @@ export default function Profile() {
   return (
     <ProtectedRoute>
       <div>
-        <RebelHubNavBar />
         <div style={{ display: 'flex', backgroundColor:'#37474f'}}>
-          <Sidebar />
           <div className='content'>
             <main className='body'>
               <div className='profileInfo'>

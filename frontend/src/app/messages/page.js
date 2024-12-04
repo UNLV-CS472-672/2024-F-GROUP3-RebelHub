@@ -9,6 +9,8 @@ import api from '@/utils/api';
 import { getPMListURL, getCurrentUserUrl, getPMSendURL, getConverstationMessagesURL, getOtherProfileUrl } from '@/utils/url-segments';
 import './page.css';
 
+import margins from "@/utils/Margins.module.css";
+
 export default function PMessages(){
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -107,72 +109,67 @@ export default function PMessages(){
   return (
     <ProtectedRoute>
       <div>
-      <RebelHubNavBar/>
-      <Sidebar />
-      <div className={'container'}>
-        <h1 className={'header'}>Direct Messages</h1>
-
-        
-
-        <div className={'content'}>     
-          <div className={'dmsidebar'}>
-            
-            <NewConversationForm setConversations={setConversations} />
-            <h2>Conversations</h2>
-            <ul className={'conversationList'}>
-              {conversations.map((conversation) => (
-                <li
-                  key={conversation.conversation_id}
-                  className={`${'conversationItem'} ${selectedConversation?.conversation_id === conversation.conversation_id ? 'selected' : ''}`}
-                  onClick={() => setSelectedConversation(conversation)}
-                >
-                  {conversation.participants.filter(user => user !== User.username).map((user) => user).join(', ')}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className={'messagesContainer'}>
-            {selectedConversation ? (
-              <>
-                <h2 className='UserInfo'>
-                  <img src = {convoimage} className='convopfp'/>
-                  {`${prefName} (${selectedConversation.participants.filter(user => user !== User.username).map(user => user).join(', ')})`}
-                </h2>
-                <div className={'messageList'}>
-                  {messages.map((message) => (
-                    <div key={message.MessageID} className={`message ${message.UserName === User.username ? 'self' : ''}`}>
-                      <strong>{message.UserName === User.username ? '' : prefName}{message.UserName === User.username ? '' : ':'}</strong> {message.MessageContent}
-                      <div className={'timestamp'}>
-                        {new Date(message.MessageTimestamp).toLocaleString()}
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={msgEndRef}/>
-                </div>
-
-                <div className={'messageInput'}>
-                  <input
-                    type="text"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type a message"
-                    className={'input'}
-                  />
-                  <button
-                    onClick={sendMessage}
-                    className={'sendButton'}
+        <div className={'container'}>
+          <h1 className={'header'}>Direct Messages</h1>
+          <div className={'content'}>     
+            <div className={'dmsidebar'}>
+              
+              <NewConversationForm setConversations={setConversations} />
+              <h2>Conversations</h2>
+              <ul className={'conversationList'}>
+                {conversations.map((conversation) => (
+                  <li
+                    key={conversation.conversation_id}
+                    className={`${'conversationItem'} ${selectedConversation?.conversation_id === conversation.conversation_id ? 'selected' : ''}`}
+                    onClick={() => setSelectedConversation(conversation)}
                   >
-                    Send
-                  </button>
-                </div>
-              </>
-            ) : (
-              <p>Select a conversation to view messages.</p>
-            )}
+                    {conversation.participants.filter(user => user !== User.username).map((user) => user).join(', ')}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className={'messagesContainer'}>
+              {selectedConversation ? (
+                <>
+                  <h2 className='UserInfo'>
+                    <img src = {convoimage} className='convopfp'/>
+                    {`${prefName} (${selectedConversation.participants.filter(user => user !== User.username).map(user => user).join(', ')})`}
+                  </h2>
+                  <div className={'messageList'}>
+                    {messages.map((message) => (
+                      <div key={message.MessageID} className={`message ${message.UserName === User.username ? 'self' : ''}`}>
+                        <strong>{message.UserName === User.username ? '' : prefName}{message.UserName === User.username ? '' : ':'}</strong> {message.MessageContent}
+                        <div className={'timestamp'}>
+                          {new Date(message.MessageTimestamp).toLocaleString()}
+                        </div>
+                      </div>
+                    ))}
+                    <div ref={msgEndRef}/>
+                  </div>
+
+                  <div className={'messageInput'}>
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Type a message"
+                      className={'input'}
+                    />
+                    <button
+                      onClick={sendMessage}
+                      className={'sendButton'}
+                    >
+                      Send
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <p>Select a conversation to view messages.</p>
+              )}
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </ProtectedRoute>
   );

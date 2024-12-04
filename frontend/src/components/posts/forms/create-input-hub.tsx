@@ -25,7 +25,7 @@ const HubInput: FC = () => {
                     console.log("Got hubs list");
                     setHubs(response.data);
 
-                    if (localStorage.getItem("hubId") != null && localStorage.getItem("hubId") in response.data.map((hub: Hub) => hub.id)) {
+                    if (localStorage.getItem("hubId") != null && (response.data.map((hub: Hub) => hub.id)).includes(parseInt(localStorage.getItem("hubId"))) ) {
                         setDefaultHub(true);
                     }
 

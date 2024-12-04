@@ -1,6 +1,10 @@
 /*CAME WITH THIS IN CREATE NEXT APP*/
 import localFont from "next/font/local";
 import "./globals.css";
+import RebelHubNavBar from "@/components/navbar/RebelHubNavBar";
+import Sidebar from "@/components/sidebar/sidebar";
+
+import margins from "@/utils/Margins.module.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,7 +26,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        <RebelHubNavBar/>
+        <Sidebar/>
+        <div className={margins.margins}>
+          {children}
+        </div>
       </body>
     </html>
   );

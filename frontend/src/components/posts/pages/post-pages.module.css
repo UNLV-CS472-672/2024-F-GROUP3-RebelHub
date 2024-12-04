@@ -1,8 +1,3 @@
-.body {
-    background-color: black;
-    min-height: 100vh;
-}
-
 .postsPageContainer {
     display: grid;
     grid-row-start: auto;
@@ -25,8 +20,4 @@
 .hubsAndPostsContainer {
     display: grid;
     grid-template-columns: 1fr;
-}
-
-.margins {
-    margin-left: 13.3vw;
 }

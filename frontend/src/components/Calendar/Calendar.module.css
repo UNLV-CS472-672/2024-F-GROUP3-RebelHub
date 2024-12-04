@@ -1,6 +1,6 @@
 /* Calendar Container */
 .calendar {
-    width: calc(100vw - 15px); /* Makes calendar cover the entire width of browser window size aside from scroll bar on right */
+    width: 100%; /* Makes calendar cover the entire width of browser window size aside from scroll bar on right */
     border: clamp(3px, .55rem, .55rem) solid #CF0A2C; 
     border-radius: 1.5%; 
     overflow: hidden; 

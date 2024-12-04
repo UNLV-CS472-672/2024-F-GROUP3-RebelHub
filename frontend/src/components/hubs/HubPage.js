@@ -305,51 +305,6 @@ const HubPage = ({id}) => {
 				</div>
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
-					{hubOwner ? 
-						(
-						<div className={styles.hubButtonContainer}>
-						<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
-						<button 
-							className={styles.hubActionButton}
-							style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
-							onClick={() => {
-								const isConfirmed = window.confirm("Are you sure you want to delete this hub?");
-								if(isConfirmed)
-								{
-									handleDeleteHub();
-								}
-							}}
-						> 
-							DELETE HUB 
-					     	</button>
-						</div>
-					) :
-					    (hubJoined ? (
-
-						<div className={styles.hubButtonContainer}>
-							<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
-							<button 
-								className={styles.hubActionButton}
-								style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
-								onClick={() => {
-									const isConfirmed = window.confirm("Are you sure you want to leave this hub?");
-									if(isConfirmed)
-									{
-										handleLeave();
-									}
-								}}
-							  > 
-								LEAVE HUB 
-							  </button>
-						</div>
-					 ) :
-
-					     (<button
-						     className={styles.hubActionButton} 
-						     onClick={handleJoin}
-					      > 
-						     JOIN HUB 
-					      </button>))}
 				</div>
 				<div className={styles.hubPageContentContainer}>
 					<PostList className={styles.postsList} posts={hubPosts}/>
@@ -505,7 +460,16 @@ const HubPage = ({id}) => {
 			
 					
 			{/* the hubs calander events component can go here */}
-			<FilterPostButtons posts={hubPosts} setPosts={setHubPosts} postsUrl={getPostsHubUrl} current_hub_id={id} tags={postTags} />
+			<div className={styles.filterButtons}>
+				<FilterPostButtons 
+					posts={hubPosts} 
+					setPosts={setHubPosts} 
+					postsUrl={getPostsHubUrl} 
+					current_hub_id={id} 
+					tags={postTags} 
+				/>
+			</div>
+
 			{showTagUpdate && <PostTagUpdateModal hub={id} onClose={() => setShowTagUpdate(false)} setTags={setPostTags} setHubPosts={setHubPosts}/>}
 			 {/*nothing is where the request buttons should
 		            appear and any other content a private hub

@@ -23,7 +23,7 @@ const Hubs = () => {
     }, []);
 
     return (
-        <main className={styles.mainContent}>
+        <main>
             <header className={styles.header}>
                 <h1 style={{ marginBottom: '2vh' }}>Hubs</h1>
                 <FilterHubButtons hubs={hubs} setHubs={setHubs}/>

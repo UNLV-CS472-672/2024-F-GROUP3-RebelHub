@@ -110,7 +110,6 @@ const AccountButton = (props) => {
 				// edit profile page.
 				if (props.username != null) {
 					const response = await api.get(getCurrentUserUrl());
-					console.log("account success", response);
 
 					setEditProfileLink(response.data.id == props.username);
 				}

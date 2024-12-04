@@ -95,9 +95,7 @@ export default function ProfileEdit(){
     return (
         <ProtectedRoute>
             <div>
-                <RebelHubNavBar />
                   <div style={{ display: 'flex' }}>
-                    <Sidebar />
                     <div className="container">
                         <form onSubmit={(e) => e.preventDefault()}>
                             <div className="profile">
