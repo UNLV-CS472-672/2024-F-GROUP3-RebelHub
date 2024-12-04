@@ -12,6 +12,7 @@
   font-size: 2rem;
   margin-bottom: 20px;
   color: #fff;
+  background-color: #000;
 }
 
 .UserInfo{
@@ -20,6 +21,7 @@
   padding-bottom:5px;
   align-items: center;
   gap: 10px;
+  font-size: 1.5rem;
 }
 
 .convopfp{
@@ -39,7 +41,7 @@
 .dmsidebar {
   width: 30%;
   padding: 0px 20px;
-  background-color: transparent;
+  background-color: black;
   border-radius: 8px;
   margin-left: 50px;
   margin-right: 20px;
@@ -52,6 +54,7 @@
   list-style: none;
   padding-left: 0;
   font-weight: bold;
+  font-size:large;
   padding: 5px 0px;
 }
 

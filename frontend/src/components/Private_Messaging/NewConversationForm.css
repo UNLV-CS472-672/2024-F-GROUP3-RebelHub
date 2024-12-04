@@ -21,6 +21,7 @@
     border: 1px solid #ddd;
     font-size: 1rem;
     background-color: #f7f7f7;
+    color: black;
     transition: border-color 0.3s ease;
     height: 100%;  
   }
