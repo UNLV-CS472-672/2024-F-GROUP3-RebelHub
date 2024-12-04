@@ -7,8 +7,8 @@ import PictureGallery from '../../components/Picture/Picture'
 import './profile.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProtectedRoute from '../../components/Accounts/ProtectedRoutes'
-import api from '@/utils/api'
+import ProtectedRoute from '../../components/Accounts/ProtectedRoutes';
+import api from '@/utils/api';
 import { getPostCountUrl, getProfileUrl } from '@/utils/url-segments';
 import { useRouter } from 'next/navigation';
 

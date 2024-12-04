@@ -35,7 +35,7 @@ class ConversationModelTest(TestCase):
         self.conversation.add_message(user=self.user2, content="Second Message")
         messages = self.conversation.fetch_messages()
         self.assertEqual(len(messages), 2)
-        self.assertEqual(messages[0]["Message Content"], "First Message")
+        self.assertEqual(messages[0]["MessageContent"], "First Message")
 
     def test_add_participants_valid(self):
         conversation = Conversation.objects.create(creator_id=self.user1)

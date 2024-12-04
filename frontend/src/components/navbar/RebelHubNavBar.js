@@ -26,7 +26,7 @@ const RebelHubNavBar = () => {
 	};
 	const messageButtonPressed = () => {
 		console.log("pressed message button");
-		//router.push("/"); <--- go to the dms page 
+		window.location.href='/messages/';
 	};
 	const settingsButtonPressed = () => {
 		console.log("pressed settings button");

@@ -6,11 +6,13 @@ from .serializers import ConversationSerializer
 from django.contrib.auth.models import User
 from .models import Message
 from .serializers import MessageSerializer
+from django.db.models import Max
 
 class CreateConversation(APIView):
-    async def createConversation(self, request, recipient_id):
+    def post(self, request):
         creator = request.user 
-        other_participant = User.objects.get(id=recipient_id)  
+        recipient = request.data['recipient_id']
+        other_participant = User.objects.get(username=recipient)  
         participants = User.objects.filter(id__in=[creator.id, other_participant.id])
 
         if participants.count() != 2:
@@ -29,7 +31,7 @@ class CreateConversation(APIView):
 
 class CreateMessage(APIView):
     
-    async def createMessage(self, request, conversation_id):
+    def post(self, request, conversation_id):
         creator = request.user
         message_content = request.data.get("message_content")
         if not message_content:
@@ -44,16 +46,18 @@ class CreateMessage(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class ConversationList(APIView):
-    async def getConversations(self, request):
+    def get(self, request):
         user = request.user
         # Conversation list based on what last conversation had
-        conversations = Conversation.objects.filter(participants=user).order_by('-timestamp')
+        conversations = Conversation.objects.filter(participants=user)
+        conversations = conversations.annotate(latest_message_timestamp=Max('messages__message_timestamp'))
+        conversations = conversations.order_by('-latest_message_timestamp')
         serializer = ConversationSerializer(conversations, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class MessageList(APIView):
-    async def getMessages(self, request, conversation_id):
+    def get(self, request, conversation_id):
         user = request.user
         try:
             conversation_messages = Conversation.objects.get(conversation_id=conversation_id, participants=user)

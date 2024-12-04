@@ -126,7 +126,7 @@ const AccountButton = (props) => {
 		console.log("pressed acc");
 		// router.push("/"); <--- go to the user's profile page.
 		if (editProfileLink === true) {
-			router.push("/profile/");
+			window.location.href='/profile';
 		} else if (profileName != "" || profileName != null) {
 			router.push(`/profile/${profileName}/`);
 		} else {
