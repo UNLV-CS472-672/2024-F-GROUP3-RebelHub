@@ -7,47 +7,49 @@ import { useEffect, useState } from "react";
 import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
 import DeletePostButton from "./buttons/delete-post-button";
 import EditPostButton from "./buttons/edit-post-button";
-import { displayPicture, getDislikePostUrl, getHubUrl, getLikePostUrl, gotoHubPage } from "@/utils/url-segments";
+import { displayPicture, getDislikePostUrl, getHubUrl, getLikePostUrl, getPostTagUrl, gotoHubPage } from "@/utils/url-segments";
 import RecursiveCommentList from "../comments/RecursiveCommentList";
 import CreateCommentButton from "../comments/buttons/CreateCommentButton";
 import  { formatDate } from "@/utils/datetime-conversion";
 import EditedHover from "./others/EditedHover";
+import TagPostButton from "./buttons/tag-post-button";
+import api from "@/utils/api";
 import AccountButton from "../navbar/AccountButton";
 import Link from "next/link";
-import api from "@/utils/api";
 
-interface ComponentProps {
-    post: Post;
-}
+    interface ComponentProps {
+        post: Post;
+    }
 
-/*
-    Post Summary Detailed
-    
-    This component displays detailed information about a post.
+    /*
+        Post Summary Detailed
+        
+        This component displays detailed information about a post.
 
-    post: a post object
-*/
+        post: a post object
+    */
 
-const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
-    const [showCreateComment, setShowCreateComment] = useState(false);
+    const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
+        const [showCreateComment, setShowCreateComment] = useState(false);
     const [isAuthor, setIsAuthor] = useState(false);
-    const [isMod, setIsMod] = useState(false);
-    const [refresh, setRefresh] = useState(false);
+        const [isMod, setIsMod] = useState(false);
+        const [refresh, setRefresh] = useState(false);
+        const [postTag, setPostTag] = useState(null);
     const [hubName, setHubName] = useState("");
 
-    useEffect(() => {
-        const fetchPrivileges = async () => {
-            const authorPrivileges = await checkAuthorPrivileges(post.author);
-            
-            if(authorPrivileges) {
-                setIsAuthor(authorPrivileges);
-                return;
+        useEffect(() => {
+            const fetchPrivileges = async () => {
+                const authorPrivileges = await checkAuthorPrivileges(post.author);
+                
+                if(authorPrivileges) {
+                    setIsAuthor(authorPrivileges);
+                    return;
+                }
+
+                const hubPrivileges = await checkHubPrivileges(post.hub);
+                setIsMod(hubPrivileges);
             }
-
-            const hubPrivileges = await checkHubPrivileges(post.hub);
-            setIsMod(hubPrivileges);
-        }
-
+    
         const fetchHubName = async () => {
             try {
                 const response = await api.get(getHubUrl(post.hub));
@@ -62,16 +64,25 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
 
         fetchHubName();
         fetchPrivileges();
-    }, []);
 
-    // Function to refresh the component but not reload the page
-    const refreshComponent = () => {
-        setRefresh(!refresh);
-    };
+            const fetchPostTag = async () => {
+                if(post.tag != null){
+                    const response = await api.get(getPostTagUrl(post.tag));
+                    setPostTag(response.data);
+                } 
+            }
+            fetchPostTag();
+        }, []);
+
+        // Function to refresh the component but not reload the page
+        const refreshComponent = () => {
+            setRefresh(!refresh);
+        };
 
     return (
         <div className={styles.detailedPostContainer}>
             <div className={styles.detailedPostElement}>
+                {postTag && <h2 style={{backgroundColor:postTag.color}} className={styles.postTag}>{postTag.name}</h2>}
                 <h1>
                     {post.title}
                 </h1>
@@ -120,11 +131,13 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                         <>
                             <EditPostButton post={post} refreshComponent={refreshComponent} />
                             <DeletePostButton post={post} />
+                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
                         </>
                     }
                     {!isAuthor && isMod &&
                         <>
                             <DeletePostButton post={post} />
+                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
                         </>
                     }
                         <CreateCommentButton 
@@ -145,4 +158,4 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
     )
 }
 
-export default PostSummaryDetailed;
+    export default PostSummaryDetailed;

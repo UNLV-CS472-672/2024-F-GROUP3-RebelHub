@@ -3,6 +3,7 @@
     color:black;
     padding: 1px;
     cursor: pointer;
+    user-select: none;
 }
 
 .likeButton {

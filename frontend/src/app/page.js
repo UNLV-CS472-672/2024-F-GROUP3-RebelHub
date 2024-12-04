@@ -1,35 +1,61 @@
 "use client";
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import RebelHubNavBar from '../components/navbar/RebelHubNavBar';
 import ProtectedRoute from '../components/Accounts/ProtectedRoutes'
-
+import './home.css'
+import Sidebar from "@/components/sidebar/sidebar";
+import api from "@/utils/api";
+import PostList from '@/components/posts/post-list';
+import styles from "@/components/hubs/HubPage.module.css";
+import {getJoinedHubsUrl, getPostsHubUrl} from "@/utils/url-segments";
 
 
 const Home = () => {
-	const [dummyHubs, setDummyHubs] = useState([]);
+	const[joinedHubs,setJoinedHubs]=useState([]);
+	const [hubPosts, setHubPosts] = useState([]);
+	const[ids,setIds]=useState([]);
 
-	useEffect(() => {
-		console.log("fetching...");
-		const fetchDummyHubs = async () => {
-			try{
-				const response = await axios.get('http://localhost:8000/api/dummyhubs/'); 
-				setDummyHubs(response.data);
-			} catch (error) {
-				console.log("error fetching data: ", error);
+	const allHubsJoinedPosts = async () => {
+    try {
+		const response = await api.get(getJoinedHubsUrl());
+			const hubIds = response.data.map(hub => hub.id);
+			// Map to get all IDs
+			if (hubIds.length > 0) {
+			const postRequests = hubIds.map(id => api.get(getPostsHubUrl(id)));
+
+        // Wait for all API calls to finish using Promise.all
+        const postResponses = await Promise.all(postRequests);
+
+        // Extract the posts from the responses and flatten the array
+        const allPosts = postResponses.map(response => response.data).flat();
+
+        // Set the posts to the state
+        setHubPosts(allPosts);
+				console.log(allPosts);
 			}
-		};
-		fetchDummyHubs();
+		}catch(error){
+		alert(error)
+		}
+	}
+	useEffect(() => {
+	allHubsJoinedPosts();
 	}, []);
 
 	return (
+
 			<main>
 				<RebelHubNavBar></RebelHubNavBar>
-				<h1>Rebel Hubs HOME</h1>
-				<h2>Hub test:</h2>
-				<ul>
-					{dummyHubs.map((hub) => (<li key={hub.id}>{hub.name + hub.description}</li>))}
-				</ul>
+
+					<Sidebar className="sidebar"/>
+					<div className="posts-container">
+						<PostList className={styles.postsList} posts={hubPosts}/>
+					</div>
+
+
+
+
+
 			</main>
 
 	);

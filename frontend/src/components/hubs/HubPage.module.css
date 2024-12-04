@@ -1,24 +1,47 @@
 .pageBG{
 	/*the image shoudl be whatever the hubs background image is*/
+	background-color: rgba(226,24,55,0.7);
 	background-image: url(https://img.freepik.com/free-vector/circuit-board-neon-background_23-2148335792.jpg);
 	background-size: cover;
 	background-position: center;
 
 	/* i set the height so the whole page is taken up, but we can omit it once we fill it with content*/
-	height: 100vh; 
+	height: 100%; 
+
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+}
+
+.updateHubInfoBtn{
+	width: 100px;
+	height: 50px;
+}
+.hubHeader{
+	background-size: contain;
+	background-position: center;
+	background-repeat: repeat-x;
 }
 
 /* hub view container holds heading, hub name, hub desc, details, owner, timestamp */
 .hubViewContainer{
-	background-color: rgba(227, 24, 55, 0.9);
 	border: 2px solid black;
 	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
 }
 
 .hubViewHeading{
-	justify-content: center;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
 }
+
 .hubName{
+	width: 50%;
+	border-radius: 20px;
+	background-color: rgba(0,0,0, 0.8);
 	font-size: 70px;
 	color: white;
 	text-align: center;
@@ -27,28 +50,46 @@
 	text-align: center;
 	color: white;
 }
+
 .hubDescription{
+	padding-top: 10px;
+	padding-bottom: 10px;
+	width: 70%;
+	align: center;
+	margin: 20px;
 	text-align: center;
 	color: white;
+	background-color: rgba(0,0,0, 0.8);
 }
 
 .hubViewDetails{
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	padding-left: 20px;
 }
 .hubOwner{
 	color: white;
-	flex: 2;
+	flex: 1;
+}
+
+.eventContainer{
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	justify-content: center;
+}
+.eventSectionTitle{
+	text-align: center;
 }
 
 .postTitleContainer{
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	text-align: left;
+	text-align: center;
 }
 .postTitle{
+	text-align: center;
 	padding-left: 80px;
 	padding-top: 80px;
 }
@@ -60,10 +101,15 @@
 	background-color: rgba(227,24,55,0.9);
 }
 .parentContentContainer{
+	/*margin-left: 15px;
+	margin-right: 15px;*/
 	background-color: rgba(0,0,0,0.5);
-	height: 100vh;
+	height: 100%;
 }
 
+.hubButtonContainer{
+	margin-right: 20px;
+}
 
 
 /* container for holding the posts and members list */
@@ -71,14 +117,38 @@
 	padding-top: 50px;
 	display: grid;
 	grid-template-columns: 1fr auto;
-	gap: 50px;
+	gap: 90px;
 	justify-content: space-between;
 	width: 100%;
+	margin: 10px;
 }
 
+.postsList{
+}
 
 .membersListsContainer{
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 00px;
+	padding-left: 100px;
+	margin-right: 20px;
+}
+
+.hubTagList {
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    align-items: center;
+    gap: 0.5rem; 
+    margin: 0 auto;
+    text-align: center;
+}
+.hubTag {
+	margin-top: 2vh;
+    color: white;
+    background-color: rgba(255, 255, 0, 0.8);
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    max-width: fit-content;
 }

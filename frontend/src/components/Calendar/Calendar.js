@@ -275,17 +275,11 @@ const Calendar = () => {
 
       {/* Modal for an event is displayed when an event is clicked on */}
       {/* Modal uses another component with the EventModal.js file */}
-      <EventModal
-        event={currentEvent}
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onEdit={openUpdateForm}
-        onDelete={deleteEvent}
-      />
+      {isModalOpen && <EventModal event={currentEvent} isOpen={isModalOpen} onClose={closeModal} onEdit={openUpdateForm} onDelete={deleteEvent}/> }
       
       {/* Display update form and create form */}
-      {isUpdateOpen && <UpdateForm event={currentUpdate} isOpen={isUpdateOpen} onClose={closeUpdateForm} onUpdate={updateEvent}/>}
-      {isCreateOpen && <CreateForm isCreateOpen={isCreateOpen} onClose={closeCreateForm} onCreate={createEvent} hubsModding={hubsModding}/>}
+      {isUpdateOpen && <UpdateForm event={currentUpdate} onClose={closeUpdateForm} onUpdate={updateEvent}/>}
+      {isCreateOpen && <CreateForm onClose={closeCreateForm} onCreate={createEvent} hubsModding={hubsModding}/>}
 
     </div>
   );

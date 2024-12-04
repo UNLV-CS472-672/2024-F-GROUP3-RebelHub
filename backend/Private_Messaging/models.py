@@ -25,8 +25,8 @@ class Conversation(models.Model):
     # Viewing all messages in conversation   
     def fetch_messages(self):
         messages = Message.objects.filter(conversation_id=self).order_by('message_timestamp')
-        return [{ "Message ID": message.message_id, "user ID": message.user_id.id, "User Name": message.user_id.username, 
-                    "Message Content": message.message_content,"Message Timestamp": message.message_timestamp,}
+        return [{ "MessageID": message.message_id, "userID": message.user_id.id, "UserName": message.user_id.username, 
+                    "MessageContent": message.message_content,"MessageTimestamp": message.message_timestamp,}
                 for message in messages
             ]
 

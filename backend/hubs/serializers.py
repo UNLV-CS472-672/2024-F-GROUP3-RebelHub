@@ -1,10 +1,25 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Hub
+from Events.models import Event
+from django.utils import timezone
+from Tags.serializers import HubTagsSerializer
+from Tags.models import Hub_Tag
+from rest_framework.exceptions import PermissionDenied
 from hubs.filter import inappropriate_language_filter 
+from Events.models import Event
+
+#Serializer used to read events.
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
+
 #Serializer for a Hub model with all fields included.
 #This serializer represents a hub
 class HubSerializer(serializers.ModelSerializer):
+    events = EventSerializer(many=True, read_only=True)
+
     class Meta:
         model = Hub
         fields = '__all__'
@@ -22,7 +37,7 @@ class HubSerializer(serializers.ModelSerializer):
 class HubTLSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hub
-        fields = ['id', 'name', 'description', 'owner', 'members', 'created_at', 'private_hub']
+        fields = ['id', 'name', 'description', 'owner', 'members', 'created_at', 'private_hub', 'tags']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -71,8 +86,7 @@ class HubCreateSerializer(serializers.ModelSerializer):
 class HubUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hub
-        fields = ['name', 'description', 'private_hub'] 
-
+        fields = ['name', 'description', 'private_hub', 'tags', 'bg', 'banner'] 
     def validate(self, data):
         request = self.context.get('request')
         user = request.user
@@ -106,6 +120,8 @@ class HubUpdateSerializer(serializers.ModelSerializer):
         if instance.owner == user or user in instance.mods.all():
             instance.name = validated_data.get('name', instance.name)
             instance.description = validated_data.get('description', instance.description)
+            instance.bg = validated_data.get('bg', instance.bg)
+            instance.banner = validated_data.get('banner', instance.banner)
             if set_public:
                 for user in instance.pending_members.all():
                     instance.pending_members.remove(user)
@@ -389,5 +405,48 @@ class HubRemoveModSerializer(serializers.ModelSerializer):
         instance.mods.remove(mod_to_kick)
         instance.save()
         return instance
+    
+# Serializer for hubs with tags
+class FilterHubsSerializer(serializers.ModelSerializer):
+    hub_events = serializers.SerializerMethodField() # Used to return event objects
+    tags = HubTagsSerializer(many=True)
+    class Meta:
+        model = Hub
+        fields = ['id', 'name', 'description', 'owner', 'mods', 'members', 'created_at', 'private_hub', 'hub_events', 'tags']
 
+    def get_hub_events(self, obj):
+        from Events.serializers import EventSerializer  # Imported here in order to avoid circular import issues
+        now = timezone.now()
 
+        # Get only the next 3 upcoming events
+        events = Event.objects.filter(hub=obj, start_time__gte=now).order_by('start_time')[:3]
+        return EventSerializer(events, many=True, context=self.context).data
+
+class HubTagUpdateSerializer(serializers.ModelSerializer):
+    tags = serializers.PrimaryKeyRelatedField(queryset=Hub_Tag.objects.all(), many=True)
+
+    class Meta:
+        model = Hub
+        fields = ['id', 'tags']
+
+    def validate(self, data):
+        request = self.context.get('request')
+        user = request.user
+        hub = self.instance 
+
+        if user != hub.owner and user not in hub.mods.all():
+            raise PermissionDenied("You are not the owner or a moderator of this hub.")
+    
+        if len(data['tags']) > 5:
+            raise serializers.ValidationError("A hub cannot have more than 5 hub tags.")
+
+        return data
+
+    def update(self, instance, validated_data): 
+        tags = validated_data.get('tags', [])
+
+        # Update the tags (set automatically replaces the existing tags)
+        instance.tags.set(tags)
+        instance.save()
+
+        return instance

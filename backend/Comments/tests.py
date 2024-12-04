@@ -166,4 +166,14 @@ class CommentViewTestsCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 0)  
         
-        
+# Test for filter.py        
+class FilterFunctionTestCase(TestCase):
+    def test_inappropriate_language_filter(self):
+        self.assertTrue(inappropriate_language_filter("Shit post"))
+        self.assertTrue(inappropriate_language_filter("fuck"))
+        self.assertTrue(inappropriate_language_filter("BITCH"))
+        self.assertTrue(inappropriate_language_filter("crap."))
+
+        self.assertFalse(inappropriate_language_filter("Nice, and this is a clean post."))
+        self.assertFalse(inappropriate_language_filter("Nothing bad here."))
+        self.assertFalse(inappropriate_language_filter("What a nice day."))
