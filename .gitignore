@@ -9,7 +9,7 @@ venv/
 htmlcov/
 # Django related
 backend/db.sqlite3
-backend/media/users
+backend/media/*
 
 #This is logs for debugging
 backend/logs/django.log
