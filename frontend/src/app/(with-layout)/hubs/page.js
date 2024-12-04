@@ -1,5 +1,5 @@
 "use client";
-import TwoSideView from '../../components/hubs/TwoSideView';
+import TwoSideView from '@/components/hubs/TwoSideView';
 import RebelHubNavBar from '@/components/navbar/RebelHubNavBar';
 import ProtectedRoute from '@/components/Accounts/ProtectedRoutes';
 import HubListView from '@/components/hubs/HubListView';

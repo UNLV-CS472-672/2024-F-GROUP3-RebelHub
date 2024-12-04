@@ -1,5 +1,5 @@
 .sidebar {
-    width: 13.3vw; /* Remember to change margins's margin-left */
+    width: 150px; /* Remember to change margins's margin-left */
     background-color: transparent;
     height: 100vh;
     position: fixed;
@@ -11,6 +11,6 @@
 }
 
 .margins {
-    margin-left: 13.3vw; /* Remember to change sidebar's width */
+    margin-left: 150px; /* Remember to change sidebar's width */
     padding: 10px;
 }

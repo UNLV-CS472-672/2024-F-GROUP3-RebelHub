@@ -1,8 +1,8 @@
 "use client";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import RebelHubNavBar from '../components/navbar/RebelHubNavBar';
-import ProtectedRoute from '../components/Accounts/ProtectedRoutes'
+import RebelHubNavBar from '@/components/navbar/RebelHubNavBar';
+import ProtectedRoute from '@/components/Accounts/ProtectedRoutes'
 import './home.css'
 import Sidebar from "@/components/sidebar/sidebar";
 import api from "@/utils/api";

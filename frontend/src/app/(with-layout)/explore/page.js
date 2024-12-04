@@ -1,9 +1,9 @@
 "use client";
 import {useState } from 'react';
-import Posts from "../../components/Explore/Posts";
-import ProtectedRoute from '../../components/Accounts/ProtectedRoutes';
-import styles from "../../components/Explore/Explore.module.css";
-import Hubs from "../../components/Explore/Hubs.js";
+import Posts from "@/components/Explore/Posts";
+import ProtectedRoute from '@/components/Accounts/ProtectedRoutes';
+import styles from "@/components/Explore/Explore.module.css";
+import Hubs from "@/components/Explore/Hubs.js";
 
 const Home = () => {
 	const [isPostPage, setIsPostPage] = useState(true);

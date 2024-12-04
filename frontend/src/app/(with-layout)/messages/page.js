@@ -1,9 +1,9 @@
 "use client"
 import { useEffect, useState, useRef } from 'react';
-import Sidebar from '../../components/sidebar/sidebar';
-import RebelHubNavBar from '../../components/navbar/RebelHubNavBar';
-import ProtectedRoute from '../../components/Accounts/ProtectedRoutes';
-import NewConversationForm from '../../components/Private_Messaging/NewConversationForm';
+import Sidebar from '@/components/sidebar/sidebar';
+import RebelHubNavBar from '@/components/navbar/RebelHubNavBar';
+import ProtectedRoute from '@/components/Accounts/ProtectedRoutes';
+import NewConversationForm from '@/components/Private_Messaging/NewConversationForm';
 
 import api from '@/utils/api';
 import { getPMListURL, getCurrentUserUrl, getPMSendURL, getConverstationMessagesURL, getOtherProfileUrl } from '@/utils/url-segments';

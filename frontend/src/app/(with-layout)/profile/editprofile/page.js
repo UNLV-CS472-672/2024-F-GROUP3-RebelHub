@@ -1,11 +1,11 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import './profileedit.css';
-import RebelHubNavBar from '../../../components/navbar/RebelHubNavBar';
-import ProtectedRoute from '../../../components/Accounts/ProtectedRoutes'
+import RebelHubNavBar from '@/components/navbar/RebelHubNavBar';
+import ProtectedRoute from '@/components/Accounts/ProtectedRoutes'
 import { getProfileUrl } from '@/utils/url-segments';
 import api from '@/utils/api';
-import Sidebar from '../../../components/sidebar/sidebar';
+import Sidebar from '@/components/sidebar/sidebar';
 import { useRouter } from 'next/navigation';
 
 

@@ -1,7 +1,7 @@
 "use client";
 
-import Calendar from "../../components/Calendar/Calendar";
-import ProtectedRoute from '../../components/Accounts/ProtectedRoutes';
+import Calendar from "@/components/Calendar/Calendar";
+import ProtectedRoute from '@/components/Accounts/ProtectedRoutes';
 
 const Home = () => {
 	return (
