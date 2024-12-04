@@ -13,7 +13,7 @@ const HubListPage = () => {
 		<div style={{ padding: '5%' }}>
 			<TwoSideView leftContent={<HubListView/>} 
 				     rightContent={<HubCreate/>} />
-		< /div>
+		</div>
 		</div>
 		</>
 	);
