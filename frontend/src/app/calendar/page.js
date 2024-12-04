@@ -1,17 +1,21 @@
 "use client";
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 import Calendar from "../../components/Calendar/Calendar";
 import ProtectedRoute from '../../components/Accounts/ProtectedRoutes';
+import SideBar from "@/components/sidebar/sidebar";
+import RebelHubNavBar from "../../components/navbar/RebelHubNavBar.js";
 
-const Home = () => {
+const CalendarPage = () => {
 	return (
 		<ProtectedRoute>
-			<main style={{ backgroundColor: '#f2f2f2'}}>
-				<Calendar></Calendar>
-			</main>
+			<div>
+				<RebelHubNavBar/>
+				<div style={{display:'flex'	}}>
+					<SideBar/>
+					<Calendar/>
+				</div>
+			</div>
 		</ProtectedRoute>
 	);
 };
 
-export default Home;
+export default CalendarPage;
