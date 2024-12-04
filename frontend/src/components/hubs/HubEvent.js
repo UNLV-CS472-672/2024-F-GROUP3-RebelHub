@@ -4,9 +4,11 @@ import { getEventListUrl } from '@/utils/url-segments';
 import styles from './HubEvent.module.css';
 import api from '@/utils/api';
 import { formatDate } from '@/utils/datetime-conversion';
+import EventModal from '@/components/Calendar/EventModal';
 
 
 const SingleEvent = ({data}) => {
+
 
 	const hexToRGBA = (hexColor) => {
 		const hex = hexColor.replace(/^#/, '');
@@ -17,13 +19,14 @@ const SingleEvent = ({data}) => {
 		return `rgba(${r}, ${g}, ${b}, 0.5)`;
 	};
 
+
 	return(
 		<div 
 			className={styles.singleEvent}
 			style={{
 				backgroundColor: data.color ? hexToRGBA(data.color) : "rgba(255,255,255,0.5)"
 			}}
-		>
+	>
 			<h1 className={styles.singleEventTitle} > {data.title} </h1>
 			<ul className={styles.singleEventData} > 
 				<li className={styles.singleEventDataLI}>
@@ -40,6 +43,7 @@ const SingleEvent = ({data}) => {
 					}
 				</li>
 			</ul>
+			
 		</div>
 	);
 };
@@ -47,6 +51,18 @@ const SingleEvent = ({data}) => {
 
 const HubEvent = ({data}) => {
 	const [hubEvents, setHubEvents] = useState(null);
+
+	const [openModal, setOpenModal] = useState(false);
+	const [modalEvent, setModalEvent] = useState(null);
+
+
+
+	const handleClose = () => {
+		setOpenModal(false);
+		setModalEvent(null);
+		console.log("on closed!!#@");
+	};
+
 
 	useEffect(() => {
 		console.log("EVENT:", data);
@@ -64,13 +80,27 @@ const HubEvent = ({data}) => {
 					<li className={styles.eventLI}
 						key={index} 
 					>
-						<SingleEvent
-							data={e}
-						/>
+						<div
+							onClick={() => {
+								setOpenModal(true);
+								setModalEvent(e);
+							}}
+						>
+							<SingleEvent
+								data={e}
+							/>
+						</div>
 					</li>
 				))}
 			</ul>
-				) }
+			)}
+			{openModal && <EventModal event={modalEvent} 
+						  isOpen={openModal} 
+						  onClose={handleClose}
+						  onEdit={null}
+						  onDelete={null}
+							  />
+			}
 		</div>
 	);
 };
