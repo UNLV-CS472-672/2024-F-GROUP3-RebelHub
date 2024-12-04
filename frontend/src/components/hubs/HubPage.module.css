@@ -79,7 +79,11 @@
 	justify-content: center;
 }
 .eventSectionTitle{
-	text-align: center;
+	display: flex;
+	align-items: center;
+	align-self: center;
+	gap: 10px;
+	margin-bottom: 10px;
 }
 
 .postTitleContainer{

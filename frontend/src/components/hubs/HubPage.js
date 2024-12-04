@@ -84,6 +84,7 @@ const HubPage = ({id}) => {
 				const response = await api.get(getHubUrl(id));
 				if(response.status == 200) {
 				    setHubData(response.data);
+					setEvents(response.data.hub_events);
 					console.log("data: ", response.data);
 				}
 			    } catch (error) {
@@ -301,7 +302,7 @@ const HubPage = ({id}) => {
 	}
 
 	const createEvent = (newEvent) => {
-		setEvents((prev) => [newEvent, ...prev]);
+		setEvents((prev) => [...prev, newEvent]);
 		console.log("Created event: ", newEvent.title);
 	}
 
@@ -323,9 +324,13 @@ const HubPage = ({id}) => {
 		return(
 			<div className={styles.parentContentContainer}>
 				<div className={styles.eventContainer}>
-					<h1 className={styles.eventSectionTitle}> Latest Events </h1>
-					<button onClick={openCreateForm}>Create</button>
-					<HubEvent data={hubData.events} />
+					<h1 className={styles.eventSectionTitle}>
+						Latest Events
+						{hubOwner || hubMod &&
+							<button className={styles.hubActionButton} onClick={openCreateForm}>Create Event</button>
+						}
+					</h1>
+					<HubEvent data={events} />
 				</div>
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
@@ -504,7 +509,7 @@ const HubPage = ({id}) => {
 				<HubPageMainContent/>
 			)}
 			
-			{isCreateOpen && <CreateForm onClose={closeCreateForm} onCreate={createEvent} hubsModding={[id]}/>}
+			{isCreateOpen && <CreateForm onClose={closeCreateForm} onCreate={createEvent} hubsModding={[hubData]}/>}
 			
 		</div>
 		</>
