@@ -22,12 +22,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('testhubs.urls')),
     path('api/', include('Posts.urls')),
     path('api/', include('Comments.urls')), 
-    path('', include('calendar_app.urls')),
+    path('api/', include('Events.urls')),
     path('api/', include('users.urls')),
     path('api/', include('hubs.urls')),
+    path('api/', include('Tags.urls')),
     path('api/', include('Profile.urls')),
     path('api/', include('Pictures.urls')),
     path('api/', include('Private_Messaging.urls'))

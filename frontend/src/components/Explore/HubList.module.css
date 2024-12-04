@@ -1,0 +1,111 @@
+.hub-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.hub {
+    background-color: #b41d12;
+    border-radius: 8px;
+    padding: 1rem; 
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    text-align: left;
+    box-sizing: border-box; 
+    flex: 1 1 calc(33.333% - 1rem); 
+}
+
+.hub-name {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    white-space: normal; 
+    overflow-wrap: break-word; 
+    word-break: break-word;
+}
+
+.hub-description {
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 0.2rem;
+    white-space: normal; 
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.show-description{
+    color: black;
+    display: block; 
+    margin: 0 auto; 
+    padding: 0.2rem 0.5rem;
+    border-radius: 7px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.hub-tags {
+    color: white;
+    background-color: #fffff444; 
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    margin: 0.2rem 0;
+    margin-right: 0.1rem;
+    display: inline-block;
+    margin-top: auto;
+    font-size: 1rem;
+}
+
+.hub-event{
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    margin: 0.2rem 0;
+    margin-right: 0.1rem;
+    display: inline-block;
+    margin-top: auto;
+    font-size: 1rem;
+    cursor: pointer;
+    display:inline-block;
+    user-select: none;
+}
+
+@media (max-width: 1024px) {
+    .hub {
+        flex: 1 1 calc(50% - 1rem); 
+    }
+}
+
+@media (max-width: 768px) {
+    .hub {
+        flex: 1 1 100%; 
+    }
+}
+
+/* Horizontal lines */
+
+.grey-line{
+    height: 0.6vh;
+    width: 100%;
+    background-color: grey;
+    margin-bottom: .5vh;
+    border: none;
+}
+  
+.scarlet-line{
+    height: .6vh;
+    background-color: #CF0A2C;
+    margin-top: 0.5vh;
+    width: 100%;
+    border: none;
+}
+  
+.black-line{
+    height: 0.6vh;
+    width: 100%;
+    background-color: black;
+    margin-bottom: 0.3vh;
+    border: none;
+}

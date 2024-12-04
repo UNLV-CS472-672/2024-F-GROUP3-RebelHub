@@ -12,10 +12,13 @@ import {
     getLikePostUrl,
     gotoDetailedPostPage
 } from "@/utils/url-segments";
+import { displayPicture, getDislikePostUrl, getLikePostUrl, gotoDetailedPostPage, getPostTagUrl } from "@/utils/url-segments";
 import Link from "next/link";
 import DeletePostButton from "./buttons/delete-post-button";
 import styles from "./post-summary.module.css";
 import EditedHover from "./others/EditedHover";
+import TagPostButton from "./buttons/tag-post-button";
+import api from "@/utils/api";
 import api from "@/utils/api";
 
 interface ComponentProps {
@@ -40,6 +43,10 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
     const [refresh, setRefresh] = useState(false);
     const[username,setUsername]=useState("");
     const[hubName,setHubName]=useState("");
+    const [postTag, setPostTag] = useState(null);
+
+
+
     useEffect(() => {
         if (userId != null) {
             console.log(userId);
@@ -76,6 +83,16 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
         setIsMod(moddedHubs.includes(post.hub));
     }, [moddedHubs]);
 
+    useEffect(() => {
+        const fetchPostTag = async () => {
+            if (post.tag != null) {
+                const response = await api.get(getPostTagUrl(post.tag));
+                setPostTag(response.data);
+            }
+        };
+        fetchPostTag();
+    }, [post.tag]);
+
     const refreshComponent = () => {
         setRefresh(!refresh);
     }
@@ -105,9 +122,12 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
                     <div className={styles.postTitle}>
                         <div className={styles.postTitleComponent}>
                             <Link href={gotoDetailedPostPage(post.id)}>
-                                <h2 className={styles.postTitle}>
-                                    {post.title}
-                                </h2>
+                            <span>
+                                {postTag && <h2 style={{backgroundColor:postTag.color}} className={styles.postTag}>{postTag.name}</h2>}
+                                    <h2 className={styles.postTitle}>
+                                        {post.title}
+                                    </h2>
+                            </span>
                             </Link>
                         </div>
                         <div className={styles.postTitleComponent}>
@@ -128,12 +148,17 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
 
                                 <EditPostButton post={post} refreshComponent={refreshComponent}/>
                                 <DeletePostButton post={post}/>
+                                <DeletePostButton post={post} />
+                                <TagPostButton post={post} refreshComponent={refreshComponent}/>
                             </>
                         }
                         {!isAuthor && isMod &&
                             <>
                                 <div></div>
                                 <DeletePostButton post={post}/>
+                                <DeletePostButton post={post} />
+                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
+
                             </>
                         }
                     </div>

@@ -7,8 +7,13 @@ import api from '@/utils/api';
 import PostList from '@/components/posts/post-list';
 import MemberList from '@/components/hubs/MemberList';
 import HubEdit from '@/components/hubs/HubEdit';
-import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getRequestJoinHubUrl, getCancelRequestJoinHubUrl, getJoinHubUrl, getUpdateHubUrl, getLeaveHubUrl, getDeleteHubUrl } from "@/utils/url-segments";
+import HubEvent from '@/components/hubs/HubEvent';
+import PostTagUpdateModal from '@/components/hubs/PostTagUpdateModal.js';
+import AccountButton from '@/components/navbar/AccountButton';
+import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getRequestJoinHubUrl, getCancelRequestJoinHubUrl, getJoinHubUrl, getUpdateHubUrl, getLeaveHubUrl, getDeleteHubUrl, getPostTagsUrl, getHubTagsForAHubUrl, getUpdateHubTagsUrl } from "@/utils/url-segments";
 import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
+import FilterPostButtons from '@/components/FilterButtons/FilterPostButtons';
+
 import CreatePostButton from '../posts/buttons/create-post-button';
 /*
  * HUBDATA:
@@ -25,8 +30,10 @@ const HubPage = ({id}) => {
 
 	const [hubData, setHubData] = useState([]);
 	const [refreshCount, setRefreshCount] = useState(0);
+	const [postTags, setPostTags] = useState([]);
 
 	const [hubOwnerId, setHubOwnerId] = useState(-1);
+	const [hubOwnerUsername, setHubOwnerUsername] = useState("");
 	const [membersData, setMembersData] = useState([]);
 	const [pendingMembersData, setPendingMembersData] = useState([]);
 	const [moddingMembersData, setModdingMembersData] = useState([]);
@@ -35,8 +42,31 @@ const HubPage = ({id}) => {
 
 	const [isEditing, setIsEditing] = useState(false);
 
+	const [showTagUpdate, setShowTagUpdate] = useState(false);
+	const [hubTags, setHubTags] = useState([]);
+
 	const router = useRouter();
 
+	// Get the post tags and hub tags for the hub
+	useEffect(() => {
+		const fetchPostTags = async () => {
+			try {
+				const response = await api.get(getPostTagsUrl(id));
+				setPostTags(response.data);
+			} catch (error) { console.log("Error fetching post tags: ", error); }
+		};
+		fetchPostTags();
+		const fetchHubTags = async () => {
+			try {
+				const response = await api.get(getHubTagsForAHubUrl(id));
+				setHubTags(response.data);
+			} catch (error) { console.log("Error fetching hub tags: ", error); }
+		};
+		fetchHubTags();
+    }, []);
+	const [previewImage, setPreviewImage] = useState(null);
+	const [previewBanner, setPreviewBanner] = useState(null);
+  
 	/*
 	 * Calls the get hub by id so we can store the hub info.
 	 *
@@ -56,7 +86,7 @@ const HubPage = ({id}) => {
 		}
 		const getPostsHub = async () => {
 			    try {
-				const response = await api.get(getPostsHubUrl(id));
+				const response = await api.get(getPostsHubUrl(id, null, 'week', 'hot'));
 				if(response.status == 200) {
 				    setHubPosts(response.data);
 					console.log("data: ", response.data);
@@ -84,7 +114,6 @@ const HubPage = ({id}) => {
 				    try {
 					const response = await api.get(`http://localhost:8000/api/users/${UserId}/info`);
 					members.push(response.data);
-					console.log("response:", response.data);
 				    } catch (error) {
 					console.log("error fetching a member's info");
 					console.log(error);
@@ -102,7 +131,6 @@ const HubPage = ({id}) => {
 					try{
 						const response = await api.get(`http://localhost:8000/api/users/${UserId}/info`);
 						pendingMembers.push(response.data);
-						console.log("response: ", response.data);
 					} catch (error) {
 						console.log("error fetching a pending member's info");
 						console.log(error);
@@ -120,7 +148,6 @@ const HubPage = ({id}) => {
 					try{
 						const response = await api.get(`http://localhost:8000/api/users/${UserId}/info`);
 						moddingMembers.push(response.data);
-						console.log("response: ", response.data);
 					} catch (error) {
 						console.log("error fetching a modding member's info");
 						console.log(error);
@@ -129,19 +156,23 @@ const HubPage = ({id}) => {
 				setModdingMembersData(moddingMembers);
 			}
 		};
-		const getHubOwnerId = () => {
+		const getHubOwnerId = async () => {
 			if(hubData.owner)
 			{
 				setHubOwnerId(hubData.owner);
+				try{
+					const response = await api.get(`http://localhost:8000/api/users/${hubData.owner}/info`);
+					setHubOwnerUsername(response.data.username);
+				} catch (error) {
+					console.log("error fetching owner username", error);
+				}
 			}
 		};
+
 		getMembersInfo();
 		getPendingMembersInfo();
 		getModdingMembersInfo();
 		getHubOwnerId();
-		console.log(membersData);
-		console.log(pendingMembersData);
-		console.log(moddingMembersData);
      	}, [hubData]);
 
 
@@ -156,13 +187,29 @@ const HubPage = ({id}) => {
 	 */
 	const editButtonPress = () => {
 		setIsEditing(true);
-		console.log("is editing : ", isEditing);
 	};
-	const acceptEdit = async (name, description, private_hub) => {
-		const updateInfo = {"name": name, "description": description, "private_hub": private_hub};
+  
+	const acceptEdit = async (name, description, private_hub, filteredTags, bg, banner) => {
+		//const updateInfo = {"name": name, "description": description, "private_hub": private_hub};
+    setHubTags(filteredTags);
+			const response2 = await api.patch(getUpdateHubTagsUrl(hubData.id), {tags: filteredTags.map(tag => tag.id)});
+		const updateInfo = new FormData();
+		updateInfo.append("name", name);
+		updateInfo.append("description", description);
+		updateInfo.append("private_hub", private_hub);
+		if(bg)
+			updateInfo.append("bg", bg);
+		if(banner)
+			updateInfo.append("banner", banner);
 		try{
-			const response = await api.put(getUpdateHubUrl(hubData.id), updateInfo);
+			const response = await api.put(getUpdateHubUrl(hubData.id), updateInfo, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			});
 			setIsEditing(false);
+			setPreviewImage(null);
+			setPreviewBanner(null);
 			setRefreshCount((count) => count+=1);
 		} catch (error){
 			if(error.response.data.name)
@@ -181,10 +228,10 @@ const HubPage = ({id}) => {
 		}
 	};
 	const cancelEdit = () => {
-		console.log("Cancel edit (beg)!! isEditing=", isEditing);
 		setIsEditing(false);
+		setPreviewImage(null);
+		setPreviewBanner(null);
 		setRefreshCount((count) => count+=1);
-		console.log("Cancel edit (end)!! isEditing=", isEditing);
 	};
 
 	const handleSuccess = (data) => {
@@ -240,6 +287,7 @@ const HubPage = ({id}) => {
 
 	};
 
+
 	//general info.
 	const hubOwner = hubData.owned;
 	const hubMod = hubData.modding;
@@ -251,10 +299,17 @@ const HubPage = ({id}) => {
 	const HubPageMainContent = () => {
 		return(
 			<div className={styles.parentContentContainer}>
+				<div className={styles.eventContainer}>
+					<h1 className={styles.eventSectionTitle}> Latest Events </h1>
+					<HubEvent data={hubData.events} />
+				</div>
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
-					<CreatePostButton hubId={id} buttonStyle={styles.hubActionButton}/>
-					{hubOwner ? (<button 
+					{hubOwner ? 
+						(
+						<div className={styles.hubButtonContainer}>
+						<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
+						<button 
 							className={styles.hubActionButton}
 							style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
 							onClick={() => {
@@ -264,22 +319,31 @@ const HubPage = ({id}) => {
 									handleDeleteHub();
 								}
 							}}
-						     > 
+						> 
 							DELETE HUB 
-						     </button>) :
-					    (hubJoined ? (<button 
-						   		className={styles.hubActionButton}
-						    		style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
-						    		onClick={() => {
+					     	</button>
+						</div>
+					) :
+					    (hubJoined ? (
+
+						<div className={styles.hubButtonContainer}>
+							<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
+							<button 
+								className={styles.hubActionButton}
+								style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+								onClick={() => {
 									const isConfirmed = window.confirm("Are you sure you want to leave this hub?");
 									if(isConfirmed)
 									{
 										handleLeave();
 									}
 								}}
-						    	  > 
-						    		LEAVE HUB 
-						    	  </button>) :
+							  > 
+								LEAVE HUB 
+							  </button>
+						</div>
+					 ) :
+
 					     (<button
 						     className={styles.hubActionButton} 
 						     onClick={handleJoin}
@@ -290,6 +354,7 @@ const HubPage = ({id}) => {
 				<div className={styles.hubPageContentContainer}>
 					<PostList className={styles.postsList} posts={hubPosts}/>
 					<div className={styles.membersListsContainer}>
+						<CreatePostButton hubId={id} buttonStyle={styles.hubActionButton}/>
 						<MemberList 
 							hubId={hubData.id}
 							hubOwnerId={hubOwnerId}
@@ -324,7 +389,45 @@ const HubPage = ({id}) => {
 								onSuccess={handleSuccess}
 							/>
 						}
-								
+						{(hubOwner || hubMod) && <button
+						className={styles.hubActionButton}
+						style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+						onClick={() => setShowTagUpdate(previous => !previous)}
+						>
+						CHANGE TAGS</button>}
+						{hubOwner ? (<button 
+							className={styles.hubActionButton}
+							style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+							onClick={() => {
+								const isConfirmed = window.confirm("Are you sure you want to delete this hub?");
+								if(isConfirmed)
+								{
+									handleDeleteHub();
+								}
+							}}
+						     > 
+							DELETE HUB 
+						     </button>) :
+					    (hubJoined ? (<button 
+						   		className={styles.hubActionButton}
+						    		style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+						    		onClick={() => {
+									const isConfirmed = window.confirm("Are you sure you want to leave this hub?");
+									if(isConfirmed)
+									{
+										handleLeave();
+									}
+								}}
+						    	  > 
+						    		LEAVE HUB 
+						    	  </button>) :
+					     (<button
+						     className={styles.hubActionButton} 
+						     onClick={handleJoin}
+					      > 
+						     JOIN HUB 
+					      </button>))}
+					
 					</div>
 				</div>
 			</div> 
@@ -340,10 +443,18 @@ const HubPage = ({id}) => {
 				(<button className={styles.hubActionButton} onClick={handleRequestToJoin}> Request To Join </button>)}
 			</>
 		);
-	}
+	};
+
+	const passData = (data) => {
+		setPreviewImage(data);
+	};
+	const passBanner = (data) => {
+		setPreviewBanner(data);
+	};
 
 	return (
-		<div className={styles.pageBG} >
+		<>
+		<div className={styles.hubHeader} style={{backgroundImage: isEditing && previewBanner ? `url(${previewBanner})` : `url(${hubData.banner})`, backgroundColor: hubData.banner ? "transparent" : "rgba(227,24,55,0.7)"}}>
 			{isEditing ? ( 
 				<>
 				<HubEdit
@@ -353,25 +464,49 @@ const HubPage = ({id}) => {
 					oldPrivate={hubData.private_hub}
 					onClickAccept={acceptEdit}
 					onClickDecline={cancelEdit}
+					passData={passData}
+					passBanner={passBanner}
 				/>
 				</>
 				
 			):
 				<div className={styles.hubViewContainer}>
 					<div className={styles.hubViewHeading}>
+						<div className={styles.hubTagList}>
+							{hubTags.length != 0 && hubTags.map(tag => <h2 style={{backgroundColor:tag.color}} className={styles.hubTag}>{tag.name}</h2>)}
+						</div>
 						<h1 className={styles.hubName}> {hubData.name} </h1><br/>
-						{hubOwner && <button className={styles.updateHubInfoBtn} onClick={() => editButtonPress()}> Edit </button> }
+						<p className={styles.hubDescription}>{hubData.description} </p>
+						{hubOwner && <button className={styles.hubActionButton} onClick={() => editButtonPress()}> Edit </button> }
 					</div>
-					<p className={styles.hubDescription}>{hubData.description} </p>
 					<div className={styles.hubViewDetails}>
-						<p className={styles.hubOwner}> Owned By: {hubData.owner} </p>
-						<p className={styles.hubTimestamp}> Created At: {created_date.slice(0, created_date.length-6)} </p>
+						<div 
+							style={{
+								backgroundColor: 'rgba(227,24,55,0.7)', padding: '10px', color: 'white', display:'flex',
+									borderRadius: '10px'
+							}}
+						>
+							<p> Owner: </p>
+							<AccountButton username={hubOwnerId} noBackground={true} />
+						</div>
+						<div 
+							style={{
+								backgroundColor: 'transparent', padding: '10px', color: 'white', display:'flex',
+									borderRadius: '10px', justifyContent: 'center', paddingBottom: '0px'
+							}}
+						>
+							<p className={styles.hubTimestamp}> Created At: {created_date.slice(0, created_date.length-6)} </p>
+						</div>
 					</div>
 				</div>
 			}
+		</div>
+		<div className={styles.pageBG} style={{backgroundImage: isEditing && previewImage ? `url(${previewImage})` : `url(${hubData.bg})`}}>
+			
 					
 			{/* the hubs calander events component can go here */}
-
+			<FilterPostButtons posts={hubPosts} setPosts={setHubPosts} postsUrl={getPostsHubUrl} current_hub_id={id} tags={postTags} />
+			{showTagUpdate && <PostTagUpdateModal hub={id} onClose={() => setShowTagUpdate(false)} setTags={setPostTags} setHubPosts={setHubPosts}/>}
 			 {/*nothing is where the request buttons should
 		            appear and any other content a private hub
 			    should display*/}
@@ -381,7 +516,10 @@ const HubPage = ({id}) => {
 				<HubPageMainContent/>
 			)}
 			
+			
+			
 		</div>
+		</>
 	);
 };
 

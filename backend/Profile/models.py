@@ -23,7 +23,7 @@ class Profile(models.Model):
     @property
     def hubs_count(self):
         return (
-            self.user.joined_hubs.count() + self.user.moderating_hubs.count() + self.user.owned_hubs.count() 
+            self.user.joined_hubs.count()
         )
 
     def save(self, *args, **kwargs):

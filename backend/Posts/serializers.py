@@ -4,8 +4,10 @@ from Pictures.serializers import PictureSerializer
 from .models import Post
 from hubs.models import Hub
 from Pictures.models import Picture
+from Tags.models import Post_Tag
 from Comments.serializers import CommentSerializer
 from django.contrib.auth.models import User
+from Posts.filter import inappropriate_language_filter
 
 # To serialise the post which validates data from the front end
 class PostSerializer(serializers.ModelSerializer):
@@ -14,7 +16,7 @@ class PostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score', 'comments', 'last_edited', 'pictures'] 
+        fields = ['id', 'author', 'title', 'message', 'timestamp', 'hub', 'likes', 'dislikes', 'hot_score', 'comments', 'last_edited', 'pictures', 'tag'] 
         read_only_fields = ['author', 'likes', 'dislikes', 'last_edited']
     
     def get_pictures(self, obj):
@@ -40,10 +42,17 @@ class PostCreateSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'title', 'message', 'hub_id']
 
+    
     def validate(self, data):
         request = self.context.get('request')
         user = request.user
         hub_id = data.get('hub_id')
+        
+        if inappropriate_language_filter(data.get('title', '')):
+            raise serializers.ValidationError("Your post title contains inappropriate language.")
+        if inappropriate_language_filter(data.get('message', '')):
+            raise serializers.ValidationError("Your post message contains inappropriate language.")
+
         try:
             hub = Hub.objects.get(id=hub_id)
         except Hub.DoesNotExist:
@@ -135,7 +144,12 @@ class PostEditSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         user = request.user
         post = self.instance
-
+        
+        if inappropriate_language_filter(data.get('title', '')):
+            raise serializers.ValidationError("Inappropriate language in the title.")
+        if inappropriate_language_filter(data.get('message', '')):
+            raise serializers.ValidationError("Inappropriate language in the message.")
+        
         if user != post.author:
             raise PermissionDenied("User does not have permission to update post")
 
@@ -159,6 +173,43 @@ class PostEditSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+class PostTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'tag']
+        read_only_fields = ['id']
+
+    def validate(self, data):
+        request = self.context.get('request')
+        user = request.user
+        post = self.instance
+
+        if not post:
+            raise serializers.ValidationError("Need a post to put or remove the tag from.")
+
+        if user != post.author and user != post.hub.owner and user not in post.hub.mods.all():
+            raise PermissionDenied("User does not have permission to add or remove a tag from this post.")
+
+        tag = data.get('tag', None) 
+        if tag is not None:
+            if isinstance(tag, Post_Tag) and tag.hub != post.hub:
+                raise PermissionDenied("The tag does not belong to this hub.")
+            elif isinstance(tag, int):  
+                tag = Post_Tag.objects.get(pk=tag)
+                if tag.hub != post.hub:
+                    raise PermissionDenied("The tag does not belong to this hub.")
+        return data
+    
+    def update(self, instance, validated_data):
+        tag = validated_data.get('tag')
+        if tag is not None:
+            if isinstance(tag, int):
+                tag = Post_Tag.objects.get(pk=tag)
+        instance.tag = tag
+        instance.save()
+        return instance
+
 
 class PostCountSerializer(serializers.ModelSerializer):
     post_count = serializers.SerializerMethodField()

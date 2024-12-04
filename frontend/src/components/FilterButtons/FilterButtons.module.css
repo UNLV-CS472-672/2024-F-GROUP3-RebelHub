@@ -1,14 +1,42 @@
-.buttons button{
+
+.tag-button {
+    padding: 0.2%;
+    font-weight: bold;
     color: black;
     margin-right: .5vw;
     cursor: pointer;
-    transition: background-color 0.1s;
+    background-color: lightgray;
+    padding: 0.1rem 0.3rem;
+    border-radius: 7px;
+    border-width: .3vw;
 }
 
-.buttons button:hover{
-    background-color: #f76359;
+.sort {
+    padding: 0.2%;
+    color: black;
+    background-color: lightgray;
+    border-color: lightgray;
+    margin-right: .5vw;
+    cursor: pointer;
+    padding: 0.1rem 0.3rem;
+    border-radius: 7px;
+    border-width: .3vw;
 }
 
+.tags {
+    color: black;
+    background-color: lightgray;
+    border-color: lightgray;
+    margin-right: .5vw;
+    cursor: pointer;
+    padding: 0.05rem 0.2rem;
+    border-radius: 7px;
+    border-width: .2vw;
+}
+
+.buttons button:hover,
 .current {
-    background-color: #f76359;
+    background-color: var(--bgColor,#cfbc0d);
+    border-color: var(--bgColor,#cfbc0d);
+    color:white;
 }

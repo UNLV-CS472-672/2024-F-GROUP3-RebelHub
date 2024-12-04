@@ -1,4 +1,4 @@
-import "./SearchResult.css";
+import "./searchresult.css";
 import {useRouter} from "next/navigation";
 
 export const SearchResult = ({ result,temp }) => {

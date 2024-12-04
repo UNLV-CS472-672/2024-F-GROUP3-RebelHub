@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+    height: 100vh; 
+    background-color: #0a0a0a;
+}
+
+.mainContent{
+    width: 86.7vw;
+    margin-left: 13.3vw;
+}
+
+.header {
+    background-color: darkred;
+    border: 2px;
+    border-radius: 12px;
+    height: auto;
+    padding: 1.4vw;
+    text-align: center;
+    align-items: center;
+    margin-bottom: 1.2vh;
+}
