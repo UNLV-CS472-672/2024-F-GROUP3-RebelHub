@@ -13,6 +13,7 @@ import AccountButton from '@/components/navbar/AccountButton';
 import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getRequestJoinHubUrl, getCancelRequestJoinHubUrl, getJoinHubUrl, getUpdateHubUrl, getLeaveHubUrl, getDeleteHubUrl, getPostTagsUrl, getHubTagsForAHubUrl, getUpdateHubTagsUrl } from "@/utils/url-segments";
 import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
 import FilterPostButtons from '@/components/FilterButtons/FilterPostButtons';
+import CreateForm from '../Calendar/CreateForm';
 
 import CreatePostButton from '../posts/buttons/create-post-button';
 /*
@@ -44,6 +45,11 @@ const HubPage = ({id}) => {
 
 	const [showTagUpdate, setShowTagUpdate] = useState(false);
 	const [hubTags, setHubTags] = useState([]);
+
+	// Event stuff
+
+	const [events, setEvents] = useState([]);
+	const [isCreateOpen, setIsCreateOpen] = useState(false);
 
 	const router = useRouter();
 
@@ -287,6 +293,23 @@ const HubPage = ({id}) => {
 
 	};
 
+	// Event stuff
+
+	const openCreateForm = () => {
+		setIsCreateOpen(true);
+		console.log("Opening create form.");
+	}
+
+	const createEvent = (newEvent) => {
+		setEvents((prev) => [newEvent, ...prev]);
+		console.log("Created event: ", newEvent.title);
+	}
+
+	const closeCreateForm = () => {
+		setIsCreateOpen(false);
+		console.log("Closing create form");
+	} 
+
 
 	//general info.
 	const hubOwner = hubData.owned;
@@ -301,6 +324,7 @@ const HubPage = ({id}) => {
 			<div className={styles.parentContentContainer}>
 				<div className={styles.eventContainer}>
 					<h1 className={styles.eventSectionTitle}> Latest Events </h1>
+					<button onClick={openCreateForm}>Create</button>
 					<HubEvent data={hubData.events} />
 				</div>
 				<div className={styles.postTitleContainer}>
@@ -480,7 +504,7 @@ const HubPage = ({id}) => {
 				<HubPageMainContent/>
 			)}
 			
-			
+			{isCreateOpen && <CreateForm onClose={closeCreateForm} onCreate={createEvent} hubsModding={[id]}/>}
 			
 		</div>
 		</>
