@@ -32,3 +32,24 @@
 	justify-content: center;
 	align-items: center;
 }
+
+.tag-button {
+    padding: 0.2%;
+    font-weight: bold;
+    color: black;
+    margin-right: .5vw;
+    cursor: pointer;
+    background-color: lightgray;
+    padding: 0.1rem 0.3rem;
+    border-radius: 7px;
+    border-width: .3vw;
+	margin-bottom: 2vh;
+	margin-top: 2vh;
+}
+
+.tag-button:hover,
+.current {
+    background-color: var(--bgColor,#cfbc0d);
+    border-color: var(--bgColor,#cfbc0d);
+    color:white;
+}

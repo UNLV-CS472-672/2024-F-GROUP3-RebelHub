@@ -1,0 +1,86 @@
+.tags {
+    color: black;
+    background-color: lightgray;
+    border-color: lightgray;
+    margin-right: .5vw;
+    cursor: pointer;
+    padding: 0.05rem 0.2rem;
+    border-radius: 7px;
+    border-width: .2vw;
+}
+
+.buttons button:hover,
+.current {
+    background-color: var(--bgColor,#cfbc0d);
+    border-color: var(--bgColor,#cfbc0d);
+    color: white;
+}
+
+.tagModal {
+    background-color: white;
+    border-radius: 10px;
+    position: absolute;
+    min-width: 200px;
+    width: auto;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    gap: 10px;
+    padding: 10px;
+    display: grid;
+    grid-template-rows: auto;
+}
+
+
+.tagModalClose {
+    position: absolute;
+    color: black;
+    background-color: transparent;
+    top: 0px; 
+    right: 4px;
+    margin-bottom: 20px;
+}
+
+.tagModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.tagModalButtonContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.tagModalConfirm {
+    width: 100px;
+    background-color: darkgreen;
+    border-color: black;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tagModalCancel {
+    width: 100px;
+    background-color: darkred;
+    border-color: black;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tagModalConfirm:hover{
+    background-color: rgb(100, 172, 100);   
+}
+
+.tagModalCancel:hover{
+    background-color: rgb(214, 30, 30);
+}

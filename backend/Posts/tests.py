@@ -773,27 +773,27 @@ class PostTestCase(TestCase):
         user=self.user
         hub = Hub.objects.create(name="TEST HUB", description="TEST HUB DESC", owner=user)
 
-        # Create post that was made 400 days ago. Should appear in all_time.
+        # Create post that was made 400 days ago. Should appear in all time.
         post1 = Post.objects.create(title="monkeys", message="Monkeys", hub=hub, author=user)
         post1.timestamp = timezone.now() - timedelta(days=400)
         post1.save()
         
-        # Create post that was made 350 days ago. Should appear in all_time and year.
+        # Create post that was made 350 days ago. Should appear in all time and year.
         post2 = Post.objects.create(title="rabbit", message="rabbit", hub=hub, author=user)
         post2.timestamp = timezone.now() - timedelta(days=350)
         post2.save()
 
-        # Create post that was made 20 days ago. Should appear in all_time, year, and month.
+        # Create post that was made 20 days ago. Should appear in all time, year, and month.
         post3 = Post.objects.create(title="tacos", message="tacos", hub=hub, author=user)
         post3.timestamp = timezone.now() - timedelta(days=20)
         post3.save()
 
-        # Create post that was made 4 days ago. Should appear in all_time, year, month, and week.
+        # Create post that was made 4 days ago. Should appear in all time, year, month, and week.
         post4 = Post.objects.create(title="cheese", message="cheese", hub=hub, author=user)
         post4.timestamp = timezone.now() - timedelta(days=4)
         post4.save()
 
-        # Create post that was made 4 hours ago. Should appear in all_time, year, month, week, and 24 hours.
+        # Create post that was made 4 hours ago. Should appear in all time, year, month, week, and 24 hours.
         Post.objects.create(title="triangle", message="triangle", hub=hub, author=user)
 
         # All Time check (sorted by oldest)

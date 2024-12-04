@@ -20,6 +20,8 @@ export const URL_SEGMENTS = {
     HUBS_MODS_ADD: "/mods/add/",
     HUBS_MODS_REMOVE: "/mods/remove/",
     HUBS_POSTS: "/posts/",
+    HUBS_FILTER: "filter/",
+    HUBS_TAGS: "tags/",
     // #endregion
 
     // #region Posts
@@ -31,6 +33,7 @@ export const URL_SEGMENTS = {
     POSTS_DISLIKE: "/dislike/",
     POSTS_EXPLORE: "explore/",
     POSTS_EDIT: "/edit/",
+    POSTS_TAG: "/tag/",
     POSTS_COUNT: "postcount/",
     // #endregion
 
@@ -61,6 +64,14 @@ export const URL_SEGMENTS = {
     EVENTS_DELETE: "/delete/",
     EVENTS_UPDATE: "/update/",
     // #endregion
+
+    // #region Tags
+    TAGS_API_BASE: "api/tags/",
+    TAGS_HUB_TAGS: "hubtags/",
+    TAGS_HUB: "hub/",
+    TAGS_CREATE: "create/",
+    TAGS_DELETE: "/delete/",
+    TAGS_LIST: "list/",
 
     //#region Profile
     PROFILE_API: 'api/profile/',
@@ -161,8 +172,35 @@ export function getModsRemoveHubUrl(hubId) {
 }
 
 // "http://localhost:8000/api/hubs/<int:id>/posts/"
-export function getPostsHubUrl(hubId) {
-    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.HUBS_API_BASE + hubId + URL_SEGMENTS.HUBS_POSTS;
+export function getPostsHubUrl(hubId, tags, time_range, ordering) {
+    let url = URL_SEGMENTS.BACKEND + URL_SEGMENTS.HUBS_API_BASE + hubId + URL_SEGMENTS.HUBS_POSTS;
+    let query_params = [];
+    if (tags) {
+        let tags_string = tags.join(','); 
+        query_params.push("tags=" + tags_string);
+    }
+    if (time_range) query_params.push("time_range=" + time_range);
+    if (ordering) query_params.push("ordering=" + ordering);
+    if (query_params.length > 0) url += "?" + query_params.join("&"); 
+    return url;
+}
+
+// "http://localhost:8000/api/hubs/filter/?tags=tag1,tag2,tag3&ordering=top"
+export function getFilterHubsUrl(tags, ordering) {
+    let url = URL_SEGMENTS.BACKEND + URL_SEGMENTS.HUBS_API_BASE + URL_SEGMENTS.HUBS_FILTER;
+    let query_params = [];
+    if (tags) {
+        let tags_string = tags.join(','); 
+        query_params.push("tags=" + tags_string);
+    }
+    if (ordering) query_params.push("ordering=" + ordering);
+    if (query_params.length > 0) url += "?" + query_params.join("&"); 
+    return url;
+}
+
+// "http://localhost:8000/api/hubs/<int:id>/update/tags/"
+export function getUpdateHubTagsUrl(hubId) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.HUBS_API_BASE + hubId + URL_SEGMENTS.HUBS_UPDATE + URL_SEGMENTS.HUBS_TAGS;
 }
 
 // #endregion
@@ -200,14 +238,28 @@ export function getDeletePostUrl(postId: number|string) {
 }
 
 // "http://localhost:8000/api/posts/explore/"
-// "http://localhost:8000/api/posts/explore/?time_range=week&ordering=hot"
-export function getExploreListUrl(time_range: string, ordering: string) {
-    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + URL_SEGMENTS.POSTS_EXPLORE + "?time_range=" + time_range + "&ordering=" + ordering; 
+// "http://localhost:8000/api/posts/explore/?tags=tag1,tag2&time_range=week&ordering=hot"
+export function getExploreListUrl(tags, time_range, ordering) {
+    let url = URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + URL_SEGMENTS.POSTS_EXPLORE;
+    let query_params = [];
+    if (tags) {
+        let tags_string = tags.join(','); 
+        query_params.push("tags=" + tags_string);
+    }
+    if (time_range) query_params.push("time_range=" + time_range);
+    if (ordering) query_params.push("ordering=" + ordering);
+    if (query_params.length > 0) url += "?" + query_params.join("&"); 
+    return url;
 }
 
 // "http://localhost:8000/api/posts/<int:id>/edit/"
 export function getEditPostUrl(postId: number|string) {
     return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_EDIT;
+}
+
+// "http://localhost:8000/api/posts/<int:id>/tag/"
+export function getTagPostUrl(postId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.POSTS_API_BASE + postId + URL_SEGMENTS.POSTS_TAG;
 }
 
 // "http://localhost:8000/api/posts/postcount/<str:username>"
@@ -284,6 +336,43 @@ export function getDeleteEventURL(eventId: number|string) {
 }
 
 // #endregion
+
+// #region Functions to return a URL for an API call (tags)
+
+// "http://localhost:8000/api/tags/hubtags/"
+export function getHubTagsUrl() {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.TAGS_API_BASE + URL_SEGMENTS.TAGS_HUB_TAGS;
+}
+
+// "http://localhost:8000/api/tags/hubtags/<int:id>/"
+export function getHubTagUrl(tagId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.TAGS_API_BASE + URL_SEGMENTS.TAGS_HUB_TAGS + tagId + "/";
+}
+
+// "http://localhost:8000/api/tags/hubtags/hub/<int:hub_id>/"
+export function getHubTagsForAHubUrl(hubId: number | string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.TAGS_API_BASE + URL_SEGMENTS.TAGS_HUB_TAGS + URL_SEGMENTS.TAGS_HUB + hubId + "/";
+}
+
+// "http://localhost:8000/api/tags/<int:hub_id>/"
+export function getPostTagsUrl(hubId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.TAGS_API_BASE + URL_SEGMENTS.TAGS_LIST + hubId + "/";
+}
+
+// "http://localhost:8000/api/tags/<int:id>/"
+export function getPostTagUrl(tagId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.TAGS_API_BASE + tagId + "/";
+}
+
+// "http://localhost:8000/api/tags/create/"
+export function getCreatePostTagUrl() {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.TAGS_API_BASE + URL_SEGMENTS.TAGS_CREATE;
+}
+
+// "http://localhost:8000/api/tags/<int:id>/delete/"
+export function getDeletePostTagUrl(tagId: number|string) {
+    return URL_SEGMENTS.BACKEND + URL_SEGMENTS.TAGS_API_BASE + tagId + URL_SEGMENTS.TAGS_DELETE;
+}
 
 // #region Functions to return a URL for an API call (users)
 

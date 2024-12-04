@@ -32,7 +32,7 @@ const Searchbar=({setResults})=> {
 
     return(
 
-            <input className={styles.searchBar} type="text" placeholder="Search for Clubs or Hubs"
+            <input className={styles.searchBar} type="text" placeholder="Search for Hubs"
             value={input}
             onChange={(e) => handleChange(e.target.value)}
             />

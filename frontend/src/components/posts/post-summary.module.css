@@ -28,8 +28,20 @@
 }
 
 .postTitle {
+    display: inline-block;
     text-align: left;
     margin-bottom: 10px;
+}
+
+.postTag {
+    color: white;
+    background-color: rgba(255, 255, 0, 0.5); 
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    margin-right: 0.8rem;
+    display: inline-block;
+    margin-top: auto;
+    font-size: 1.2rem;
 }
 
 .postTitleComponent {
