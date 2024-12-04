@@ -22,6 +22,7 @@
   align-items: center;
   gap: 10px;
   font-size: 1.5rem;
+  color: white;
 }
 
 .convopfp{
@@ -48,6 +49,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   margin-top: -50px;
+  color: white;
 }
 
 .conversationList {
@@ -56,6 +58,7 @@
   font-weight: bold;
   font-size:large;
   padding: 5px 0px;
+  color: white;
 }
 
 .conversationItem {
@@ -93,6 +96,7 @@
   overflow-y: scroll;
   margin-bottom: 20px;
   padding: 5px;
+  color: white;
 }
 
 .message {
@@ -100,13 +104,16 @@
   font-size: 1rem;
   word-wrap: break-word;
   word-break: break-word;
+  color: white;
 }
 
 .message:not(.self) {
   text-align: left;  
+  color: white;
 }
 .message.self{
   text-align: right; 
+  color: white;
 }
 
 .timestamp {
