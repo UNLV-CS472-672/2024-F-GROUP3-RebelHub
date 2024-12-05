@@ -97,7 +97,6 @@ const RecursiveCommentList: React.FC<ComponentProps> = ({ post, showCreateCommen
                 }
 
                 const response2 = await fetchHubsIDs();
-                console.log("hi", response2);
 
                 setModdedHubs(response2);
 

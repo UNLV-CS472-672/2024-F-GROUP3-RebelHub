@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { getTagPostUrl, getPostTagsUrl } from "@/utils/url-segments";
 import api from "@/utils/api";
 
-const TagModal = ({post, hub, onClose}) => {
+const TagModal = ({post, hub, onClose, refreshComponent }) => {
     const [tags, setTags] = useState([]);
     const [currentTag, setCurrentTag] = useState(null);
     const [temp, setTemp] = useState('');
@@ -15,7 +15,6 @@ const TagModal = ({post, hub, onClose}) => {
         const fetchPostTags = async () => {
             try {
                 const response = await api.get(getPostTagsUrl(hub));
-                console.log(response.data);
                 setTags(response.data);
             } catch (error) { console.log("Error fetching post tags: ", error); }
         };
@@ -27,6 +26,14 @@ const TagModal = ({post, hub, onClose}) => {
             // Make PATCH request to update the tag
             if(currentTag != null && currentTag != undefined) await api.patch(getTagPostUrl(post.id), { tag:currentTag.id });
             else await api.patch(getTagPostUrl(post.id), { tag:null });
+
+            if (currentTag != null) {
+                post.tag = currentTag.id;
+            } else {
+                post.tag = null;
+            }
+
+            refreshComponent();
             onClose();
         } catch (error) {
             console.log("Error updating tag: ", error);

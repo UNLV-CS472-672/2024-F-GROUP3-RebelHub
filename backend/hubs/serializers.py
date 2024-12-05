@@ -18,7 +18,7 @@ class EventSerializer(serializers.ModelSerializer):
 #Serializer for a Hub model with all fields included.
 #This serializer represents a hub
 class HubSerializer(serializers.ModelSerializer):
-    events = EventSerializer(many=True, read_only=True)
+    hub_events = EventSerializer(many=True, read_only=True)
 
     class Meta:
         model = Hub

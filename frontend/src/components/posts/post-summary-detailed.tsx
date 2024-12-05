@@ -1,7 +1,6 @@
 "use client";
 
 import { Post } from "@/utils/posts/definitions";
-import styles from "./post-summary-detailed.module.css";
 import LikeDislikeButtons from "./buttons/like-dislike-buttons";
 import { useEffect, useState } from "react";
 import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
@@ -17,6 +16,9 @@ import api from "@/utils/api";
 import AccountButton from "../navbar/AccountButton";
 import Link from "next/link";
 
+import styles from "./post-summary-detailed.module.css";
+import bStyles from "@/components/posts/buttons/post-buttons.module.css";
+
     interface ComponentProps {
         post: Post;
     }
@@ -29,61 +31,66 @@ import Link from "next/link";
         post: a post object
     */
 
-    const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
-        const [showCreateComment, setShowCreateComment] = useState(false);
+const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
+    const [showCreateComment, setShowCreateComment] = useState(false);
     const [isAuthor, setIsAuthor] = useState(false);
-        const [isMod, setIsMod] = useState(false);
-        const [refresh, setRefresh] = useState(false);
-        const [postTag, setPostTag] = useState(null);
+    const [isMod, setIsMod] = useState(false);
+    const [refresh, setRefresh] = useState(false);
+    const [postTag, setPostTag] = useState(null);
     const [hubName, setHubName] = useState("");
 
-        useEffect(() => {
-            const fetchPrivileges = async () => {
-                const authorPrivileges = await checkAuthorPrivileges(post.author);
-                
-                if(authorPrivileges) {
-                    setIsAuthor(authorPrivileges);
-                    return;
-                }
-
-                const hubPrivileges = await checkHubPrivileges(post.hub);
-                setIsMod(hubPrivileges);
-            }
-    
-        const fetchHubName = async () => {
-            try {
-                const response = await api.get(getHubUrl(post.hub));
+    useEffect(() => {
+        const fetchPrivileges = async () => {
+            const authorPrivileges = await checkAuthorPrivileges(post.author);
             
-                if (response.status == 200) {
-                    setHubName(response.data.name);
-                }
-            } catch (error) {
-                console.log("Failed to get hub info");
+            if(authorPrivileges) {
+                setIsAuthor(authorPrivileges);
+                return;
             }
+
+            const hubPrivileges = await checkHubPrivileges(post.hub);
+            setIsMod(hubPrivileges);
         }
 
-        fetchHubName();
-        fetchPrivileges();
-
-            const fetchPostTag = async () => {
-                if(post.tag != null){
-                    const response = await api.get(getPostTagUrl(post.tag));
-                    setPostTag(response.data);
-                } 
+    const fetchHubName = async () => {
+        try {
+            const response = await api.get(getHubUrl(post.hub));
+        
+            if (response.status == 200) {
+                setHubName(response.data.name);
             }
-            fetchPostTag();
-        }, []);
+        } catch (error) {
+            console.log("Failed to get hub info");
+        }
+    }
 
-        // Function to refresh the component but not reload the page
-        const refreshComponent = () => {
-            setRefresh(!refresh);
+    fetchHubName();
+    fetchPrivileges();
+    }, []);
+
+    useEffect(() => {
+        const fetchPostTag = async () => {
+            if(post.tag != null){
+                const response = await api.get(getPostTagUrl(post.tag));
+                setPostTag(response.data);
+            } else {
+                setPostTag(null);
+            }
         };
+
+        fetchPostTag();
+    }, [post.tag]);
+
+    // Function to refresh the component but not reload the page
+    const refreshComponent = () => {
+        setRefresh(!refresh);
+    };
 
     return (
         <div className={styles.detailedPostContainer}>
             <div className={styles.detailedPostElement}>
-                {postTag && <h2 style={{backgroundColor:postTag.color}} className={styles.postTag}>{postTag.name}</h2>}
-                <h1>
+                <h1 style={{'display': "flex"}}>
+                    {postTag && <p style={{backgroundColor:postTag.color}} className={styles.postTag}>{postTag.name}</p>}
                     {post.title}
                 </h1>
                 <div style={{'display': 'flex', 'gap': '10px'}}>
@@ -117,8 +124,8 @@ import Link from "next/link";
                 <div>
                     {post.message}
                 </div>
-                <div className={styles.detailedPostButtonList}>
-                    <div className={styles.buttonsLeft}>
+                <div className={bStyles.buttonHorizontalList}>
+                    <div className={bStyles.buttonsLeft}>
                         <LikeDislikeButtons 
                             postObject={post}
                             likeUrlFunction={getLikePostUrl} 
@@ -126,7 +133,7 @@ import Link from "next/link";
                             containerClassName={styles.detailedVoteContainer}
                         />
                     </div>
-                    <div className={styles.buttonsRight}>
+                    <div className={bStyles.buttonsRight}>
                     {isAuthor &&
                         <>
                             <EditPostButton post={post} refreshComponent={refreshComponent} />

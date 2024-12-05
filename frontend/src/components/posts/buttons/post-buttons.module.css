@@ -43,3 +43,19 @@
     padding: 3px;
     cursor: pointer;
 }
+
+.buttonHorizontalList {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: end;
+}
+
+.buttonsLeft {
+    display: flex;
+}
+
+.buttonsRight {
+    display: flex;
+    margin-left: auto;
+    gap: 10px;
+}

@@ -1,36 +1,47 @@
 'use client';
-import Sidebar from '../../../components/sidebar/sidebar';
-import RebelHubNavBar from '../../../components/navbar/RebelHubNavBar';
-import UserPosts from '../../../components/posts/profile_posts/UserPosts'
-import PictureGallery from '../../../components/Picture/Picture'
+import Sidebar from '@/components/sidebar/sidebar';
+import RebelHubNavBar from '@/components/navbar/RebelHubNavBar';
+import UserPosts from '@/components/posts/profile_posts/UserPosts'
+import PictureGallery from '@/components/Picture/Picture'
 
 import './profile.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProtectedRoute from '../../../components/Accounts/ProtectedRoutes'
-import api from '@/utils/api'
-import { getPostCountUrl, getOtherProfileUrl} from '@/utils/url-segments';
+import ProtectedRoute from '@/components/Accounts/ProtectedRoutes';
+import api from '@/utils/api';
+import { getPostCountUrl, getProfileUrl } from '@/utils/url-segments';
+import { useRouter } from 'next/navigation';
 
 
 
-export default function Profile( { params } ) {
-
-  const { username } = params;
+export default function Profile() {
+  const router = useRouter();
 
   const [profile, setProfile] = useState(null);
   const [postCount, setPostCount] = useState(0);
   const [activeTab, setActiveTab] = useState('posts');
 
 
-
+  const editProfileButton = () =>{
+    router.push('/profile/editprofile')
+  }
 
   useEffect(() => {
     const fetchProfile = async () => {
 
       try {
-          const response = await api.get(getOtherProfileUrl(username))
+          const response = await api.get(getProfileUrl())
           if(response.status == 200){
             setProfile(response.data);
+            try {
+                const res = await api.get(getPostCountUrl(response.data.username))
+                if(res.status == 200){
+                  setPostCount(res.data.post_count);
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                setPostCount(0);
+            }
           }
       } catch (error) {
           console.error('Error fetching profile:', error);
@@ -41,22 +52,6 @@ export default function Profile( { params } ) {
     fetchProfile();
   }, [])
 
-  useEffect(() => {
-    const fetchPostCount = async () => {
-
-      try {
-          const response = await api.get(getPostCountUrl(username))
-          if(response.status == 200){
-            setPostCount(response.data.post_count);
-          }
-      } catch (error) {
-          console.error('Error fetching profile:', error);
-          setPostCount(0);
-      }
-    };
-
-    fetchPostCount();
-  }, []);
 
 
   const handleTabClick = (tab) => {
@@ -74,9 +69,7 @@ export default function Profile( { params } ) {
   return (
     <ProtectedRoute>
       <div>
-        <RebelHubNavBar />
         <div style={{ display: 'flex', backgroundColor:'#37474f'}}>
-          <Sidebar />
           <div className='content'>
             <main className='body'>
               <div className='profileInfo'>
@@ -108,6 +101,11 @@ export default function Profile( { params } ) {
                 
                 </div>
               </div>
+
+              <div className='actionButtons'>
+                <button className='actionButton' onClick={editProfileButton}>Edit Profile</button>
+              </div>
+
 
               <div className='divider'></div>
               <div className='viewToggle'>

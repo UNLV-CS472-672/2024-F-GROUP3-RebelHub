@@ -1,14 +1,16 @@
 "use client";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import RebelHubNavBar from '../components/navbar/RebelHubNavBar';
-import ProtectedRoute from '../components/Accounts/ProtectedRoutes'
+import RebelHubNavBar from '@/components/navbar/RebelHubNavBar';
+import ProtectedRoute from '@/components/Accounts/ProtectedRoutes'
 import './home.css'
 import Sidebar from "@/components/sidebar/sidebar";
 import api from "@/utils/api";
 import PostList from '@/components/posts/post-list';
 import styles from "@/components/hubs/HubPage.module.css";
 import {getJoinedHubsUrl, getPostsHubUrl} from "@/utils/url-segments";
+
+import margins from "@/utils/Margins.module.css";
 
 
 const Home = () => {
@@ -43,20 +45,9 @@ const Home = () => {
 	}, []);
 
 	return (
-
-			<main>
-				<RebelHubNavBar></RebelHubNavBar>
-
-					<Sidebar className="sidebar"/>
-					<div className="posts-container">
-						<PostList className={styles.postsList} posts={hubPosts}/>
-					</div>
-
-
-
-
-
-			</main>
+		<main>
+			<PostList className={styles.postsList} posts={hubPosts}/>
+		</main>
 
 	);
 };

@@ -17,7 +17,8 @@
 }
 .homeButton{
 	width: 250px;
-	height: 14vh;
+	height: auto;
+	max-height: 10%;
 	border: none;
 	background-color: transparent;
 }
@@ -75,7 +76,7 @@
 	height: 40px;
 }
 .extraSpace{
-	padding-top: 100px;
+	padding-top: 105px;
 }
 
 @media (max-width: 768px) {

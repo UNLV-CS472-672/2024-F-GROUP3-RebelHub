@@ -36,7 +36,6 @@ const PostList: React.FC<ComponentProps> = ({ posts }) => {
                 }
 
                 const response2 = await fetchHubsIDs();
-                console.log("hi", response2);
 
                 setModdedHubs(response2);
 

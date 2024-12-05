@@ -46,12 +46,6 @@ export default function DetailedPostPage({ id, }: { id: number|string }) {
     }
 
     return (
-        <div className={styles.body}>
-            <RebelHubNavBar/>
-            <Sidebar/>
-            <div className={styles.margins}>
-                <PostSummaryDetailed post={post} />
-            </div>
-        </div>
+        <PostSummaryDetailed post={post} />
     );
 }
