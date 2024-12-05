@@ -2,6 +2,7 @@
 import RebelHubNavBar from '@/components/navbar/RebelHubNavBar';
 import ProtectedRoute from '@/components/Accounts/ProtectedRoutes';
 import HubPage from '@/components/hubs/HubPage';
+import Sidebar from '@/components/sidebar/sidebar';
 import { useParams } from 'next/navigation';
 import Sidebar from '@/components/sidebar/sidebar';
 
