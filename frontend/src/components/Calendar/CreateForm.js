@@ -4,7 +4,7 @@ import api from "../../utils/api";
 import { getCreateEventURL } from "@/utils/url-segments";
 import { convertLocalStringToUtcString } from "@/utils/datetime-conversion";
 
-const CreateForm = ({onClose, onCreate, hubsModding}) => {
+const CreateForm = ({onClose, onCreate, hubsModding=null, currentHub=null}) => {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -12,7 +12,7 @@ const CreateForm = ({onClose, onCreate, hubsModding}) => {
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState(null);
     const [color, setColor] = useState("#eb4f34");
-    const [hub, setHub] = useState(null);
+    const [hub, setHub] = useState(currentHub ? currentHub : null);
     const [isPersonal, setIsPersonal] = useState(false);
     const [isHubListOpen, setIsHubListOpen] = useState(false);
 
@@ -20,7 +20,9 @@ const CreateForm = ({onClose, onCreate, hubsModding}) => {
         e.preventDefault();
         try {
             // Make POST request
-            const response = await api.post(getCreateEventURL(), { title, description, location, start_time: convertLocalStringToUtcString(startTime), end_time: endTime ? convertLocalStringToUtcString(endTime) : null, color: color, hub: hub ? hub.id : null, isPersonal});
+            let response;
+            if(currentHub == null) response = await api.post(getCreateEventURL(), { title, description, location, start_time: convertLocalStringToUtcString(startTime), end_time: endTime ? convertLocalStringToUtcString(endTime) : null, color: color, hub: hub ? hub.id : null, isPersonal});
+            else response = await api.post(getCreateEventURL(), { title, description, location, start_time: convertLocalStringToUtcString(startTime), end_time: endTime ? convertLocalStringToUtcString(endTime) : null, color: color, hub: hub ? hub.id : null, isPersonal});
             onCreate(response.data);
             onClose();
         } catch (error) { console.log("Error creating event: ", error); } 
@@ -48,32 +50,32 @@ const CreateForm = ({onClose, onCreate, hubsModding}) => {
               Start Time:
               <input type="datetime-local" name="start_time" value={startTime} style={{cursor:"pointer"}}  onChange={(e) => setStartTime(e.target.value)} />
             </label>
-            <label>
+            <label> 
               End Time:
               <input type="datetime-local" name="end_time" value={endTime} style={{cursor:"pointer"}} onChange={(e) => setEndTime(e.target.value)} />
             </label>
             
-
-            <label>
-              Personal Event? 
-              <input 
-              type="checkbox" 
-              name="isPersonal" 
-              checked={isPersonal} 
-              style={{ transform: "scale(1.5)", marginLeft: "2vw", cursor: "pointer" }} 
-              onChange={(e) => {
-                setIsPersonal(e.target.checked);
-                if(e.target.checked) setHub(null);
-              }}
-              />
-            </label>
-            
+            { currentHub == null && 
+              <label>
+                Personal Event? 
+                <input 
+                type="checkbox" 
+                name="isPersonal" 
+                checked={isPersonal} 
+                style={{ transform: "scale(1.5)", marginLeft: "2vw", cursor: "pointer" }} 
+                onChange={(e) => {
+                  setIsPersonal(e.target.checked);
+                  if(e.target.checked) setHub(null);
+                }}
+                />
+              </label>
+            }
             {/* 
             Hub label and input box only appears if the personal event checkbox is not checked. 
             When clicked, a dropdown menu displaying the hubs that the user is moderating will appear.
             When the hub input loses focus (clicked out of), the dropdown menu disappears.
             */}
-            {!isPersonal && 
+            {!isPersonal && currentHub == null &&  
               <label>
                 Hub:
                 <input 
