@@ -49,7 +49,7 @@ const SingleEvent = ({data}) => {
 };
 
 
-const HubEvent = ({data}) => {
+const HubEvent = ({data, isHubOwner}) => {
 	const [hubEvents, setHubEvents] = useState(null);
 
 	const [openModal, setOpenModal] = useState(false);
