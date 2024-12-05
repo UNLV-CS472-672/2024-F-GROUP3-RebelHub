@@ -81,6 +81,7 @@ const HubEvent = ({data, isHubOwner}) => {
 						key={index} 
 					>
 						<div
+							style={{cursor: 'pointer'}}
 							onClick={() => {
 								setOpenModal(true);
 								setModalEvent(e);

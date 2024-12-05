@@ -326,27 +326,28 @@ const HubPage = ({id}) => {
 				<div className={styles.eventContainer}>
 					<h1 className={styles.eventSectionTitle}>
 						Latest Events
-						{hubOwner || hubMod &&
-							<button className={styles.hubActionButton} onClick={openCreateForm}>CREATE EVENT</button>
-						}
 					</h1>
 					<HubEvent data={events} />
 				</div>
-				<div className={styles.postTitleContainer}>
-					<h1 className={styles.postTitle}> Latest Posts </h1>
+				<div className={styles.filterButtons}>
+					<FilterPostButtons 
+						posts={hubPosts} 
+						setPosts={setHubPosts} 
+						postsUrl={getPostsHubUrl} 
+						current_hub_id={hubData.id} 
+						tags={postTags} 
+					/>
 				</div>
+				{showTagUpdate && <PostTagUpdateModal hub={hubData.id} onClose={() => setShowTagUpdate(false)} setTags={setPostTags} setHubPosts={setHubPosts}/>}
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
 					{hubOwner ? 
 						(
 						<div className={styles.hubButtonContainer}>
-						<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
 						<button 
 							className={styles.hubActionButton}
 							style={{backgroundColor: 'rgba(227,23,55,0.9)'}}
-							onClick={() => {
-								alert("EVENT HERE");
-							}}
+							onClick={openCreateForm}
 						> 
 							CREATE EVENT
 					     	</button>
@@ -391,7 +392,6 @@ const HubPage = ({id}) => {
 					      > 
 						     JOIN HUB 
 					      </button>))}
->>>>>>> 3773994 (event button)
 				</div>
 				<div className={styles.hubPageContentContainer}>
 					<PostList className={styles.postsList} posts={hubPosts}/>
@@ -547,17 +547,7 @@ const HubPage = ({id}) => {
 			
 					
 			{/* the hubs calander events component can go here */}
-			<div className={styles.filterButtons}>
-				<FilterPostButtons 
-					posts={hubPosts} 
-					setPosts={setHubPosts} 
-					postsUrl={getPostsHubUrl} 
-					current_hub_id={id} 
-					tags={postTags} 
-				/>
-			</div>
-
-			{showTagUpdate && <PostTagUpdateModal hub={id} onClose={() => setShowTagUpdate(false)} setTags={setPostTags} setHubPosts={setHubPosts}/>}
+			
 			 {/*nothing is where the request buttons should
 		            appear and any other content a private hub
 			    should display*/}
