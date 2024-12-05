@@ -40,7 +40,6 @@ const HubList = ({hubs}) => {
                         {showDescription.includes(hub.id) && <div className={styles["hub-description"]}>{hub.description}</div> }
                         {showDescription.includes(hub.id) && <button className={styles["show-description"]} onClick={() => handleDescription(hub.id)}>Hide</button>}
                         
-                        <hr className={styles["scarlet-line"]}/>
                         <hr className={styles["black-line"]}/>
                         <div>
                             <span>Tags: </span>

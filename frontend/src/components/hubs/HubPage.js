@@ -327,7 +327,7 @@ const HubPage = ({id}) => {
 					<h1 className={styles.eventSectionTitle}>
 						Latest Events
 						{hubOwner || hubMod &&
-							<button className={styles.hubActionButton} onClick={openCreateForm}>Create Event</button>
+							<button className={styles.hubActionButton} onClick={openCreateForm}>CREATE EVENT</button>
 						}
 					</h1>
 					<HubEvent data={events} />
