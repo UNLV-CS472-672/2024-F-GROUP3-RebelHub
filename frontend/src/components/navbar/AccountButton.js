@@ -45,6 +45,8 @@ const AccountButton = (props) => {
 	const router = useRouter();
 	const [pfppath, setpfppath] = useState(null);
 
+	const [retries, setRetries] = useState(0);
+
 	
 	useEffect(() => {
 		const fetchProfile = async () => {
@@ -90,6 +92,12 @@ const AccountButton = (props) => {
 					
 				} catch (error) {
 					console.error('Error fetching no username profile:', error);
+
+					if (error.status == 401 && retries < 3) {
+						fetchProfile();
+						setRetries(retries + 1);
+					}
+
 					setpfppath(avatarIconPath);
 					setDisplayName('some user');
 				}
