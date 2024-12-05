@@ -335,6 +335,64 @@ const HubPage = ({id}) => {
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
 				</div>
+				<div className={styles.postTitleContainer}>
+					<h1 className={styles.postTitle}> Latest Posts </h1>
+					{hubOwner ? 
+						(
+						<div className={styles.hubButtonContainer}>
+						<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
+						<button 
+							className={styles.hubActionButton}
+							style={{backgroundColor: 'rgba(227,23,55,0.9)'}}
+							onClick={() => {
+								alert("EVENT HERE");
+							}}
+						> 
+							CREATE EVENT
+					     	</button>
+						<button 
+							className={styles.hubActionButton}
+							style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+							onClick={() => {
+								const isConfirmed = window.confirm("Are you sure you want to delete this hub?");
+								if(isConfirmed)
+								{
+									handleDeleteHub();
+								}
+							}}
+						> 
+							DELETE HUB 
+					     	</button>
+						</div>
+					) :
+					    (hubJoined ? (
+
+						<div className={styles.hubButtonContainer}>
+							<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
+							<button 
+								className={styles.hubActionButton}
+								style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
+								onClick={() => {
+									const isConfirmed = window.confirm("Are you sure you want to leave this hub?");
+									if(isConfirmed)
+									{
+										handleLeave();
+									}
+								}}
+							  > 
+								LEAVE HUB 
+							  </button>
+						</div>
+					 ) :
+
+					     (<button
+						     className={styles.hubActionButton} 
+						     onClick={handleJoin}
+					      > 
+						     JOIN HUB 
+					      </button>))}
+>>>>>>> 3773994 (event button)
+				</div>
 				<div className={styles.hubPageContentContainer}>
 					<PostList className={styles.postsList} posts={hubPosts}/>
 					<div className={styles.membersListsContainer}>
