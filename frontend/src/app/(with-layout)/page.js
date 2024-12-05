@@ -45,7 +45,7 @@ const Home = () => {
 	}, []);
 
 	return (
-		<main className='body'>
+		<main>
 			<PostList className={styles.postsList} posts={hubPosts}/>
 		</main>
 
