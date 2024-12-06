@@ -53,7 +53,7 @@ export default function UserPosts({ username, name }) {
       {posts.length > 0 ? (
         posts.map((post) => (
           <div className="post-card" key={post.id}>
-            <h3 className="post-title">{post.title}</h3>
+            <h3 className="post-title"><a href={`http://localhost:3000/posts/${post.id}`}>{post.title}</a></h3>
             <p className="post-message">{post.message}</p>
             {post.pictures[0] && (
             <div className="post-image">
@@ -64,10 +64,6 @@ export default function UserPosts({ username, name }) {
             <div className="post-meta">
               <span className="post-author">{name}</span>
               <span className="post-date">{new Date(post.timestamp).toLocaleString()}</span>
-            </div>
-            <div className="post-actions">
-              <button className="like-btn">{post.is_liked ? 'Liked' : 'Like'}</button>
-              <button className="dislike-btn">{post.is_disliked ? 'Disliked' : 'Dislike'}</button>
             </div>
           </div>
         ))
