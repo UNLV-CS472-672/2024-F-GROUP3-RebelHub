@@ -3,7 +3,8 @@
     gap: 4vw;
 }
 .usernameContainer{
-    align-items: flex-end;
+    align-items: center;
+    align-self: center;
 }
 .hubNameContainer{
     position:absolute;
