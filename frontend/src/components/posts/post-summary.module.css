@@ -3,10 +3,11 @@
     gap: 4vw;
 }
 .usernameContainer{
-margin-left:1.3vw;
+    align-items: center;
+    align-self: center;
 }
 .hubNameContainer{
-position:absolute;
+    position:absolute;
     top:0;
     right:5vw;
     z-index: 10;  /* Ensure it stays on top of other elements */
@@ -18,11 +19,15 @@ position:absolute;
     border: 2px solid black;
     border-radius: 12px;
     grid-template-columns: 100px 1fr;
-    gap: 10px;
+    gap: 20px;
     background-color: rgb(90, 0, 0);
     padding: 10px;
+}
 
-
+.thumbContainer {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
 }
 
 .textContainer {
@@ -59,12 +64,4 @@ position:absolute;
 .postTitleComponent {
     display: flex;
     vertical-align: left;
-}
-
-.postButtonList {
-    display: grid;
-    grid-template-columns: auto 1fr auto auto ;
-    align-items: end;
-    gap: 10px;
-    z-index:1;
 }

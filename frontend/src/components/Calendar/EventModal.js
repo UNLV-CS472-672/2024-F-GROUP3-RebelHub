@@ -3,8 +3,10 @@ import { useState, useEffect } from 'react';
 import api from "../../utils/api";
 import Modal from "react-modal";
 import {checkHubPrivileges, checkAuthorPrivileges} from "../../utils/fetchPrivileges";
-import { getHubUrl } from "@/utils/url-segments";
+import { getHubUrl, gotoHubPage } from "@/utils/url-segments";
 import { formatDate } from "@/utils/datetime-conversion";
+import Link from "next/link";
+
 
 const EventModal = ({ event, isOpen, onClose, onEdit = () => {}, onDelete = () => {}, viewOnly = false}) => {
   // Returns null if the modal is blank or it is already open
@@ -41,8 +43,13 @@ const EventModal = ({ event, isOpen, onClose, onEdit = () => {}, onDelete = () =
     useEffect(() => {
       const checkPrivileges = async () => {
         if (!event.isPersonal) {
-          const hubPrivileged = await checkHubPrivileges(event.hub.id);
-          setIsPrivileged(hubPrivileged);
+          if (event.hub && Number.isInteger(event.hub)) {
+            const hubPrivileged = await checkHubPrivileges(event.hub);
+            setIsPrivileged(hubPrivileged);
+          } else {
+            const hubPrivileged = await checkHubPrivileges(event.hub.id);
+            setIsPrivileged(hubPrivileged);
+          }
         } else {
           const authorPrivileged = await checkAuthorPrivileges(event.author);
           setIsPrivileged(authorPrivileged);
@@ -88,7 +95,7 @@ const EventModal = ({ event, isOpen, onClose, onEdit = () => {}, onDelete = () =
         {event.location && (  
           <p className={styles.location}>{"Location: " + event.location}</p>
         )}
-        {currentHub && <p className={styles.hub} style={!event.description ? { marginBottom: "1vh" } : {}}>{"Hub: " + currentHub.name}</p>}
+        {(currentHub && event.hub.id) && <Link href={gotoHubPage(event.hub.id)} className={styles.hub} style={!event.description ? { marginBottom: "1vh" } : {}}>{"Hub: " + currentHub.name}</Link>}
         {event.description && (
           <>
             <hr className={styles["scarlet-line"]}/>

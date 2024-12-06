@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import React from 'react';
 import styles from './HubListView.module.css';
 import api from '@/utils/api';
-import { getHubListUrl } from '@/utils/url-segments';
+import { getJoinedHubsUrl } from '@/utils/url-segments';
 import { useRouter } from 'next/navigation';
 import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
 /*
@@ -30,11 +30,19 @@ const HubLimitedView = (data) => {
 
 	const created = convertUtcStringToLocalString(hubData.created_at);
 
+	const shortDesc = (desc) => {
+	    const words = desc.split(" ");
+	    if (words.length > 50) {
+		return words.slice(0, 47).join(" ") + "...";
+	    }
+	    return desc;
+	}
+
 	return(
 	<div className={styles.hubCard} 
 	     style={{
 		     backgroundImage: hubData.bg ? 'none' : 'none',
-		     backgroundColor: hubData.bg ? 'rgba(0,0,0,0.7)' : '#E31837',
+		     backgroundColor: hubData.bg ? 'rgba(0,0,0,0.7)' : '#5b0411',
 	     }}
 	>
 		<div className={styles.hubHeader}>
@@ -43,9 +51,9 @@ const HubLimitedView = (data) => {
 		</button>
 		<p className={styles.hubDate}> Hub Since: {created.slice(0, created.length-6)} </p>
 		</div>
-		<p className={styles.hubDescription}> {hubData.description} </p>
+		<p className={styles.hubDescription}> {shortDesc(hubData.description)} </p>
 		<div className={styles.hubFooter}>
-		<p className={styles.hubMembers}> Members: {hubData.members} </p>
+		<p className={styles.hubMembers}> Members: {hubData.member_num} </p>
 		</div>
 	</div>
 	);
@@ -59,7 +67,7 @@ const HubListView = () => {
 	useEffect(() => {
 		const getHubsInfo = async () => {
 			    try {
-				const response = await api.get(getHubListUrl());
+				const response = await api.get(getJoinedHubsUrl());
 				if(response.status == 200) {
 				    setHubListData(response.data);
 					console.log("data: ", response.data);
@@ -77,7 +85,7 @@ const HubListView = () => {
 	return(
 		<>
 		<div style={{ display: 'flex', flexDirection: 'column'}} >
-			<h1 className={styles.hubListTitle} > Browse Community Hubs! </h1>
+			<h1 className={styles.hubListTitle} > Browse Your Hubs! </h1>
 			<div style={{
 				display: 'grid',
 				gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
@@ -90,7 +98,7 @@ const HubListView = () => {
 					<div    className={styles.hubHover}
 						style={{backgroundImage: hubData.bg ? `url(${hubData.bg})` : 'none',
 						     borderRadius: '12px',
-						     height: '90%',
+						     height: '100%',
 						     backgroundPosition: 'center',
 						     backgroundSize: 'cover',
 						}}

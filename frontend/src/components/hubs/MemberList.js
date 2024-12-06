@@ -110,7 +110,7 @@ const MemberList = ({hubId, hubOwnerId, memberList, isPending, isModList, hasPer
 			{memberList.map((member, index) => (
 				<li className={styles.memberLI} 
 				    style={{backgroundColor: (member.id == hubOwnerId) ? 'rgba(255, 255, 255, 0.7)' :
-						    					 'rgba(227, 24, 55, 1.0)'}}
+						    					 'rgba(150, 24, 20, 1.0)'}}
 				    key={index} >
 					<MemberItem 
 						data={member} 

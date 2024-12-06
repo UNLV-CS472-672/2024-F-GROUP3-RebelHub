@@ -10,9 +10,9 @@ import {
     getCurrentUserUrl,
     getDislikePostUrl,
     getLikePostUrl,
-    gotoDetailedPostPage
+    gotoDetailedPostPage,
+    getPostTagUrl
 } from "@/utils/url-segments";
-import { displayPicture, getDislikePostUrl, getLikePostUrl, gotoDetailedPostPage, getPostTagUrl } from "@/utils/url-segments";
 import Link from "next/link";
 import DeletePostButton from "./buttons/delete-post-button";
 import styles from "./post-summary.module.css";
@@ -104,8 +104,7 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
 
     return (
         <div className={styles.postContainer}>
-
-            <div>
+            <div className={styles.thumbContainer}>
                 <Link href={gotoDetailedPostPage(post.id)}>
                     {post.pictures.length > 0 ? (
                         <img src={displayPicture(post.pictures[0][1])} className={styles.postThumbnail}/>
@@ -117,53 +116,48 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
                 <div className={styles.usernameContainer}>
                     {username}
                 </div>
-
             </div>
-            <div>
-                <div className={styles.textContainer}>
-                    <div className={styles.hubNameContainer}>
-                        h/{hubName}
+            <div className={styles.textContainer}>
+                <div className={styles.hubNameContainer}>
+                    {hubName}
+                </div>
+                <div className={styles.postTitle}>
+                    <div className={styles.postTitleComponent}>
+                        <Link href={gotoDetailedPostPage(post.id)}>
+                        <span>
+                            {postTag && <h2 style={{backgroundColor:postTag.color}} className={styles.postTag}>{postTag.name}</h2>}
+                                <h2 className={styles.postTitle}>
+                                    {post.title}
+                                </h2>
+                        </span>
+                        </Link>
                     </div>
-                    <div className={styles.postTitle}>
-                        <div className={styles.postTitleComponent}>
-                            <Link href={gotoDetailedPostPage(post.id)}>
-                            <span>
-                                {postTag && <h2 style={{backgroundColor:postTag.color}} className={styles.postTag}>{postTag.name}</h2>}
-                                    <h2 className={styles.postTitle}>
-                                        {post.title}
-                                    </h2>
-                            </span>
-                            </Link>
-                        </div>
-                        <div className={styles.postTitleComponent}>
-                            <EditedHover editedDate={post.last_edited}/>
-                        </div>
-
+                    <div className={styles.postTitleComponent}>
+                        <EditedHover editedDate={post.last_edited}/>
                     </div>
-                    <div className={bStyles.buttonHorizontalList}>
-                        <div className={bStyles.buttonsLeft}>  
-                            <LikeDislikeButtons 
-                                postObject={post} 
-                                likeUrlFunction={getLikePostUrl} 
-                                dislikeUrlFunction={getDislikePostUrl}
-                                containerClassName={styles.summaryVoteContainer}
-                            />
-                        </div>
-                        {isAuthor &&
-                            <div className={bStyles.buttonsRight}>
-                                <EditPostButton post={post} refreshComponent={refreshComponent}/>
-                                <DeletePostButton post={post}/>
-                                <DeletePostButton post={post} />
-                                <TagPostButton post={post} refreshComponent={refreshComponent}/>
-                            </div>
-                        }
-                        {!isAuthor && isMod &&
-                            <div className={bStyles.buttonsRight}>
-                                <DeletePostButton post={post} />
-                                <TagPostButton post={post} refreshComponent={refreshComponent}/>
-                            </div>
-                        }
+                </div>
+                <div className={bStyles.buttonHorizontalList}>
+                    <div className={bStyles.buttonsLeft}>  
+                        <LikeDislikeButtons 
+                            postObject={post} 
+                            likeUrlFunction={getLikePostUrl} 
+                            dislikeUrlFunction={getDislikePostUrl}
+                            containerClassName={styles.summaryVoteContainer}
+                        />
                     </div>
+                    {isAuthor &&
+                        <div className={bStyles.buttonsRight}>
+                            <EditPostButton post={post} refreshComponent={refreshComponent}/>
+                            <DeletePostButton post={post} />
+                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
+                        </div>
+                    }
+                    {!isAuthor && isMod &&
+                        <div className={bStyles.buttonsRight}>
+                            <DeletePostButton post={post} />
+                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

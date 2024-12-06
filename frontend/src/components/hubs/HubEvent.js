@@ -1,11 +1,11 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { getEventListUrl } from '@/utils/url-segments';
+import { getEventListUrl, getDeleteEventURL } from '@/utils/url-segments';
 import styles from './HubEvent.module.css';
 import api from '@/utils/api';
 import { formatDate } from '@/utils/datetime-conversion';
 import EventModal from '@/components/Calendar/EventModal';
-
+import UpdateForm from '../Calendar/UpdateForm';
 
 const SingleEvent = ({data}) => {
 
@@ -54,8 +54,8 @@ const HubEvent = ({data, isHubOwner}) => {
 
 	const [openModal, setOpenModal] = useState(false);
 	const [modalEvent, setModalEvent] = useState(null);
-
-
+	const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+	const [currentUpdate, setCurrentUpdate] = useState(null); // Holds the event for the current update form
 
 	const handleClose = () => {
 		setOpenModal(false);
@@ -63,6 +63,35 @@ const HubEvent = ({data, isHubOwner}) => {
 		console.log("on closed!!#@");
 	};
 
+	  // Function to handle states when an update form is opened
+	const openUpdateForm = () => {
+			setCurrentUpdate(modalEvent);
+			setIsUpdateOpen(true);
+			console.log("Opening update form for event:", modalEvent.title);
+	}
+	
+	  // Function to handle states when an update form is closed
+	const closeUpdateForm = () => {
+		console.log("Closing update form for event:", currentUpdate.title);
+		setCurrentUpdate(null);
+		setIsUpdateOpen(false);
+	}
+
+	    // Function to live update (no browser refresh required) the calendar when an event is updated 
+	const updateEvent = (updatedEvent) => {
+		setHubEvents((previousEvents) => previousEvents.map((event) => event.id === updatedEvent.id ? updatedEvent : event));
+	};
+
+	const deleteEvent = async (deletedEvent) => {
+		try {
+		  // Make DELETE request to delete the event
+		  await api.delete(getDeleteEventURL(deletedEvent.id));
+		  setHubEvents((previousEvents) => previousEvents.filter((event) => event.id !== deletedEvent.id));
+		  handleClose();
+		} catch (error) {
+		  console.log("Error deleting event: ", error.response);
+		} 
+	  }
 
 	useEffect(() => {
 		console.log("EVENT:", data);
@@ -95,13 +124,17 @@ const HubEvent = ({data, isHubOwner}) => {
 				))}
 			</ul>
 			)}
-			{openModal && <EventModal event={modalEvent} 
-						  isOpen={openModal} 
-						  onClose={handleClose}
-						  onEdit={null}
-						  onDelete={null}
-							  />
+			{openModal && 
+				<EventModal event={modalEvent} 
+					isOpen={openModal} 
+					onClose={handleClose}
+					onEdit={openUpdateForm}
+					onDelete={deleteEvent}
+				/>
 			}
+			<div>
+				{isUpdateOpen && <UpdateForm event={currentUpdate} onClose={closeUpdateForm} onUpdate={updateEvent}/>}
+			</div>
 		</div>
 	);
 };

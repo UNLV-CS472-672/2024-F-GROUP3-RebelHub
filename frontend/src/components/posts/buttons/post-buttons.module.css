@@ -6,16 +6,23 @@
     user-select: none;
 }
 
-.likeButton {
-    background-color: green;
-    padding: 1px;
+.voteButton {
+    background-color: transparent;
+    border: transparent;
     cursor: pointer;
 }
 
+.buttonImg {
+    background-color: transparent;
+    height: 20px;
+    width: 20px;
+}
+
 .dislikeButton {
-    background-color: red;
-    padding: 1px;
-    cursor: pointer;
+    background-color: transparent;
+    height: 20px;
+    width: 20px;
+    margin-top: 5px;
 }
 
 .voteContainer {
