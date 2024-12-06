@@ -115,7 +115,6 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
             </div>
             <div className={styles.voteContainer}>
                 <div>
-                    {displayedDislikes}
                 </div>
                 <div>
                     {showButtons ? (
