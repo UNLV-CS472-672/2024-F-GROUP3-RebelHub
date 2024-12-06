@@ -33,23 +33,19 @@ const HubLimitedView = (data) => {
 	return(
 	<div className={styles.hubCard} 
 	     style={{
-		     backgroundImage: hubData.bg ? `url(${hubData.bg})` : 'none',
+		     backgroundImage: hubData.bg ? 'none' : 'none',
+		     backgroundColor: hubData.bg ? 'rgba(0,0,0,0.7)' : '#E31837',
 	     }}
 	>
-		<div style={{
-			     backgroundColor: hubData.bg ? 'rgba(0,0,0,0.7)' : 'transparent',
-		     }}
-		>
-			<div className={styles.hubHeader}>
-			<button type="button" onClick={gotoHub} className={styles.hubButton}>
-				<h1 className={styles.hubName}> {hubData.name} </h1>
-			</button>
-			<p className={styles.hubDate}> Hub Since: {created.slice(0, created.length-6)} </p>
-			</div>
-			<p className={styles.hubDescription}> {hubData.description} </p>
-			<div className={styles.hubFooter}>
-			<p className={styles.hubMembers}> Members: {hubData.members} </p>
-			</div>
+		<div className={styles.hubHeader}>
+		<button type="button" onClick={gotoHub} className={styles.hubButton}>
+			<h1 className={styles.hubName}> {hubData.name} </h1>
+		</button>
+		<p className={styles.hubDate}> Hub Since: {created.slice(0, created.length-6)} </p>
+		</div>
+		<p className={styles.hubDescription}> {hubData.description} </p>
+		<div className={styles.hubFooter}>
+		<p className={styles.hubMembers}> Members: {hubData.members} </p>
 		</div>
 	</div>
 	);
@@ -82,9 +78,25 @@ const HubListView = () => {
 		<>
 		<div style={{ display: 'flex', flexDirection: 'column'}} >
 			<h1 className={styles.hubListTitle} > Browse Community Hubs! </h1>
-			<div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '10px', height:'100%', padding: '20px'}}>
+			<div style={{
+				display: 'grid',
+				gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+				gap: '20px',
+				padding: '20px',
+				width: '100%',
+				boxSizing: 'border-box',
+			}}>
 				{hubListData.map((hubData, id) => (
-					<HubLimitedView key={id} hubData={hubData}/>
+					<div    className={styles.hubHover}
+						style={{backgroundImage: hubData.bg ? `url(${hubData.bg})` : 'none',
+						     borderRadius: '12px',
+						     height: '90%',
+						     backgroundPosition: 'center',
+						     backgroundSize: 'cover',
+						}}
+					>
+						<HubLimitedView key={id} hubData={hubData}/>
+					</div>
 				))}
 			</div>
 		</div>
