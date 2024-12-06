@@ -2,6 +2,8 @@
 import styles from "./HubList.module.css";
 import { useState } from "react";
 import EventModal from "../Calendar/EventModal.js";
+import { gotoHubPage } from "@/utils/url-segments";
+import Link from "next/link";
 
 const HubList = ({hubs}) => {
     const [isModalOpen, setIsModalOpen] = useState(false); // Event modal
@@ -34,7 +36,7 @@ const HubList = ({hubs}) => {
             {
                 hubs.map((hub) => (
                     <div key={hub.id} className={styles.hub}>
-                        <div className={styles["hub-name"]}>{hub.name}</div>
+                        <Link href={gotoHubPage(hub.id)} className={styles["hub-name"]}>{hub.name}</Link>
                         <hr className={styles["grey-line"]}/>
                         {!showDescription.includes(hub.id) && <button className={styles["show-description"]} onClick={() => handleDescription(hub.id)}>See More</button>}
                         {showDescription.includes(hub.id) && <div className={styles["hub-description"]}>{hub.description}</div> }
@@ -43,7 +45,7 @@ const HubList = ({hubs}) => {
                         <hr className={styles["black-line"]}/>
                         <div>
                             <span>Tags: </span>
-                            {hub.tags.map((tag) => (<span className={styles["hub-tags"]}>{tag.name + " "}</span>))}
+                            {hub.tags.map((tag) => (<span style={{backgroundColor:tag.color}} className={styles["hub-tags"]}>{tag.name + " "}</span>))}
                         </div>
                         <span>{"Members: " + hub.members.length}</span>
                         <div>
