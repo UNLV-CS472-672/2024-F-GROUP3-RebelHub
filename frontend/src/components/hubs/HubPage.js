@@ -323,9 +323,14 @@ const HubPage = ({id}) => {
 	const HubPageMainContent = () => {
 		return(
 			<div className={styles.parentContentContainer}>
-				
-				
-				{showTagUpdate && <PostTagUpdateModal hub={hubData.id} onClose={() => setShowTagUpdate(false)} setTags={setPostTags} setHubPosts={setHubPosts}/>}
+				{showTagUpdate && 
+					<PostTagUpdateModal 
+						hub={hubData.id} 
+						onClose={() => setShowTagUpdate(false)} 
+						setTags={setPostTags} 
+						setHubPosts={setHubPosts}
+					/>
+				}
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> {hubData.name} Posts </h1>
 				</div>
@@ -453,6 +458,7 @@ const HubPage = ({id}) => {
 						<div className={styles.hubTagList}>
 							{hubTags.length != 0 && hubTags.map(tag => <h2 style={{backgroundColor:tag.color}} className={styles.hubTag}>{tag.name}</h2>)}
 						</div>
+						<br/>
 						<h1 className={styles.hubName}> {hubData.name} </h1><br/>
 						<p className={styles.hubDescription}>{hubData.description} </p>
 						{hubOwner && <button className={styles.hubActionButton} onClick={() => editButtonPress()}> EDIT </button> }
