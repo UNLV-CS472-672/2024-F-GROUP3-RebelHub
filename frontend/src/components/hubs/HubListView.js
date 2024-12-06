@@ -30,6 +30,14 @@ const HubLimitedView = (data) => {
 
 	const created = convertUtcStringToLocalString(hubData.created_at);
 
+	const shortDesc = (desc) => {
+	    const words = desc.split(" ");
+	    if (words.length > 50) {
+		return words.slice(0, 47).join(" ") + "...";
+	    }
+	    return desc;
+	}
+
 	return(
 	<div className={styles.hubCard} 
 	     style={{
@@ -43,7 +51,7 @@ const HubLimitedView = (data) => {
 		</button>
 		<p className={styles.hubDate}> Hub Since: {created.slice(0, created.length-6)} </p>
 		</div>
-		<p className={styles.hubDescription}> {hubData.description} </p>
+		<p className={styles.hubDescription}> {shortDesc(hubData.description)} </p>
 		<div className={styles.hubFooter}>
 		<p className={styles.hubMembers}> Members: {hubData.members} </p>
 		</div>
