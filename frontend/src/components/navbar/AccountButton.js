@@ -98,7 +98,7 @@ const AccountButton = (props) => {
 						setRetries(retries + 1);
 					}
 
-					window.location.reload();
+					router.push("/users/login/");
 
 					setpfppath(avatarIconPath);
 					setDisplayName('some user');
