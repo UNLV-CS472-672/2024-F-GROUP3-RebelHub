@@ -3,10 +3,10 @@
     gap: 4vw;
 }
 .usernameContainer{
-margin-left:1.3vw;
+    align-items: flex-end;
 }
 .hubNameContainer{
-position:absolute;
+    position:absolute;
     top:0;
     right:5vw;
     z-index: 10;  /* Ensure it stays on top of other elements */
@@ -21,8 +21,12 @@ position:absolute;
     gap: 10px;
     background-color: rgb(90, 0, 0);
     padding: 10px;
+}
 
-
+.thumbContainer {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
 }
 
 .textContainer {
