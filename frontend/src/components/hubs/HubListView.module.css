@@ -1,6 +1,7 @@
 .hubCard {
 	border-radius: 12px;
-	background-color: #8f0519;
+	background-color: #E31837;
+	background-position: center;
 	width: 100%;
 	height: auto;
 	padding: 20px;
@@ -50,7 +51,7 @@
 
 .hubDate {
 	font-size: 14px;
-	color: rgba(0, 0, 0, 0.7);
+	color: rgba(255, 255, 255, 0.7);
 }
 
 .hubDescription {

@@ -37,7 +37,7 @@ class HubSerializer(serializers.ModelSerializer):
 class HubTLSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hub
-        fields = ['id', 'name', 'description', 'owner', 'members', 'created_at', 'private_hub', 'tags']
+        fields = ['id', 'name', 'description', 'owner', 'members', 'created_at', 'private_hub', 'tags', 'bg', 'banner']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

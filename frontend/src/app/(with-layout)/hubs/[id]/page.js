@@ -2,8 +2,8 @@
 import RebelHubNavBar from '@/components/navbar/RebelHubNavBar';
 import ProtectedRoute from '@/components/Accounts/ProtectedRoutes';
 import HubPage from '@/components/hubs/HubPage';
-import { useParams } from 'next/navigation';
 import Sidebar from '@/components/sidebar/sidebar';
+import { useParams } from 'next/navigation';
 
 import margins from "@/utils/Margins.module.css";
 
