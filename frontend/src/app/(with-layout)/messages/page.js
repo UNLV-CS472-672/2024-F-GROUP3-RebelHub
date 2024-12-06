@@ -53,9 +53,11 @@ export default function PMessages(){
   }
   
   useEffect(() => {
-    
-    fetchConvos();
-  }, []);
+    const interval = setInterval(()=>{
+      fetchConvos();
+    }, 1000);
+    return()=> clearInterval(interval);
+  },[])
 
 
   const fetchConvoMsg = async () => {
@@ -83,8 +85,12 @@ export default function PMessages(){
     }
 
   useEffect(() => {
-    fetchConvoMsg();
-  }, [selectedConversation]);
+    if(!selectedConversation) return;
+    const interval = setInterval(()=>{
+      fetchConvoMsg();
+    }, 1000);
+    return()=> clearInterval(interval);
+  }, [selectedConversation])
 
   const sendMessage = async () => {
     if (newMessage.trim() === '') return;
