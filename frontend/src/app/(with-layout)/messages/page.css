@@ -4,7 +4,6 @@
   flex-direction: column;
   padding: 20px;
   background-color: #000;
-  padding-top: 100px;
 }
 
 .header {
@@ -44,7 +43,6 @@
   padding: 0px 20px;
   background-color: black;
   border-radius: 8px;
-  margin-left: 50px;
   margin-right: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow-y: auto;

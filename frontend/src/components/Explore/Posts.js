@@ -25,7 +25,7 @@ const Posts = () => {
     }, []);
 
     return (
-        <main className={styles.mainContent}>
+        <main>
             <header className={styles.header}>
                 <h1 style={{ marginBottom: '2vh' }}>Posts</h1>
                 <FilterPostButtons posts={posts} setPosts={setPosts} postsUrl={getExploreListUrl}/>

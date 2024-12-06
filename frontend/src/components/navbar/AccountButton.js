@@ -48,7 +48,6 @@ const AccountButton = (props) => {
 	
 	useEffect(() => {
 		const fetchProfile = async () => {
-
 			// If the prop was given a username, we want that to be the username.
 			if (props.username != null) {
 				if (props.username instanceof String)
@@ -110,7 +109,6 @@ const AccountButton = (props) => {
 				// edit profile page.
 				if (props.username != null) {
 					const response = await api.get(getCurrentUserUrl());
-					console.log("account success", response);
 
 					setEditProfileLink(response.data.id == props.username);
 				}
@@ -120,7 +118,7 @@ const AccountButton = (props) => {
 		}
 
 		getProfileInfo();
-	}, [props]);
+	}, []);
 
 	const accountButtonPressed = () => {
 		console.log("pressed acc");

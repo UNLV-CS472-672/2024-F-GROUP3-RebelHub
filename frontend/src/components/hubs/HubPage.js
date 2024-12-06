@@ -13,6 +13,7 @@ import AccountButton from '@/components/navbar/AccountButton';
 import { getHubUrl, getCurrentUserUrl, getPostsHubUrl , getRequestJoinHubUrl, getCancelRequestJoinHubUrl, getJoinHubUrl, getUpdateHubUrl, getLeaveHubUrl, getDeleteHubUrl, getPostTagsUrl, getHubTagsForAHubUrl, getUpdateHubTagsUrl } from "@/utils/url-segments";
 import { convertUtcStringToLocalString } from '@/utils/datetime-conversion';
 import FilterPostButtons from '@/components/FilterButtons/FilterPostButtons';
+import CreateForm from '../Calendar/CreateForm';
 
 import CreatePostButton from '../posts/buttons/create-post-button';
 /*
@@ -44,6 +45,11 @@ const HubPage = ({id}) => {
 
 	const [showTagUpdate, setShowTagUpdate] = useState(false);
 	const [hubTags, setHubTags] = useState([]);
+
+	// Event stuff
+
+	const [events, setEvents] = useState([]);
+	const [isCreateOpen, setIsCreateOpen] = useState(false);
 
 	const router = useRouter();
 
@@ -78,6 +84,7 @@ const HubPage = ({id}) => {
 				const response = await api.get(getHubUrl(id));
 				if(response.status == 200) {
 				    setHubData(response.data);
+					setEvents(response.data.hub_events);
 					console.log("data: ", response.data);
 				}
 			    } catch (error) {
@@ -287,6 +294,23 @@ const HubPage = ({id}) => {
 
 	};
 
+	// Event stuff
+
+	const openCreateForm = () => {
+		setIsCreateOpen(true);
+		console.log("Opening create form.");
+	}
+
+	const createEvent = (newEvent) => {
+		setEvents((prev) => [...prev, newEvent]);
+		console.log("Created event: ", newEvent.title);
+	}
+
+	const closeCreateForm = () => {
+		setIsCreateOpen(false);
+		console.log("Closing create form");
+	} 
+
 
 	//general info.
 	const hubOwner = hubData.owned;
@@ -300,15 +324,33 @@ const HubPage = ({id}) => {
 		return(
 			<div className={styles.parentContentContainer}>
 				<div className={styles.eventContainer}>
-					<h1 className={styles.eventSectionTitle}> Latest Events </h1>
-					<HubEvent data={hubData.events} />
+					<h1 className={styles.eventSectionTitle}>
+						Latest Events
+					</h1>
+					<HubEvent data={events} />
 				</div>
+				<div className={styles.filterButtons}>
+					<FilterPostButtons 
+						posts={hubPosts} 
+						setPosts={setHubPosts} 
+						postsUrl={getPostsHubUrl} 
+						current_hub_id={hubData.id} 
+						tags={postTags} 
+					/>
+				</div>
+				{showTagUpdate && <PostTagUpdateModal hub={hubData.id} onClose={() => setShowTagUpdate(false)} setTags={setPostTags} setHubPosts={setHubPosts}/>}
 				<div className={styles.postTitleContainer}>
 					<h1 className={styles.postTitle}> Latest Posts </h1>
 					{hubOwner ? 
 						(
 						<div className={styles.hubButtonContainer}>
-						<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
+						<button 
+							className={styles.hubActionButton}
+							style={{backgroundColor: 'rgba(227,23,55,0.9)'}}
+							onClick={openCreateForm}
+						> 
+							CREATE EVENT
+					     	</button>
 						<button 
 							className={styles.hubActionButton}
 							style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
@@ -505,8 +547,7 @@ const HubPage = ({id}) => {
 			
 					
 			{/* the hubs calander events component can go here */}
-			<FilterPostButtons posts={hubPosts} setPosts={setHubPosts} postsUrl={getPostsHubUrl} current_hub_id={id} tags={postTags} />
-			{showTagUpdate && <PostTagUpdateModal hub={id} onClose={() => setShowTagUpdate(false)} setTags={setPostTags} setHubPosts={setHubPosts}/>}
+			
 			 {/*nothing is where the request buttons should
 		            appear and any other content a private hub
 			    should display*/}
@@ -516,7 +557,7 @@ const HubPage = ({id}) => {
 				<HubPageMainContent/>
 			)}
 			
-			
+			{isCreateOpen && <CreateForm onClose={closeCreateForm} onCreate={createEvent} hubsModding={[hubData]}/>}
 			
 		</div>
 		</>

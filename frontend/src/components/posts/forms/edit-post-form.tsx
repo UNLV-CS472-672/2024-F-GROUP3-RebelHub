@@ -9,6 +9,7 @@ import api from "@/utils/api";
 import { Post } from "@/utils/posts/definitions";
 import ImageInput from "./ImageInput";
 import bStyles from "@/components/posts/buttons/post-buttons.module.css"
+import { useState } from "react";
 
 interface ComponentProps {
     post: Post;
@@ -24,6 +25,8 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
             image: (post.pictures.length > 0 ? post.pictures[0][1] : null),
         }
     });
+
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const onSubmit = methods.handleSubmit(async data => {
         try {
@@ -133,9 +136,12 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
         } catch (error) {
             alert("There was an error in your edit: " + error);
 
-            // If the post was deleted while someone was editing it, reload the page
-            if (error.status == 404) {
+            if (error.response && error.response.status === 400) {
+                setErrorMessage(error.response.data.detail || "Inappropriate language detected. Please refrain from using inappropriate language");
+            } else if (error.status == 404) {
                 window.location.reload();
+            } else {
+                setErrorMessage("An unexpected error occurred. Please try again.");
             }
 
             return null;
@@ -152,6 +158,7 @@ const EditPostForm: React.FC<ComponentProps> = ({ post, onClose, refreshComponen
                     <h1>Edit Post '{post.title}'</h1>
                 </div>
                 <div className={styles.editPostContainer}>
+                    {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
                     <CreateInput {...TITLE_VALIDATION} />
                     <CreateInput {...POST_MESSAGE_VALIDATION} />
                     <ImageInput />

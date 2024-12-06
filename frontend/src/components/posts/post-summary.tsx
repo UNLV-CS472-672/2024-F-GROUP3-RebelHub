@@ -19,7 +19,9 @@ import styles from "./post-summary.module.css";
 import EditedHover from "./others/EditedHover";
 import TagPostButton from "./buttons/tag-post-button";
 import api from "@/utils/api";
-import api from "@/utils/api";
+
+import bStyles from "@/components/posts/buttons/post-buttons.module.css";
+
 
 interface ComponentProps {
     post: Post;
@@ -88,8 +90,11 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
             if (post.tag != null) {
                 const response = await api.get(getPostTagUrl(post.tag));
                 setPostTag(response.data);
+            } else {
+                setPostTag(null);
             }
         };
+
         fetchPostTag();
     }, [post.tag]);
 
@@ -135,31 +140,28 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
                         </div>
 
                     </div>
-                    <div className={styles.postButtonList}>
-                        <LikeDislikeButtons
-                            postObject={post}
-                            likeUrlFunction={getLikePostUrl}
-                            dislikeUrlFunction={getDislikePostUrl}
-                            containerClassName={styles.summaryVoteContainer}
-                        />
-                        <div></div>
+                    <div className={bStyles.buttonHorizontalList}>
+                        <div className={bStyles.buttonsLeft}>  
+                            <LikeDislikeButtons 
+                                postObject={post} 
+                                likeUrlFunction={getLikePostUrl} 
+                                dislikeUrlFunction={getDislikePostUrl}
+                                containerClassName={styles.summaryVoteContainer}
+                            />
+                        </div>
                         {isAuthor &&
-                            <>
-
+                            <div className={bStyles.buttonsRight}>
                                 <EditPostButton post={post} refreshComponent={refreshComponent}/>
                                 <DeletePostButton post={post}/>
                                 <DeletePostButton post={post} />
                                 <TagPostButton post={post} refreshComponent={refreshComponent}/>
-                            </>
+                            </div>
                         }
                         {!isAuthor && isMod &&
-                            <>
-                                <div></div>
-                                <DeletePostButton post={post}/>
+                            <div className={bStyles.buttonsRight}>
                                 <DeletePostButton post={post} />
-                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
-
-                            </>
+                                <TagPostButton post={post} refreshComponent={refreshComponent}/>
+                            </div>
                         }
                     </div>
                 </div>

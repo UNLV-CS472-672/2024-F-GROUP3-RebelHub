@@ -31,16 +31,25 @@ const HubLimitedView = (data) => {
 	const created = convertUtcStringToLocalString(hubData.created_at);
 
 	return(
-	<div className={styles.hubCard}>
-		<div className={styles.hubHeader}>
-		<button type="button" onClick={gotoHub} className={styles.hubButton}>
-			<h1 className={styles.hubName}> {hubData.name} </h1>
-		</button>
-		<p className={styles.hubDate}> Hub Since: {created.slice(0, created.length-6)} </p>
-		</div>
-		<p className={styles.hubDescription}> {hubData.description} </p>
-		<div className={styles.hubFooter}>
-		<p className={styles.hubMembers}> Members: {hubData.members} </p>
+	<div className={styles.hubCard} 
+	     style={{
+		     backgroundImage: hubData.bg ? `url(${hubData.bg})` : 'none',
+	     }}
+	>
+		<div style={{
+			     backgroundColor: hubData.bg ? 'rgba(0,0,0,0.7)' : 'transparent',
+		     }}
+		>
+			<div className={styles.hubHeader}>
+			<button type="button" onClick={gotoHub} className={styles.hubButton}>
+				<h1 className={styles.hubName}> {hubData.name} </h1>
+			</button>
+			<p className={styles.hubDate}> Hub Since: {created.slice(0, created.length-6)} </p>
+			</div>
+			<p className={styles.hubDescription}> {hubData.description} </p>
+			<div className={styles.hubFooter}>
+			<p className={styles.hubMembers}> Members: {hubData.members} </p>
+			</div>
 		</div>
 	</div>
 	);
