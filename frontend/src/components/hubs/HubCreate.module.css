@@ -1,7 +1,7 @@
 .createContainer {
 	height: 100%;
 	margin: 20px;
-	background-color: #E31837;
+	background-color: darkred;
 	align-items: center;
 	display: flex;
 	flex-direction: column;

@@ -94,18 +94,18 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
     return (
         <div className={containerClassName}>
             <div className={styles.voteContainer}>
-                <div>
+                <div style={{'marginTop': "4px"}}>
                     {displayedLikes}
                 </div>
                 <div>
                     {showButtons ? (
-                            <button onClick={handleLike} className={clsx(
-                                [styles.basicButton],
-                                {
-                                    [styles.likeButton]: postLiked,
+                            <button className={styles.voteButton} onClick={handleLike}>
+                                {postLiked ? (
+                                        <img className={styles.buttonImg} src="/thumbs/like thumb.png"/>
+                                    ) : (
+                                        <img className={styles.buttonImg} src="/thumbs/thumb.png"/>
+                                    )
                                 }
-                            )}>
-                                Like
                             </button>
                         ) : (
                             <p>Likes</p>
@@ -118,13 +118,13 @@ const LikeDislikeButtons: React.FC<ComponentProps> = ({ postObject, likeUrlFunct
                 </div>
                 <div>
                     {showButtons ? (
-                            <button onClick={handleDislike} className={clsx(
-                                [styles.basicButton],
-                                {
-                                    [styles.dislikeButton]: postDisliked,
+                            <button className={styles.voteButton} onClick={handleDislike}>
+                                {postDisliked ? (
+                                        <img className={styles.dislikeButton} src="/thumbs/dislike thumb.png"/>
+                                    ) : (
+                                        <img className={styles.dislikeButton} src="/thumbs/down thumb.png"/>
+                                    )
                                 }
-                            )}>
-                                Dislike
                             </button>
                         ) : (
                             <p>Dislikes</p>

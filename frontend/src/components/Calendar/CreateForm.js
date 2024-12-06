@@ -22,7 +22,7 @@ const CreateForm = ({onClose, onCreate, hubsModding=null, currentHub=null}) => {
             // Make POST request
             let response;
             if(currentHub == null) response = await api.post(getCreateEventURL(), { title, description, location, start_time: convertLocalStringToUtcString(startTime), end_time: endTime ? convertLocalStringToUtcString(endTime) : null, color: color, hub: hub ? hub.id : null, isPersonal});
-            else response = await api.post(getCreateEventURL(), { title, description, location, start_time: convertLocalStringToUtcString(startTime), end_time: endTime ? convertLocalStringToUtcString(endTime) : null, color: color, hub: hub ? hub.id : null, isPersonal});
+            else response = await api.post(getCreateEventURL(), { title, description, location, start_time: convertLocalStringToUtcString(startTime), end_time: endTime ? convertLocalStringToUtcString(endTime) : null, color: color, hub: currentHub, isPersonal});
             onCreate(response.data);
             onClose();
         } catch (error) { console.log("Error creating event: ", error); } 

@@ -30,8 +30,7 @@ const RebelHubNavBar = () => {
 	};
 	const settingsButtonPressed = () => {
 		console.log("pressed settings button");
-		setDarkTheme(!darkTheme);
-		//router.push("/"); <--- go to the settigns page
+		router.push("/profile/editprofile/");
 	};
 
 	return (

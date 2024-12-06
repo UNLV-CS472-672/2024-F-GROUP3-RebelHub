@@ -309,8 +309,7 @@ const HubPage = ({id}) => {
 	const closeCreateForm = () => {
 		setIsCreateOpen(false);
 		console.log("Closing create form");
-	} 
-
+	}
 
 	//general info.
 	const hubOwner = hubData.owned;
@@ -337,7 +336,9 @@ const HubPage = ({id}) => {
 				<div className={styles.hubPageContentContainer}>
 					<PostList className={styles.postsList} posts={hubPosts}/>
 					<div className={styles.membersListsContainer}>
-						<CreatePostButton hubId={id} buttonStyle={styles.hubActionButton}/>
+						{hubJoined && 
+							<CreatePostButton hubId={id} buttonStyle={styles.hubActionButton}/>
+						}
 						<MemberList 
 							hubId={hubData.id}
 							hubOwnerId={hubOwnerId}
@@ -496,13 +497,15 @@ const HubPage = ({id}) => {
 				<div className={styles.eventContainer}>
 					<h1 className={styles.eventSectionTitle}>
 						Latest Events
-						<button 
+						{(hubOwner || hubMod) && 
+							<button 
 							className={styles.hubActionButton}
 							style={{backgroundColor: 'rgba(227,23,55,0.9)'}}
 							onClick={openCreateForm}
 						> 
-							CREATE EVENT
+							NEW EVENT
 						</button>
+						}
 					</h1>
 					<HubEvent data={events} />
 				</div>
@@ -524,7 +527,7 @@ const HubPage = ({id}) => {
 			)}
 
 				
-			{isCreateOpen && <CreateForm onClose={closeCreateForm} onCreate={createEvent} hubsModding={[hubData]}/>}
+			{isCreateOpen && <CreateForm onClose={closeCreateForm} onCreate={createEvent} currentHub={hubData.id}/>}
 			
 		</div>
 		</>

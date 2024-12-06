@@ -18,7 +18,7 @@
     border: 2px solid black;
     border-radius: 12px;
     grid-template-columns: 100px 1fr;
-    gap: 10px;
+    gap: 20px;
     background-color: rgb(90, 0, 0);
     padding: 10px;
 }
@@ -63,12 +63,4 @@
 .postTitleComponent {
     display: flex;
     vertical-align: left;
-}
-
-.postButtonList {
-    display: grid;
-    grid-template-columns: auto 1fr auto auto ;
-    align-items: end;
-    gap: 10px;
-    z-index:1;
 }

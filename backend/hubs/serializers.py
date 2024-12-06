@@ -31,6 +31,7 @@ class HubSerializer(serializers.ModelSerializer):
         representation['pending'] = user in instance.pending_members.all()
         representation['modding'] = user in instance.mods.all()
         representation['owned'] = user == instance.owner
+        representation['member_num'] = instance.members.all().count()
         return representation
 
 #Serializer fo a hub model with only fields that would be needed for a TL view.

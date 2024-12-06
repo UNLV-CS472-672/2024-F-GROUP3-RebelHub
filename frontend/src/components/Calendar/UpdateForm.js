@@ -33,22 +33,27 @@ const UpdateForm = ({ event, onClose, onUpdate}) => {
           </button>
           <label>
             Title:
+            <br/>
             <input type="text" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
           </label>
           <label>
             Location:
+            <br/>
             <input type="text" name="location" value={location} onChange={(e) => setLocation(e.target.value)} />
           </label>
           <label>
             Description:
+            <br/>
             <input type="text" name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
           </label>
           <label>
             Start Time:
+            <br/>
             <input type="datetime-local" name="start_time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
           </label>
           <label>
             End Time:
+            <br/>
             <input type="datetime-local" name="end_time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
           </label>
           <label>
