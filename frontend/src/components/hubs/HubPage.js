@@ -323,75 +323,11 @@ const HubPage = ({id}) => {
 	const HubPageMainContent = () => {
 		return(
 			<div className={styles.parentContentContainer}>
-				<div className={styles.eventContainer}>
-					<h1 className={styles.eventSectionTitle}>
-						Latest Events
-					</h1>
-					<HubEvent data={events} />
-				</div>
-				<div className={styles.filterButtons}>
-					<FilterPostButtons 
-						posts={hubPosts} 
-						setPosts={setHubPosts} 
-						postsUrl={getPostsHubUrl} 
-						current_hub_id={hubData.id} 
-						tags={postTags} 
-					/>
-				</div>
+				
+				
 				{showTagUpdate && <PostTagUpdateModal hub={hubData.id} onClose={() => setShowTagUpdate(false)} setTags={setPostTags} setHubPosts={setHubPosts}/>}
 				<div className={styles.postTitleContainer}>
-					<h1 className={styles.postTitle}> Latest Posts </h1>
-					{hubOwner ? 
-						(
-						<div className={styles.hubButtonContainer}>
-						<button 
-							className={styles.hubActionButton}
-							style={{backgroundColor: 'rgba(227,23,55,0.9)'}}
-							onClick={openCreateForm}
-						> 
-							CREATE EVENT
-					     	</button>
-						<button 
-							className={styles.hubActionButton}
-							style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
-							onClick={() => {
-								const isConfirmed = window.confirm("Are you sure you want to delete this hub?");
-								if(isConfirmed)
-								{
-									handleDeleteHub();
-								}
-							}}
-						> 
-							DELETE HUB 
-					     	</button>
-						</div>
-					) :
-					    (hubJoined ? (
-
-						<div className={styles.hubButtonContainer}>
-							<CreatePostButton hubId={hubData.id} buttonStyle={styles.hubActionButton}/>
-							<button 
-								className={styles.hubActionButton}
-								style={{backgroundColor: 'rgba(0,0,0,0.9)'}}
-								onClick={() => {
-									const isConfirmed = window.confirm("Are you sure you want to leave this hub?");
-									if(isConfirmed)
-									{
-										handleLeave();
-									}
-								}}
-							  > 
-								LEAVE HUB 
-							  </button>
-						</div>
-					 ) :
-
-					     (<button
-						     className={styles.hubActionButton} 
-						     onClick={handleJoin}
-					      > 
-						     JOIN HUB 
-					      </button>))}
+					<h1 className={styles.postTitle}> {hubData.name} Posts </h1>
 				</div>
 				<div className={styles.hubPageContentContainer}>
 					<PostList className={styles.postsList} posts={hubPosts}/>
@@ -519,7 +455,7 @@ const HubPage = ({id}) => {
 						</div>
 						<h1 className={styles.hubName}> {hubData.name} </h1><br/>
 						<p className={styles.hubDescription}>{hubData.description} </p>
-						{hubOwner && <button className={styles.hubActionButton} onClick={() => editButtonPress()}> Edit </button> }
+						{hubOwner && <button className={styles.hubActionButton} onClick={() => editButtonPress()}> EDIT </button> }
 					</div>
 					<div className={styles.hubViewDetails}>
 						<div 
@@ -544,19 +480,44 @@ const HubPage = ({id}) => {
 			}
 		</div>
 		<div className={styles.pageBG} style={{backgroundImage: isEditing && previewImage ? `url(${previewImage})` : `url(${hubData.bg})`}}>
-			
-					
+								
 			{/* the hubs calander events component can go here */}
 			
 			 {/*nothing is where the request buttons should
 		            appear and any other content a private hub
 			    should display*/}
+			<div className={styles.parentContentContainer}>
+				<div className={styles.eventContainer}>
+					<h1 className={styles.eventSectionTitle}>
+						Latest Events
+						<button 
+							className={styles.hubActionButton}
+							style={{backgroundColor: 'rgba(227,23,55,0.9)'}}
+							onClick={openCreateForm}
+						> 
+							CREATE EVENT
+						</button>
+					</h1>
+					<HubEvent data={events} />
+				</div>
+				<div className={styles.filterButtons}>
+					<FilterPostButtons 
+						posts={hubPosts} 
+						setPosts={setHubPosts} 
+						postsUrl={getPostsHubUrl} 
+						current_hub_id={hubData.id} 
+						tags={postTags} 
+					/>
+				</div>
+			</div>
+		
 			{(hubPrivate && !hubJoined) ? (
 				<HubPagePrivateContent/>
 			) : (
 				<HubPageMainContent/>
 			)}
-			
+
+				
 			{isCreateOpen && <CreateForm onClose={closeCreateForm} onCreate={createEvent} hubsModding={[hubData]}/>}
 			
 		</div>

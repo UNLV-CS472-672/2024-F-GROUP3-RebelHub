@@ -94,8 +94,7 @@
 }
 .postTitle{
 	text-align: center;
-	padding-left: 80px;
-	padding-top: 80px;
+	margin-left: 10px;
 }
 .hubActionButton{
 	border-radius: 20px;
