@@ -19,12 +19,16 @@ const FilterPostButtons = ({posts, setPosts, postsUrl, current_hub_id, tags}) =>
         console.log("Fetching posts...");
         try {
             let response;
+            let timeForApi;
+            if(newTime == 'all time') timeForApi = 'all_time';
+            else if(newTime == '24 hours') timeForApi = '24_hours';
+            else timeForApi = newTime;
             if(current_hub_id != null){
-                if(filteredTags.length != 0) response = await api.get(postsUrl(current_hub_id, filteredTags, newTime, sort));
-                else response = await api.get(postsUrl(current_hub_id, null, newTime, sort));
+                if(filteredTags.length != 0) response = await api.get(postsUrl(current_hub_id, filteredTags, timeForApi, sort));
+                else response = await api.get(postsUrl(current_hub_id, null, timeForApi, sort));
             } 
             else {
-                response = await api.get(postsUrl(null, newTime, sort));
+                response = await api.get(postsUrl(null, timeForApi, sort));
             }
             setTime(newTime);
             setPosts(response.data);
@@ -32,7 +36,6 @@ const FilterPostButtons = ({posts, setPosts, postsUrl, current_hub_id, tags}) =>
         } catch (error) { console.log("Error fetching posts: ", error); }
         setCurrentTimeButton(newTime);
     }
-
     // Done so that we can change the sort all in the frontend (without api call)
     const changeSort = (newSort) => {
         if(sort === newSort && newSort != 'random') return;
