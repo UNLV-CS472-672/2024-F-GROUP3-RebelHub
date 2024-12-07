@@ -61,7 +61,7 @@ const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, 
                     }
                 </div>
                 <div className={styles.messageContainer}>
-                    <div>
+                    <div style={{'wordBreak': 'break-all'}}>
                         {comment.message}
                     </div>
                     <div className={styles.buttonList}>

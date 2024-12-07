@@ -40,7 +40,7 @@ const RebelHubNavBar = () => {
 				<img src={logoReturnKeyPath/*darkTheme ? logoDarkThemePath : logoLightThemePath*/} className={styles.homeButtonLogo}/>
 			</button>
 			<Searchbar setResults={setResults}/>
-			<Searchresults results={results}/>
+			<Searchresults results={results} temp2={setResults}/>
 			<button className={styles.messageButton} onClick={messageButtonPressed}>
 				<img src={messageIconPath} className={styles.messageIcon}/>
 			</button>
