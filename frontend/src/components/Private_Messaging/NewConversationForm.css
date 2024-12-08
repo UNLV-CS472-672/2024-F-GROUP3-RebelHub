@@ -1,6 +1,6 @@
 .newConversationForm {
     padding: 5px 10px; 
-    background-color: #333;
+    background-color: grey;
     border-radius: 8px;
     width: 100%;
     max-width: 400px;
@@ -11,6 +11,7 @@
     align-items: center;  
     height: 45px;  
     margin-bottom: 10px;
+    border-radius: #A03123;
   }
   
   .newConversationForm input {
@@ -24,11 +25,14 @@
     color: black;
     transition: border-color 0.3s ease;
     height: 100%;  
+    
   }
   
   .newConversationForm input:focus {
     border-color: #A03123;
-    outline: none;
+    border: solid rgb(199, 13, 13);
+    
+    
   }
   
   .newConversationForm button {
@@ -50,6 +54,7 @@
   
   .newConversationForm button:hover {
     background-color: #E31837;
+    
   }
   
   .newConversationForm button:disabled {
