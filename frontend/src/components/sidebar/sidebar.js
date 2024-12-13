@@ -5,6 +5,7 @@ import Link from 'next/link'
 import margins from "@/utils/Margins.module.css";
 
 export default function Sidebar() {
+    
     return(
         <div className={margins.sidebar}>
             <Link href="/profile/" className='link'>My Profile</Link>

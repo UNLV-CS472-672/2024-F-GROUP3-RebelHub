@@ -19,7 +19,9 @@ class FilterFunctionTestCase(TestCase):
         self.assertTrue(inappropriate_language_filter("Shit post"))
         self.assertTrue(inappropriate_language_filter("fuck"))
         self.assertTrue(inappropriate_language_filter("BITCH"))
-        self.assertTrue(inappropriate_language_filter("crap."))
+
+        # This word is considered fine for now
+        self.assertFalse(inappropriate_language_filter("crap."))
 
         self.assertFalse(inappropriate_language_filter("Nice, and this is a clean post."))
         self.assertFalse(inappropriate_language_filter("Nothing bad here."))

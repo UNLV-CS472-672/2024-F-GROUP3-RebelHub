@@ -98,8 +98,6 @@ const AccountButton = (props) => {
 						setRetries(retries + 1);
 					}
 
-					router.push("/users/login/");
-
 					setpfppath(avatarIconPath);
 					setDisplayName('some user');
 				}
