@@ -121,7 +121,7 @@ const PostSummaryDetailed: React.FC<ComponentProps> = ({ post }) => {
                         <img src={displayPicture(post.pictures[0][1])} className={styles.image}/>
                     </div>
                 }
-                <div>
+                <div style={{'overflowWrap': 'break-word'}}>
                     {post.message}
                 </div>
                 <div className={bStyles.buttonHorizontalList}>

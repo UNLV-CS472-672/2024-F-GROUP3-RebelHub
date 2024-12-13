@@ -12,7 +12,6 @@ export default function Sidebar() {
             <Link href="/calendar/" className='link'>Calendar</Link>
             <Link href="/explore/" className='link'>Explore</Link>
             <Link href="/hubs/" className='link'>Hubs</Link>
-            <button style={{'color': 'white'}}> Log out</button>
         </div>  
     )
 }

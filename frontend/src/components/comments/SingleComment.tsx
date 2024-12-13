@@ -10,8 +10,8 @@ import { useEffect, useState } from "react";
 import CreateCommentButton from "./buttons/CreateCommentButton";
 import CreateComment from "./CreateComment";
 import DeleteCommentButton from "./buttons/DeleteCommentButton";
-import { checkAuthorPrivileges, checkHubPrivileges } from "@/utils/fetchPrivileges";
-import { formatDate } from "@/utils/datetime-conversion";
+
+import bStyles from "@/components/posts/buttons/post-buttons.module.css";
 
 interface ComponentProps {
     post: Post;
@@ -21,6 +21,7 @@ interface ComponentProps {
     showButtons?: boolean;
     userId: number|null;
     moddedHubs: number[];
+    inHub: boolean;
 }
 
 /*
@@ -36,7 +37,7 @@ interface ComponentProps {
     showButtons: used to show the likes/dislikes buttons or just show some text
 */
 
-const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, parentDelete, showButtons=true, userId, moddedHubs }) => {
+const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, parentDelete, showButtons=true, userId, moddedHubs, inHub=true }) => {
     const [showCreateComment, setShowCreateComment] = useState(false);
     const [isAuthor, setIsAuthor] = useState(false);
     const [isMod, setIsMod] = useState(false);
@@ -61,36 +62,32 @@ const SingleComment: React.FC<ComponentProps> = ({ post, comment, parentCreate, 
                     }
                 </div>
                 <div className={styles.messageContainer}>
-                    <div style={{'wordBreak': 'break-all'}}>
+                    <div style={{'overflowWrap': 'break-word'}}>
                         {comment.message}
                     </div>
-                    <div className={styles.buttonList}>
-                        <LikeDislikeButtons 
-                            postObject={comment} 
-                            likeUrlFunction={getLikeCommentUrl} 
-                            dislikeUrlFunction={getDislikeCommentUrl}
-                            containerClassName={styles.voteContainer}
-                            showButtons={showButtons}
-                        />
-                        <div className={styles.modifyButtons}>
-                            <CreateCommentButton toggleReply={() => setShowCreateComment(!showCreateComment)} buttonMessage="Reply"/>
+                    <div className={bStyles.buttonHorizontalList}>
+                        <div className={bStyles.buttonsLeft}>
+                            <LikeDislikeButtons 
+                                postObject={comment} 
+                                likeUrlFunction={getLikeCommentUrl} 
+                                dislikeUrlFunction={getDislikeCommentUrl}
+                                containerClassName={styles.voteContainer}
+                                showButtons={showButtons}
+                            />
+                        </div>
+                        <div className={bStyles.buttonsRight}>
                             {isAuthor &&  
                                 <>
                                     <DeleteCommentButton comment={comment} parentDelete={parentDelete} />
-                                    <div></div>
                                 </>
                             }
                             {!isAuthor && isMod &&
                                 <>
                                     <DeleteCommentButton comment={comment} parentDelete={parentDelete} />
-                                    <div></div>
                                 </>
                             }
-                            {!isAuthor && !isMod &&
-                                <>
-                                    <div></div>
-                                    <div></div>
-                                </>
+                            {inHub &&
+                                <CreateCommentButton toggleReply={() => setShowCreateComment(!showCreateComment)} buttonMessage="Reply"/>
                             }
                         </div>
                     </div>
