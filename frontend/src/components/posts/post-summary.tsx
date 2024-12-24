@@ -145,19 +145,21 @@ const PostSummary: React.FC<ComponentProps> = ({ post, userId, moddedHubs }) => 
                             containerClassName={styles.summaryVoteContainer}
                         />
                     </div>
-                    {isAuthor &&
-                        <div className={bStyles.buttonsRight}>
-                            <EditPostButton post={post} refreshComponent={refreshComponent}/>
-                            <DeletePostButton post={post} />
-                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
-                        </div>
-                    }
-                    {!isAuthor && isMod &&
-                        <div className={bStyles.buttonsRight}>
-                            <DeletePostButton post={post} />
-                            <TagPostButton post={post} refreshComponent={refreshComponent}/>
-                        </div>
-                    }
+                    <div className={bStyles.buttonsRight}>
+                        {isAuthor &&
+                            <>
+                                <EditPostButton post={post} refreshComponent={refreshComponent}/>
+                                <DeletePostButton post={post} />
+                                <TagPostButton post={post} refreshComponent={refreshComponent}/>
+                            </>
+                        }
+                        {!isAuthor && isMod &&
+                            <>
+                                <DeletePostButton post={post} />
+                                <TagPostButton post={post} refreshComponent={refreshComponent}/>
+                            </>
+                        }
+                    </div> 
                 </div>
             </div>
         </div>
